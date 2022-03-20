@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6B12BED5-8CA9-44B9-BA5D-149A2B98D0D9}</ProjectGuid>
+    <ProjectGuid>{E521B44D-B937-4DC3-A374-4C4DE94147BE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RedButton.Common.Core</RootNamespace>
-    <AssemblyName>RedButton.Common.Core</AssemblyName>
+    <RootNamespace>RedButton.Common.TeklaStructures</RootNamespace>
+    <AssemblyName>RedButton.Common.TeklaStructures</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -41,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Class1.cs" />
+    <Compile Include="Class2.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
