@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RedButton.Common.Core
+namespace RedButton.Common.TeklaStructures
 {
-    internal class Class1
+    internal class Class2
     {
     }
 }

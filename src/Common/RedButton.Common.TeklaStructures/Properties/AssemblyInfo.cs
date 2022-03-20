@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("RedButton.Common.Core")]
+[assembly: AssemblyTitle("RedButton.Common.TeklaStructures")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("RedButton.Common.Core")]
+[assembly: AssemblyProduct("RedButton.Common.TeklaStructures")]
 [assembly: AssemblyCopyright("Copyright ©  2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("6b12bed5-8ca9-44b9-ba5d-149a2b98d0d9")]
+[assembly: Guid("e521b44d-b937-4dc3-a374-4c4de94147be")]
 
 // Version information for an assembly consists of the following four values:
 //
