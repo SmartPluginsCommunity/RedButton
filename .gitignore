@@ -361,3 +361,4 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/src/ObjDir/2019/RedButton.Common.TeklaStructures/.NETFramework,Version=v4.8.AssemblyAttributes.cs
