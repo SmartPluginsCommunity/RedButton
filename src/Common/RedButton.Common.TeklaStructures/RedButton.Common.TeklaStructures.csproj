@@ -81,11 +81,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DrawingTable\DrawingUtils.cs" />
-    <Compile Include="DrawingTable\ListOfDrawingTable.cs" />
+    <Compile Include="DrawingTable\ListOfDrawingsTable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="DrawingTable\Example.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
