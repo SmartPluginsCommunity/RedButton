@@ -7,7 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{AB963F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedButton.Common.TeklaStructures", "Common\RedButton.Common.TeklaStructures\RedButton.Common.TeklaStructures.csproj", "{E521B44D-B937-4DC3-A374-4C4DE94147BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedButton.Common.TeklaStructures.Example", "RedButton.Common.TeklaStructures.Example\RedButton.Common.TeklaStructures.Example.csproj", "{A15DF4B5-FBCA-4A33-85A3-2F84D9EAF9B4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedButton.Common.TeklaStructures.Example", "Common\RedButton.Common.TeklaStructures.Example\RedButton.Common.TeklaStructures.Example.csproj", "{A15DF4B5-FBCA-4A33-85A3-2F84D9EAF9B4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
