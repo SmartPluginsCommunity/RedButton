@@ -33,7 +33,7 @@ namespace RedButton.Common.TeklaStructures.DrawingTable
             var sheetsNumbers = DrawingUtils.SheetNumbers(orderedDrawings);
             var sheetsNames = DrawingUtils.GetDrawingsTitles(orderedDrawings);
 
-            CreateTable(sheetsNumbers, sheetsNames, headerTitle);
+            CreateTable(sheetsNumbers, sheetsNames.ToArray(), headerTitle);
         }
 
 
