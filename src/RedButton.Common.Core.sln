@@ -1,4 +1,3 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32112.339
@@ -8,6 +7,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedButton.Common.TeklaStructures", "Common\RedButton.Common.TeklaStructures\RedButton.Common.TeklaStructures.csproj", "{E521B44D-B937-4DC3-A374-4C4DE94147BE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedButton.Common.TeklaStructures.Example", "Common\RedButton.Common.TeklaStructures.Example\RedButton.Common.TeklaStructures.Example.csproj", "{A15DF4B5-FBCA-4A33-85A3-2F84D9EAF9B4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{CA0D01B9-4BEC-45DE-BEFD-4A3AB1070898}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedButton.Tests.UnitTests", "Tests\RedButton.Tests.UnitTests\RedButton.Tests.UnitTests.csproj", "{45DF299D-6874-45D1-9B4E-18ACFAB1A544}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,6 +26,10 @@ Global
 		{A15DF4B5-FBCA-4A33-85A3-2F84D9EAF9B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A15DF4B5-FBCA-4A33-85A3-2F84D9EAF9B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A15DF4B5-FBCA-4A33-85A3-2F84D9EAF9B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45DF299D-6874-45D1-9B4E-18ACFAB1A544}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45DF299D-6874-45D1-9B4E-18ACFAB1A544}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45DF299D-6874-45D1-9B4E-18ACFAB1A544}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45DF299D-6874-45D1-9B4E-18ACFAB1A544}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -30,6 +37,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{E521B44D-B937-4DC3-A374-4C4DE94147BE} = {AB963FE5-E54B-44A9-A367-60DC4755E5DA}
 		{A15DF4B5-FBCA-4A33-85A3-2F84D9EAF9B4} = {AB963FE5-E54B-44A9-A367-60DC4755E5DA}
+		{45DF299D-6874-45D1-9B4E-18ACFAB1A544} = {CA0D01B9-4BEC-45DE-BEFD-4A3AB1070898}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {11020850-38D0-4353-A7CA-73E7B09CB69B}
