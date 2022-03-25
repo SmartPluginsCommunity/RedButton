@@ -7,21 +7,22 @@ namespace RedButton.Common.TeklaStructures.Example
     {
         static void Main(string[] args)
         {
-            DrawListOfDrawingsTable();
+            DrawTable();
             Console.Read();
         }
 
-        public static void DrawListOfDrawingsTable()
+        public static void DrawTable()
         {
             var listOfDrawingsTable = new ListOfDrawingsTable();
-           
-            //Selected drawings in Tekla
-            var drawings = DrawingUtils.GetSelectedDrawings();
-            //var drawings = DrawingUtils.GetDrawings();
+
+            //Table of all drawings
+            var drawings = DrawingUtils.GetDrawings();
+
+            //Table of selected drawings in Tekla
+            //var drawings = DrawingUtils.GetSelectedDrawings();
 
             //Insert table on drawing in Tekla
             listOfDrawingsTable.CreateTable(drawings);
         }
-
     }
 }

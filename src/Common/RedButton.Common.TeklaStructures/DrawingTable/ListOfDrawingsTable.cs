@@ -17,7 +17,7 @@ namespace RedButton.Common.TeklaStructures.DrawingTable
         /// </summary>
         /// <param name="drawings">List of drawings</param>
         /// <param name="headerTitle"></param>
-        public void CreateTable(List<TSD.Drawing> drawings,
+        public void CreateTable(IEnumerable<TSD.Drawing> drawings,
             string headerTitle = "Ведомость рабочих чертежей основного комплекта")
         {
             var orderedDrawings = drawings.OrderBy(x =>

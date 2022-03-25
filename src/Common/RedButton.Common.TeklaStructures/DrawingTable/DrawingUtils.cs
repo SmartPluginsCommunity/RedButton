@@ -117,7 +117,7 @@ namespace RedButton.Common.TeklaStructures.DrawingTable
                     sheetNumbers[i] = 0;
                     Double.TryParse(sheetNumberAtr, out sheetNumbers[i]);
                 }
-                finally
+                catch
                 {
                     sheetNumbers[i] = 0;
                 }
