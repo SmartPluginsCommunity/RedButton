@@ -21,6 +21,7 @@ namespace RedButton.Common.TeklaStructures.DrawingTable
                 var drawing = drawHand.GetActiveDrawing();
                 currentDrawingName = drawing.Title1 + " " + drawing.Title2 + " " + drawing.Title3;
             }
+
             return currentDrawingName;
         }
 
@@ -39,8 +40,8 @@ namespace RedButton.Common.TeklaStructures.DrawingTable
         /// Get drawings titles
         /// </summary>
         /// <param name="drawings">List of drawings</param>
-        /// <returns>Drawings titles array</returns>
-        public static string[] GetDrawingsTitles(List<Drawing> drawings)
+        /// <returns>Drawings titles</returns>
+        public static IEnumerable<string> GetDrawingsTitles(IEnumerable<Drawing> drawings)
         {
             var titles = new List<string>();
             foreach (var drawing in drawings)
@@ -48,14 +49,14 @@ namespace RedButton.Common.TeklaStructures.DrawingTable
                 titles.Add(GetDrawingTitle(drawing));
             }
 
-            return titles.ToArray();
+            return titles;
         }
 
         /// <summary>
         /// Get drawings.
         /// </summary>
         /// <returns>List of drawings</returns>
-        public static List<Drawing> GetDrawings()
+        public static IEnumerable<Drawing> GetDrawings()
         {
             var drawings = new List<Drawing>();
 
@@ -70,6 +71,7 @@ namespace RedButton.Common.TeklaStructures.DrawingTable
                     drawings.Add(drawing);
                 }
             }
+
             return drawings;
         }
 
@@ -77,7 +79,7 @@ namespace RedButton.Common.TeklaStructures.DrawingTable
         /// Get selected drawings
         /// </summary>
         /// <returns>Selected drawings</returns>
-        public static List<Drawing> GetSelectedDrawings()
+        public static IEnumerable<Drawing> GetSelectedDrawings()
         {
             var drawings = new List<Drawing>();
 
@@ -92,6 +94,7 @@ namespace RedButton.Common.TeklaStructures.DrawingTable
                     drawings.Add(drawing);
                 }
             }
+
             return drawings;
         }
 
@@ -102,15 +105,24 @@ namespace RedButton.Common.TeklaStructures.DrawingTable
         /// <returns>Sheets numbers array.</returns>
         public static double[] SheetNumbers(List<Drawing> drawings)
         {
-            var drawingsArray = drawings.ToArray();
-            var sheetNumbers = new double[drawingsArray.Length];
+            var sheetNumbers = new double[drawings.Count];
             var sheetNumberAtr = string.Empty;
+            int i = 0;
 
-            for (int i = 0; i < drawings.Count; i++)
+            foreach (var drawing in drawings)
             {
-                drawingsArray[i].GetUserProperty("ru_list", ref sheetNumberAtr);
-                sheetNumbers[i] = 0;
-                Double.TryParse(sheetNumberAtr, out sheetNumbers[i]);
+                try
+                {
+                    drawing.GetUserProperty("ru_list", ref sheetNumberAtr);
+                    sheetNumbers[i] = 0;
+                    Double.TryParse(sheetNumberAtr, out sheetNumbers[i]);
+                }
+                finally
+                {
+                    sheetNumbers[i] = 0;
+                }
+
+                i++;
             }
 
             return sheetNumbers;

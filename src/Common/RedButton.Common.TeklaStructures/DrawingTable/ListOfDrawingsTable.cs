@@ -13,7 +13,7 @@ namespace RedButton.Common.TeklaStructures.DrawingTable
     public class ListOfDrawingsTable
     {
         /// <summary>
-        ///     Create table of drawings names.
+        /// Create table of drawings names.
         /// </summary>
         /// <param name="drawings">List of drawings</param>
         /// <param name="headerTitle"></param>
@@ -75,15 +75,12 @@ namespace RedButton.Common.TeklaStructures.DrawingTable
                     Point startPoint = null;
                     TSD.ViewBase viewBase = null;
 
-
                     picker.PickPoint("Укажите точку вставки таблицы", out startPoint, out viewBase);
 
                     DrawTableLines(viewBase, startPoint, tableWidth, rows, rowHeight, headerHeight, columnWidth);
 
-
                     DrawTableText(sheetsNumbers, sheetsNames, textHeight, textFont, viewBase, startPoint, tableWidth,
                         rowHeight, headerTitle, headerText, columnWidth, headerHeight);
-
 
                     drawingHandler.GetActiveDrawing().CommitChanges();
                 }
@@ -94,12 +91,10 @@ namespace RedButton.Common.TeklaStructures.DrawingTable
             }
         }
 
-
         private void DrawTableLines(TSD.ViewBase viewBase, Point startPoint, double tableWidth, int rows, int rowHeight,
             int headerHeight, double[] columnWidth)
         {
             //=========Drawing table=========
-
             var lineAtt = new TSD.Line.LineAttributes();
             var lineTypeAtt = new TSD.LineTypeAttributes(TSD.LineTypes.SolidLine, TSD.DrawingColors.Black);
             lineAtt.Line = lineTypeAtt;
@@ -108,7 +103,6 @@ namespace RedButton.Common.TeklaStructures.DrawingTable
             var headerLine = new TSD.Line(viewBase, startPoint,
                 new Point(startPoint.X + tableWidth, startPoint.Y, startPoint.Z), lineAtt);
             headerLine.Insert();
-
 
             //Horizontal lines
             for (var i = 0; i < rows + 1; i++)
@@ -119,7 +113,6 @@ namespace RedButton.Common.TeklaStructures.DrawingTable
                     lineAtt);
                 upperLine.Insert();
             }
-
 
             //Vertical lines
             var firstVerticalLine = new TSD.Line(viewBase, startPoint,
@@ -140,20 +133,17 @@ namespace RedButton.Common.TeklaStructures.DrawingTable
             }
         }
 
-
         private void DrawTableText(double[] sheetNumbers, string[] sheetNames, double textHeight, string textFont,
             TSD.ViewBase viewBase, Point startPoint, double tableWidth, int rowHeight, string headerTitle,
             string[] headerText,
             double[] columnWidth, int headerHeight)
         {
             //=========Drawing text=========
-
             var textAtt = new TSD.Text.TextAttributes();
             textAtt.Alignment = TSD.TextAlignment.Left;
             textAtt.Font = new TSD.FontAttributes(TSD.DrawingColors.Black, textHeight, textFont, false, false);
 
             //Header text
-
             var titleAtt = new TSD.Text.TextAttributes();
             titleAtt.Alignment = TSD.TextAlignment.Left;
             titleAtt.Font = new TSD.FontAttributes(TSD.DrawingColors.Black, textHeight + 2, textFont, false, false);
@@ -162,7 +152,6 @@ namespace RedButton.Common.TeklaStructures.DrawingTable
                 titleAtt);
             ;
             titleWord.Insert();
-
 
             TSD.Text headerWord = null;
             double insertXcoord = 0;
@@ -176,7 +165,6 @@ namespace RedButton.Common.TeklaStructures.DrawingTable
                         startPoint.Z), headerText[i], textAtt);
                 headerWord.Insert();
             }
-
 
             //Column number
             TSD.Text sheetNumber = null;
@@ -209,7 +197,6 @@ namespace RedButton.Common.TeklaStructures.DrawingTable
                     sheetText.Modify();
                 }
         }
-
 
         private Vector TextMoveVector(TSD.Text text, double rowHeight)
         {
