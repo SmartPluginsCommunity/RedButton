@@ -18,9 +18,7 @@ namespace RedButton.Common.TeklaStructures.Extensions
 
             if (getMainPart)
             {
-                var mainPart = assembly.GetMainPart() as T;
-
-                if(mainPart != null)
+                if (assembly.GetMainPart() is T mainPart)
                     result.Add(mainPart);
             }
 
