@@ -30,8 +30,7 @@ namespace RedButton
         {
             _model = new Model();
             _drawinghandler = new DrawingHandler();
-            _pickedview = (ViewBase)null;
-            _drawingObject = (DrawingObject)null;
+
         }
         #endregion Constructors
 
@@ -40,10 +39,11 @@ namespace RedButton
         {
             _rule = rule;
             var picker = _drawinghandler.GetPicker();
-            picker.PickObject("Укажите деталь", out _drawingObject, out _pickedview);
+            picker.PickObject("Укажите деталь на виде", out _drawingObject, out _pickedview);
             TSD.Part drawingPickedPart = _drawingObject as TSD.Part;
             var modelPart = _model.SelectModelObject(drawingPickedPart.ModelIdentifier) as TSM.Part;
-            GetIntersection();
+            if (modelPart !=null)
+                GetIntersection();
         }
     
 
