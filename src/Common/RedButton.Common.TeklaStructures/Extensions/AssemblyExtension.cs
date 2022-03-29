@@ -9,8 +9,8 @@ namespace RedButton.Common.TeklaStructures.Extensions
         /// <summary>
         /// Get all parts for assembly.
         /// </summary>
-        /// <param name="assembly"></param>
-        /// <param name="getMainPart">Надо ли получать главную деталь сборки.</param>
+        /// <param name="assembly">Assembly</param>
+        /// <param name="getMainPart">Get main part.</param>
         /// <returns></returns>
         public static IEnumerable<T> GetAllParts<T>(this Assembly assembly, bool getMainPart) where T : ModelObject
         {
