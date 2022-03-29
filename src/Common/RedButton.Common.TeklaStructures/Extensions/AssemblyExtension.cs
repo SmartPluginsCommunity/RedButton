@@ -17,12 +17,20 @@ namespace RedButton.Common.TeklaStructures.Extensions
             var result = new List<T>();
 
             if (getMainPart)
-                result.Add(assembly.GetMainPart() as T);
+            {
+                var mainPart = assembly.GetMainPart() as T;
 
-            var secondariesParts = assembly.GetSecondaries().OfType<T>();
-            result.AddRange(secondariesParts);
+                if(mainPart != null)
+                    result.Add(mainPart);
+            }
 
-            return result.Where(part => part != null);
+            foreach (var obj in assembly.GetSecondaries())
+            {
+                if(obj is T modelObject)
+                    result.Add(modelObject);
+            }
+
+            return result;
         }
     }
 }
