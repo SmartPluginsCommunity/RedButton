@@ -9,7 +9,7 @@ namespace RedButton.Common.TeklaStructures.Extensions
     public static class PointExtension
     {
         /// <summary>
-        /// Получение точки пересечения массива сегментов
+        /// Getting the point of intersection of an array of line segments
         /// </summary>
         /// <param name="lines"></param>
         /// <returns></returns>
@@ -51,8 +51,9 @@ namespace RedButton.Common.TeklaStructures.Extensions
 
             return result;
         }
+        
         /// <summary>
-        /// Получение серединной точки между двумя
+        /// Get center point between two points
         /// </summary>
         /// <param name="p1"></param>
         /// <param name="p2"></param>
@@ -66,8 +67,9 @@ namespace RedButton.Common.TeklaStructures.Extensions
                 Z = (p2.Z + p1.Z) * 0.5
             };
         }
+        
         /// <summary>
-        /// Получение центральной точки сегмента
+        /// Get center point from line segment
         /// </summary>
         /// <param name="line"></param>
         /// <returns></returns>
@@ -75,8 +77,9 @@ namespace RedButton.Common.TeklaStructures.Extensions
         {
             return line.StartPoint.GetCenterPoint(line.EndPoint);
         }
+        
         /// <summary>
-        /// Получение центральной точки из массива точек
+        /// Get center point from array points
         /// </summary>
         /// <param name="points"></param>
         /// <returns></returns>
@@ -91,8 +94,9 @@ namespace RedButton.Common.TeklaStructures.Extensions
             }
             return new Point(x / points.Count, y / points.Count, z / points.Count);
         }
+        
         /// <summary>
-        /// Создание нового экземпляра точки
+        /// Creating a new point instance 
         /// </summary>
         /// <param name="p1"></param>
         /// <returns></returns>
@@ -100,8 +104,9 @@ namespace RedButton.Common.TeklaStructures.Extensions
         {
             return new Point(p1.X, p1.Y, p1.Z);
         }
+        
         /// <summary>
-        /// Создание нового экземпляра точки с прибавлением вектора
+        /// Creating a new point instance with vector addition
         /// </summary>
         /// <param name="p1"></param>
         /// <param name="v1"></param>

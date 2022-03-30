@@ -8,7 +8,7 @@ namespace RedButton.Common.TeklaStructures.Extensions
     public static class GeometryPlaneExtension
     {
         /// <summary>
-        /// Преобразование Plane в геометрический
+        /// Convert class 'Plane' to GeomatricPlane
         /// </summary>
         /// <param name="plane"></param>
         /// <returns></returns>
@@ -16,13 +16,14 @@ namespace RedButton.Common.TeklaStructures.Extensions
         {
             return new GeometricPlane(plane.Origin, plane.AxisX, plane.AxisY);
         }
+        
         /// <summary>
-        /// Получение словаря плоскостей из солида, точность солида следует получать
-        /// при получении экземпляра из объекта
+        /// Get dictionary of planes from solid,
+        /// accuracy of solid need set up when getting instance solid by object
         /// </summary>
         /// <param name="solid"></param>
         /// <returns></returns>
-        /// TODO требуется упрощение
+        /// TODO need to simplify
         public static Dictionary<tsm.Plane, Face> GetGeometricPlanes(this tsm.Solid solid)
         {
             FaceEnumerator faceEnum = solid.GetFaceEnumerator();
@@ -67,25 +68,28 @@ namespace RedButton.Common.TeklaStructures.Extensions
             }
             return planes;
         }
+        
         private static Vector VectorNew(Vector vector, double angle, Vector rotateAxis)
         {
             Matrix matrix = MatrixFactory.Rotate(angle, rotateAxis);
             return VectorNew(vector, matrix);
         }
+        
         private static Vector VectorNew(Vector vector, Matrix matrix)
         {
             Point p = new Point(vector.X, vector.Y, vector.Z);
             Point point = matrix.Transform(p);
             return new Vector(point.X, point.Y, point.Z);
         }
+        
         /// <summary>
-        /// Проверка соноправленности векторов
+        /// Check point alignment
         /// </summary>
         /// <param name="point1"></param>
         /// <param name="point2"></param>
         /// <param name="point3"></param>
         /// <returns></returns>
-        /// TODO требуется перенести в папку с алгоритмами\математикой
+        /// TODO need move into namespace with algorithms or math
         internal static bool ArePointAligned(Point point1, Point point2, Point point3)
         {
             Vector vector1 = new Vector(point2.X - point1.X, point2.Y - point1.Y, point2.Z - point1.Z);
