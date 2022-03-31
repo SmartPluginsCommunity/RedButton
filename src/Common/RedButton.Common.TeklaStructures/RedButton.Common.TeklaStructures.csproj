@@ -82,6 +82,8 @@
   <ItemGroup>
     <Compile Include="DrawingTable\DrawingUtils.cs" />
     <Compile Include="DrawingTable\ListOfDrawingsTable.cs" />
+    <Compile Include="Extensions\GeometryPlaneExtension.cs" />
+    <Compile Include="Extensions\PointExtension.cs" />
     <Compile Include="Extensions\AssemblyExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
