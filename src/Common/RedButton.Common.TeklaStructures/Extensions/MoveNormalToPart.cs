@@ -11,6 +11,7 @@ namespace RedButton.Common.TeklaStructures.Extensions
 {
     /// <summary>
     /// Класс предназначен для методов, перемещающих элементы в модели перпендикулярно заданным.
+    /// /// hhh
     /// </summary>
     public static class MoveNormalToPart
     {
