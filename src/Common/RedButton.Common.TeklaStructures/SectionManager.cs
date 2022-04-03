@@ -5,6 +5,7 @@ using Tekla.Structures.Geometry3d;
 using Tekla.Structures.Model;
 using TSD = Tekla.Structures.Drawing;
 using TSM = Tekla.Structures.Model;
+using System.Linq;
 
 namespace RedButton
 {
@@ -16,23 +17,27 @@ namespace RedButton
         private ViewBase _pickedview;
         private DrawingObject _drawingObject;
         private TSM.Part _pickedpart;
-
         // Интерфейс с правилами для получения точек 
         private IDrawingSectionRule _rule;
-
         public List<List<Point>> Points {get; private set;}
-
-
         #endregion Properties
 
         #region Constructors
-        public SectionManager()
+
+        public DrawingSectionManager ()
         {
             _model = new Model();
             _drawinghandler = new DrawingHandler();
-
         }
+
         #endregion Constructors
+        
+        #region Inteface
+        public interface IDrawingSectionRule
+        {
+            //TODO Create the interface
+        }
+        #endregion
 
         #region Methods
         public void Init(IDrawingSectionRule rule)
@@ -51,42 +56,25 @@ namespace RedButton
         private void GetIntersection()
         {
             // add rules
-            List<List<Point>> result = new List<List<Point>>();
-            var solid = _pickedpart.GetSolid();
+            var solid = _pickedpart.GetSolid(Solid.SolidCreationTypeEnum.NORMAL);
             var viewOriginPoint = _pickedview.Origin;
+            List<List<Point>> sectionCotoursList = new List<List<Point>>();
             var enumerator = solid.IntersectAllFaces(
                 viewOriginPoint,
                 new Point(viewOriginPoint.X + 10, viewOriginPoint.Y, viewOriginPoint.Z),
                 new Point(viewOriginPoint.X, viewOriginPoint.Y + 10, viewOriginPoint.Z)
-                ); 
-            int faceIndex = 0;
+                );
             while (enumerator.MoveNext())
             {
-                ArrayList Points = enumerator.Current as ArrayList;
-                IEnumerator LoopsEnum = Points.GetEnumerator();
-
-                int loopIndex = 0;
-                while (LoopsEnum.MoveNext())
+                var arrayList = enumerator.Current as ArrayList;
+                for (int i = 0; i < arrayList.Count; i++)
                 {
-                    ArrayList LoopPoints = LoopsEnum.Current as ArrayList;
-                    if (LoopPoints != null)
-                    {
-                        result.Add(new List<Point>());
-                        IEnumerator LoopPointsEnum = LoopPoints.GetEnumerator();
-                        while (LoopPointsEnum.MoveNext())
-                        {
-                            Point solidPoint = LoopPointsEnum.Current as Point;
-                            if (solidPoint != null)
-                            {
-                                result[loopIndex].Add(solidPoint);
-                            }
-                        }
-                    }
-                    loopIndex++;
+                    var temp = arrayList[i] as ArrayList;
+                    sectionCotoursList.Add(temp.Cast<Point>().ToList());
                 }
-                faceIndex++;
             }
-            Points = result;
+
+            Points = sectionCotoursList;     
         }
         #endregion Methods
     }
