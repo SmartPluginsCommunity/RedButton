@@ -4,8 +4,15 @@ using Tekla.Structures.Model;
 
 namespace RedButton.Tests.UnitTests
 {
+    /// <summary>
+    /// Create model objects for tests
+    /// </summary>
     public class TestObjectCreator
     {
+        /// <summary>
+        /// Get beam
+        /// </summary>
+        /// <returns></returns>
         public Beam GetBeam()
         {
             var beam = new Beam();
@@ -19,6 +26,12 @@ namespace RedButton.Tests.UnitTests
             return null;
         }
 
+        /// <summary>
+        /// Create assembly
+        /// </summary>
+        /// <param name="mainPart"></param>
+        /// <param name="secondaries"></param>
+        /// <returns></returns>
         public Assembly CreateAssembly(Part mainPart, IEnumerable<Part> secondaries)
         {
             var assembly = mainPart.GetAssembly();
