@@ -1,17 +1,13 @@
-﻿using System;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RedButton.Common.TeklaStructures.DrawingTable;
 
-namespace RedButton.Common.TeklaStructures.Example
+namespace RedButton.Tests.UnitTests.DrawingTests
 {
-    internal class Program
+    [TestClass]
+    public class DrawingUtilsTests : BaseTest
     {
-        static void Main(string[] args)
-        {
-            DrawTable();
-            Console.Read();
-        }
-
-        public static void DrawTable()
+        [TestMethod("Test table create [NOT AUTO]")]
+        public void TableCreateTest()
         {
             var listOfDrawingsTable = new ListOfDrawingsTable();
 
@@ -24,7 +20,5 @@ namespace RedButton.Common.TeklaStructures.Example
             //Insert table on drawing in Tekla
             listOfDrawingsTable.CreateTable(drawings);
         }
-
-
     }
 }

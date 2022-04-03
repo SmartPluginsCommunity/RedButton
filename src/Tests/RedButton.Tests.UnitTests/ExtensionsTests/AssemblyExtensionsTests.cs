@@ -12,11 +12,15 @@ namespace RedButton.Tests.UnitTests
         [TestMethod("Get all part from assembly")]
         public void GetAllPartFromAssemblyTest()
         {
-            var beam1 = GetBeam();
-            var beam2 = GetBeam();
-            var beam3 = GetBeam();
+            var beam1 = TestObjectCreator.GetBeam();
+            var beam2 = TestObjectCreator.GetBeam();
+            var beam3 = TestObjectCreator.GetBeam();
 
-            var assembly = CreateAssembly(beam1, new List<Part> { beam2, beam3 });
+            var assembly = TestObjectCreator.CreateAssembly(beam1, new List<Part> { beam2, beam3 });
+
+            AddTemporaryObject(beam1);
+            AddTemporaryObject(beam2);
+            AddTemporaryObject(beam3);
 
             var allParts = assembly.GetAllParts<Part>(true);
 
@@ -26,11 +30,15 @@ namespace RedButton.Tests.UnitTests
         [TestMethod("Get all part from assembly without main part")]
         public void GetAllPartFromAssemblyWithoutMainPartTest()
         {
-            var beam1 = GetBeam();
-            var beam2 = GetBeam();
-            var beam3 = GetBeam();
+            var beam1 = TestObjectCreator.GetBeam();
+            var beam2 = TestObjectCreator.GetBeam();
+            var beam3 = TestObjectCreator.GetBeam();
 
-            var assembly = CreateAssembly(beam1, new List<Part> { beam2, beam3 });
+            var assembly = TestObjectCreator.CreateAssembly(beam1, new List<Part> { beam2, beam3 });
+
+            AddTemporaryObject(beam1);
+            AddTemporaryObject(beam2);
+            AddTemporaryObject(beam3);
 
             var allParts = assembly.GetAllParts<Part>(false);
 

@@ -1,8 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using Tekla.Structures.Geometry3d;
 using Tekla.Structures.Model;
 
 namespace RedButton.Tests.UnitTests
@@ -10,7 +8,9 @@ namespace RedButton.Tests.UnitTests
     public abstract class BaseTest
     {
         private ConcurrentBag<ModelObject> _insertedObjects;
-        
+
+        protected TestObjectCreator TestObjectCreator { get; set; }
+
         protected Model Model;
         /// <summary>
         /// Initial logic
@@ -19,6 +19,7 @@ namespace RedButton.Tests.UnitTests
         public void Init()
         {
             Model = new Model();
+            TestObjectCreator = new TestObjectCreator();
 
             if (!Model.GetConnectionStatus())
                 throw new Exception("Connect to Tekla model status is false!");
@@ -38,30 +39,9 @@ namespace RedButton.Tests.UnitTests
             _insertedObjects = null;
         }
 
-        protected Beam GetBeam()
+        protected void AddTemporaryObject(ModelObject modelObject)
         {
-            var beam = new Beam();
-            beam.Profile.ProfileString = "D100";
-            beam.StartPoint = new Point();
-            beam.EndPoint = new Point(1000, 0,0 );
-
-            if (beam.Insert())
-            {
-                _insertedObjects.Add(beam);
-                return beam;
-            }
-
-            return null;
-        }
-
-        protected Assembly CreateAssembly(Part mainPart, IEnumerable<Part> secondaries)
-        {
-            var assembly = mainPart.GetAssembly();
-
-            foreach(var part in secondaries)
-                assembly.Add(part);
-
-            return assembly;
+            _insertedObjects.Add(modelObject);
         }
     }
 }
