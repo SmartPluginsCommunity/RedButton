@@ -1,6 +1,7 @@
-using RedButton.Common.Core.Interfaces;
+using System;
+using RedButton.Common.Core.Geometry.Interfaces;
 
-namespace RedButton.Common.Core
+namespace RedButton.Common.Core.Geometry
 {
     public class Point : IPoint
     {
@@ -51,5 +52,26 @@ namespace RedButton.Common.Core
         }
 
         #endregion Constructors
+
+        #region Methods
+
+        public static Point operator+(Point point, Point input)
+        {
+            return new Point(point.X + input.X, point.Y + input.Y, point.Z + input.Z);
+        }
+        
+        public static Point operator-(Point point, Point input)
+        {
+            return new Point(point.X -input.X, point.Y - input.Y, point.Z - input.Z);
+        }
+
+        public static Point operator +(Point p1, double d)
+        {
+            return p1 + new Point(d, d, d);
+        }
+        
+        public double Length => X * X + Y * Y + Z * Z;
+        
+        #endregion Methods
     }
 }

@@ -11,6 +11,7 @@
         <AssemblyName>RedButton.Common.Core</AssemblyName>
         <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
         <FileAlignment>512</FileAlignment>
+        <LangVersion>8</LangVersion>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <PlatformTarget>AnyCPU</PlatformTarget>
@@ -38,12 +39,20 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="Extensions\PointExtension.cs" />
-        <Compile Include="Extensions\VectorExtension.cs" />
-        <Compile Include="Interfaces\IPoint.cs" />
-        <Compile Include="Point.cs" />
+        <Compile Include="Geometry\Extensions\PointExtension.cs" />
+        <Compile Include="Geometry\Extensions\SphereExtension.cs" />
+        <Compile Include="Geometry\Extensions\VectorExtension.cs" />
+        <Compile Include="Geometry\Interfaces\IPoint.cs" />
+        <Compile Include="Geometry\Interfaces\IVector.cs" />
+        <Compile Include="Geometry\Plane.cs" />
+        <Compile Include="Geometry\Point.cs" />
+        <Compile Include="Geometry\Sphere.cs" />
+        <Compile Include="Geometry\Vector.cs" />
+        <Compile Include="Math\Math.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
-        <Compile Include="Vector.cs" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Algorithms" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

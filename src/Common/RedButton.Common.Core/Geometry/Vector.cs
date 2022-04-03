@@ -1,8 +1,8 @@
-using RedButton.Common.Core.Interfaces;
+using RedButton.Common.Core.Geometry.Interfaces;
 
-namespace RedButton.Common.Core
+namespace RedButton.Common.Core.Geometry
 {
-    public class Vector : IPoint
+    public class Vector : IPoint, IVector
     {
         #region Properties
 
@@ -43,13 +43,26 @@ namespace RedButton.Common.Core
             Z = z;
         }
 
-        public Vector(IPoint point)
+        public Vector(IPoint input)
         {
-            this.X = point.X;
-            this.Y = point.Y;
-            this.Z = point.Z;
+            this.X = input.X;
+            this.Y = input.Y;
+            this.Z = input.Z;
+        }
+        
+        public Vector(IVector input)
+        {
+            this.X = input.X;
+            this.Y = input.Y;
+            this.Z = input.Z;
         }
 
         #endregion Constructors
+        
+        #region Methods
+
+        
+
+        #endregion Methods
     }
 }
