@@ -80,6 +80,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CSLib\Compare.cs" />
+    <Compile Include="CSLib\Constants.cs" />
+    <Compile Include="CSLib\DrawUI.cs" />
+    <Compile Include="CSLib\Geo.cs" />
+    <Compile Include="CSLib\Intersect.cs" />
+    <Compile Include="CSLib\PolygonOperation.cs" />
+    <Compile Include="CSLib\SetPlane.cs" />
     <Compile Include="DrawingTable\DrawingUtils.cs" />
     <Compile Include="DrawingTable\ListOfDrawingsTable.cs" />
     <Compile Include="Extensions\GeometryPlaneExtension.cs" />
