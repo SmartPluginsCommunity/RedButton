@@ -1,7 +1,12 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\src",
+    "\\src\\Common",
+    "\\src\\Common\\RedButton.Common.TeklaStructures",
+    "\\src\\Common\\RedButton.Common.TeklaStructures\\Extensions",
+    "\\src\\Common\\RedButton.Common.TeklaStructures\\Extensions\\GeometryProcessing"
   ],
-  "SelectedNode": "\\RedButton.Common.Core.sln",
+  "SelectedNode": "\\src\\Common\\RedButton.Common.TeklaStructures\\Extensions\\GeometryProcessing",
   "PreviewInSolutionExplorer": false
 }
