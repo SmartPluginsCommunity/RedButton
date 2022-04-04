@@ -42,12 +42,15 @@
         <Compile Include="Geometry\Extensions\PointExtension.cs" />
         <Compile Include="Geometry\Extensions\SphereExtension.cs" />
         <Compile Include="Geometry\Extensions\VectorExtension.cs" />
+        <Compile Include="Geometry\Interfaces\ILineSegment.cs" />
         <Compile Include="Geometry\Interfaces\IPoint.cs" />
         <Compile Include="Geometry\Interfaces\IVector.cs" />
+        <Compile Include="Geometry\LineSegment.cs" />
         <Compile Include="Geometry\Plane.cs" />
         <Compile Include="Geometry\Point.cs" />
         <Compile Include="Geometry\Sphere.cs" />
         <Compile Include="Geometry\Vector.cs" />
+        <Compile Include="Maths\Matrix.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>
     <ItemGroup>

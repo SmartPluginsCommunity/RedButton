@@ -84,6 +84,16 @@ namespace RedButton.Common.Core.Geometry
         {
             return new Point(point.X -input.X, point.Y - input.Y, point.Z - input.Z);
         }
+        
+        public static Point operator+(Point point, Vector input)
+        {
+            return new Point(point.X + input.X, point.Y + input.Y, point.Z + input.Z);
+        }
+        
+        public static Point operator-(Point point, Vector input)
+        {
+            return new Point(point.X -input.X, point.Y - input.Y, point.Z - input.Z);
+        }
 
         public static Point operator +(Point p1, double d)
         {

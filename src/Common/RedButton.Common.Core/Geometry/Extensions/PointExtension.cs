@@ -27,6 +27,13 @@ namespace RedButton.Common.Core.Geometry.Extensions
         /// <returns></returns>
         public static Point NewPoint(this IPoint input) => new Point(input);
         
+        public static Point NewPoint(this IVector input) => new Point(input.X, input.Y, input.Z);
+
+        public static Point AddVector(this IPoint point, IVector input)
+        {
+            return new Point(point.X = input.X, point.Y + input.Y, point.Z + input.Z);
+        }
+        
         /// <summary>
         /// Get distance (double) between 2 points
         /// </summary>
@@ -41,6 +48,8 @@ namespace RedButton.Common.Core.Geometry.Extensions
             
             return Math.Sqrt(Math.Pow(X - input.X, 2.0) + Math.Pow(Y - input.Y, 2.0) + Math.Pow(Z - input.Z, 2.0));
         }
+        
+        
         
     }
 }

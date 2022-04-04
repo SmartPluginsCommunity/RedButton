@@ -1,3 +1,4 @@
+using RedButton.Common.Core.Geometry.Extensions;
 using RedButton.Common.Core.Geometry.Interfaces;
 
 namespace RedButton.Common.Core.Geometry
@@ -81,7 +82,8 @@ namespace RedButton.Common.Core.Geometry
         
         #region Methods
 
-        
+        public double Length => (new Point(this)).Length;
+
 
         #endregion Methods
     }
