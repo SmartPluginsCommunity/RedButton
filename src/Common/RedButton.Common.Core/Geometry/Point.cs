@@ -3,6 +3,9 @@ using RedButton.Common.Core.Geometry.Interfaces;
 
 namespace RedButton.Common.Core.Geometry
 {
+    /// <summary>
+    /// Point 3d class
+    /// </summary>
     public class Point : IPoint
     {
         #region Properties
@@ -15,7 +18,9 @@ namespace RedButton.Common.Core.Geometry
 
         #region Constructors
 
-        
+        /// <summary>
+        /// Init Zero point
+        /// </summary>
         public Point()
         {
             X = 0;
@@ -23,6 +28,10 @@ namespace RedButton.Common.Core.Geometry
             Z = 0;
         }
 
+        /// <summary>
+        /// Init X coordinate
+        /// </summary>
+        /// <param name="x"></param>
         public Point(double x)
         {
             X = x;
@@ -30,6 +39,11 @@ namespace RedButton.Common.Core.Geometry
             Z = 0;
         }
 
+        /// <summary>
+        /// Init X, Y coordinates
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
         public Point(double x, double y)
         {
             X = x;
@@ -37,6 +51,12 @@ namespace RedButton.Common.Core.Geometry
             Z = 0;
         }
 
+        /// <summary>
+        /// Init X, Y, Z coordinates
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
         public Point(double x, double y, double z)
         {
             X = x;

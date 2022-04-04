@@ -4,14 +4,14 @@
     <PropertyGroup>
         <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
         <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-        <ProjectGuid>{DE62AAA4-AD21-49D8-8FAA-1FF55E22716F}</ProjectGuid>
+        <ProjectGuid>{5E4705B1-DE61-4643-8340-2C779F62DCCD}</ProjectGuid>
+        <ProjectTypeGuids>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
         <OutputType>Library</OutputType>
         <AppDesignerFolder>Properties</AppDesignerFolder>
-        <RootNamespace>RedButton.Common.Core</RootNamespace>
-        <AssemblyName>RedButton.Common.Core</AssemblyName>
+        <RootNamespace>RedButton.Tests.xUnitTests</RootNamespace>
+        <AssemblyName>RedButton.Tests.xUnitTests</AssemblyName>
         <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
         <FileAlignment>512</FileAlignment>
-        <LangVersion>7.3</LangVersion>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <PlatformTarget>AnyCPU</PlatformTarget>
@@ -37,21 +37,28 @@
         <Reference Include="System.Core" />
         <Reference Include="System.Data" />
         <Reference Include="System.Xml" />
+        <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c">
+            <HintPath>../..\packages\xunit.abstractions.2.0.0\lib\net35\xunit.abstractions.dll</HintPath>
+        </Reference>
+        <Reference Include="xunit.assert, Version=2.1.0.3179, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c">
+            <HintPath>../..\packages\xunit.assert.2.1.0\lib\dotnet\xunit.assert.dll</HintPath>
+        </Reference>
+        <Reference Include="xunit.core, Version=2.1.0.3179, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c">
+            <HintPath>../..\packages\xunit.extensibility.core.2.1.0\lib\dotnet\xunit.core.dll</HintPath>
+        </Reference>
+        <Reference Include="xunit.execution.desktop, Version=2.1.0.3179, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c">
+            <HintPath>../..\packages\xunit.extensibility.execution.2.1.0\lib\net45\xunit.execution.desktop.dll</HintPath>
+        </Reference>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="Geometry\Extensions\PointExtension.cs" />
-        <Compile Include="Geometry\Extensions\SphereExtension.cs" />
-        <Compile Include="Geometry\Extensions\VectorExtension.cs" />
-        <Compile Include="Geometry\Interfaces\IPoint.cs" />
-        <Compile Include="Geometry\Interfaces\IVector.cs" />
-        <Compile Include="Geometry\Plane.cs" />
-        <Compile Include="Geometry\Point.cs" />
-        <Compile Include="Geometry\Sphere.cs" />
-        <Compile Include="Geometry\Vector.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
+        <Compile Include="RedButton.Common.Core.Geometry\SphereTest.cs" />
     </ItemGroup>
     <ItemGroup>
-      <Folder Include="Algorithms" />
+      <ProjectReference Include="..\..\Common\RedButton.Common.Core\RedButton.Common.Core.csproj">
+        <Project>{de62aaa4-ad21-49d8-8faa-1ff55e22716f}</Project>
+        <Name>RedButton.Common.Core</Name>
+      </ProjectReference>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -61,5 +68,4 @@
     <Target Name="AfterBuild">
     </Target>
     -->
-
 </Project>

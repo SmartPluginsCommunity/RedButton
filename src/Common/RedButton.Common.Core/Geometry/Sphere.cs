@@ -1,8 +1,10 @@
+using System;
 using RedButton.Common.Core.Geometry.Extensions;
 using RedButton.Common.Core.Geometry.Interfaces;
 
 namespace RedButton.Common.Core.Geometry
 {
+    // Sphere 3d class
     public class Sphere
     {
         #region Properties
@@ -43,7 +45,7 @@ namespace RedButton.Common.Core.Geometry
         {
             double dist = this.Distance(sh);
             double sum = Radius + sh.Radius;
-            double diff = Math.Math.Abs(Radius - sh.Radius);
+            double diff = Math.Abs(Radius - sh.Radius);
             
             bool inside = diff <= dist && dist <= sum;
 
@@ -59,7 +61,7 @@ namespace RedButton.Common.Core.Geometry
             if (IsInsidePoint(sh.Center))
             {
                 double dist = this.Distance(sh);
-                double diff = Math.Math.Abs(Radius - sh.Radius);
+                double diff = Math.Abs(Radius - sh.Radius);
                 return dist < diff;
             }
 

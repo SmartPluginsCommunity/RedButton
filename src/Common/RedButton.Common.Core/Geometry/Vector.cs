@@ -2,6 +2,9 @@ using RedButton.Common.Core.Geometry.Interfaces;
 
 namespace RedButton.Common.Core.Geometry
 {
+    /// <summary>
+    /// Vector 3d class
+    /// </summary>
     public class Vector : IPoint, IVector
     {
         #region Properties
@@ -14,7 +17,9 @@ namespace RedButton.Common.Core.Geometry
 
         #region Constructors
 
-        
+        /// <summary>
+        /// Init zero vector
+        /// </summary>
         public Vector()
         {
             X = 0;
@@ -22,6 +27,10 @@ namespace RedButton.Common.Core.Geometry
             Z = 0;
         }
 
+        /// <summary>
+        /// Init X coordinate
+        /// </summary>
+        /// <param name="x"></param>
         public Vector(double x)
         {
             X = x;
@@ -29,6 +38,11 @@ namespace RedButton.Common.Core.Geometry
             Z = 0;
         }
 
+        /// <summary>
+        /// Init X, Y coordinates
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
         public Vector(double x, double y)
         {
             X = x;
@@ -36,6 +50,12 @@ namespace RedButton.Common.Core.Geometry
             Z = 0;
         }
 
+        /// <summary>
+        /// Init X, Y, Z coordinates
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
         public Vector(double x, double y, double z)
         {
             X = x;
