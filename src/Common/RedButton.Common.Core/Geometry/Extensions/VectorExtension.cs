@@ -4,11 +4,11 @@ namespace RedButton.Common.Core.Geometry.Extensions
 {
     public static class VectorExtension
     {
-        public static IVector GetVector(this IPoint input1, IPoint input2)
+        public static IVector GetVector(this IPoint current, IPoint input)
         {
-            double x = input2.X - input2.X;
-            double y = input2.Y - input2.Y;
-            double z = input2.Z - input2.Z;
+            double x = input.X - current.X;
+            double y = input.Y - current.Y;
+            double z = input.Z - current.Z;
             return new Vector(x, y, z);
         }
 

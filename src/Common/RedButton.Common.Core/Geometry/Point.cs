@@ -82,7 +82,7 @@ namespace RedButton.Common.Core.Geometry
         
         public static Point operator-(Point point, Point input)
         {
-            return new Point(point.X -input.X, point.Y - input.Y, point.Z - input.Z);
+            return new Point(point.X - input.X, point.Y - input.Y, point.Z - input.Z);
         }
         
         public static Point operator+(Point point, Vector input)
@@ -92,7 +92,7 @@ namespace RedButton.Common.Core.Geometry
         
         public static Point operator-(Point point, Vector input)
         {
-            return new Point(point.X -input.X, point.Y - input.Y, point.Z - input.Z);
+            return new Point(point.X - input.X, point.Y - input.Y, point.Z - input.Z);
         }
 
         public static Point operator +(Point p1, double d)
@@ -100,7 +100,7 @@ namespace RedButton.Common.Core.Geometry
             return p1 + new Point(d, d, d);
         }
         
-        public double Length => X * X + Y * Y + Z * Z;
+        public double Length => Math.Sqrt(X * X + Y * Y + Z * Z);
         
         #endregion Methods
     }
