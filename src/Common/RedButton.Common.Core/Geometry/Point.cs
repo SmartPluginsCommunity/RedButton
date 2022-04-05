@@ -100,8 +100,6 @@ namespace RedButton.Common.Core.Geometry
             return p1 + new Point(d, d, d);
         }
         
-        public double Length => Math.Sqrt(X * X + Y * Y + Z * Z);
-        
         #endregion Methods
     }
 }

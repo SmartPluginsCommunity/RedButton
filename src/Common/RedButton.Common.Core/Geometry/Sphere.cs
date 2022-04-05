@@ -39,7 +39,9 @@ namespace RedButton.Common.Core.Geometry
 
         public bool IsInsidePoint(Point input)
         {
-            return (Center - input).Length <= Radius * Radius;
+            var result = Center - input;
+            var length = result.X * result.X + result.Y * result.Y + result.Z * result.Z;
+            return length <= Radius * Radius;
         }
         public bool IsIntersectionSphere(Sphere sh)
         {
@@ -56,6 +58,7 @@ namespace RedButton.Common.Core.Geometry
         {
             return IsInside(sh) || IsIntersectionSphere(sh);
         }
+        
         public bool IsInside(Sphere sh)
         {
             if (IsInsidePoint(sh.Center))

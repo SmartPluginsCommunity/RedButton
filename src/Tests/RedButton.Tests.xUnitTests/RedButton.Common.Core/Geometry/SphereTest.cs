@@ -4,7 +4,7 @@ using Xunit;
 
 namespace RedButton.Tests.xUnitTests.RedButton.Common.Core.Geometry
 {
-    public class ShpereTest
+    public class SphereTest
     {
         [Theory]
         [MemberData(nameof(GetSphereData))]

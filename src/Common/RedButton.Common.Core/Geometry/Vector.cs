@@ -1,3 +1,5 @@
+using System;
+using System.Runtime.InteropServices;
 using RedButton.Common.Core.Geometry.Extensions;
 using RedButton.Common.Core.Geometry.Interfaces;
 
@@ -82,9 +84,72 @@ namespace RedButton.Common.Core.Geometry
         
         #region Methods
 
-        public double Length => (new Point(this)).Length;
+        public double Length => Math.Sqrt(X * X + Y * Y + Z * Z);
 
+        #region Operators
 
+        public static Vector operator +(Vector current, Vector input)
+        {
+            return new Vector(current.X + input.X, current.Y + input.Y, current.Z + input.Z);
+        }
+        public static Vector operator -(Vector current, Vector input)
+        {
+            return new Vector(current.X - input.X, current.Y - input.Y, current.Z - input.Z);
+        }
+        public static Vector operator *(Vector current, Vector input)
+        {
+            return new Vector(current.X * input.X, current.Y * input.Y, current.Z * input.Z);
+        }
+
+        public static bool operator ==(Vector current, Vector input)
+        {
+            return current.Length - input.Length == 0;
+        }
+        
+        public static bool operator !=(Vector current, Vector input)
+        {
+            return current.Length - input.Length != 0;
+        }
+        #endregion
+
+        public double ScalarProduct(Vector input)
+        {
+            return X * input.X + Y * input.Y + Z * input.Z;
+        }
+        
+        public Vector VectorProduct(Vector input)
+        {
+            var x = Y * input.Z - Z * input.Y;
+            var y = Z * input.X - X * input.Z;
+            var z = X * input.Y - Y * input.X;
+            return new Vector(x, y, z);
+        }
+
+        public bool IsParallel(Vector input)
+        {
+            var result = GetAngleIdRadian(input);
+            return result == 0.0 || result == 180.0;
+        }
+        
+        public bool IsOrthogonal(Vector input)
+        {
+            var result = GetAngleIdRadian(input);
+            return result == 90.0 || result == 270.0;
+        }
+
+        public double GetAngleIdRadian(Vector input)
+        {
+            var scalarProduct = ScalarProduct(input);
+            var lengthProduct = this.Length * input.Length;
+            var result = Math.Acos(scalarProduct / lengthProduct);
+            return result;
+        }
+
+        public double GetAngleInDegree(Vector input)
+        {
+            var radian = GetAngleIdRadian(input);
+            return radian * 180 / Math.PI;
+        }
         #endregion Methods
     }
 }
