@@ -44,6 +44,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseTest.cs" />
+    <Compile Include="RedButton.Common.Core.Geometry\SphereTest.cs" />
+    <Compile Include="UnitTest1.cs" />
     <Compile Include="ExtensionsTests\AssemblyExtensionsTests.cs" />
     <Compile Include="DrawingTests\DrawingUtilsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -67,6 +69,12 @@
     <ProjectReference Include="..\..\Common\RedButton.Common.TeklaStructures\RedButton.Common.TeklaStructures.csproj">
       <Project>{e521b44d-b937-4dc3-a374-4c4de94147be}</Project>
       <Name>RedButton.Common.TeklaStructures</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\RedButton.Common.Core\RedButton.Common.Core.csproj">
+      <Project>{de62aaa4-ad21-49d8-8faa-1ff55e22716f}</Project>
+      <Name>RedButton.Common.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
