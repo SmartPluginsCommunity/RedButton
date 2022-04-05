@@ -80,18 +80,36 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CSLib\Compare.cs" />
+    <Compile Include="CSLib\Constants.cs" />
+    <Compile Include="CSLib\DrawUI.cs" />
+    <Compile Include="CSLib\Geo.cs" />
+    <Compile Include="CSLib\Intersect.cs" />
+    <Compile Include="CSLib\PolygonOperation.cs" />
+    <Compile Include="CSLib\SetPlane.cs" />
     <Compile Include="DrawingTable\DrawingUtils.cs" />
     <Compile Include="DrawingTable\ListOfDrawingsTable.cs" />
     <Compile Include="Extensions\GeometryPlaneExtension.cs" />
     <Compile Include="Extensions\PointExtension.cs" />
     <Compile Include="Extensions\AssemblyExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="DrawingTable\Example.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
