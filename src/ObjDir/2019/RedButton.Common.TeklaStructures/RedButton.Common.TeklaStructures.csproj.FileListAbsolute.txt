@@ -1,0 +1,12 @@
+C:\Users\33pro\source\repos\RedButton\src\Common\RedButton.Common.TeklaStructures\bin\Debug\RedButton.Common.TeklaStructures.dll
+C:\Users\33pro\source\repos\RedButton\src\Common\RedButton.Common.TeklaStructures\bin\Debug\RedButton.Common.TeklaStructures.pdb
+C:\Users\33pro\source\repos\RedButton\src\ObjDir\2019\RedButton.Common.TeklaStructures\RedButton.Common.TeklaStructures.csproj.AssemblyReference.cache
+C:\Users\33pro\source\repos\RedButton\src\ObjDir\2019\RedButton.Common.TeklaStructures\RedButton.Common.TeklaStructures.csproj.CoreCompileInputs.cache
+C:\Users\33pro\source\repos\RedButton\src\ObjDir\2019\RedButton.Common.TeklaStructures\RedButton.Common.TeklaStructures.dll
+C:\Users\33pro\source\repos\RedButton\src\ObjDir\2019\RedButton.Common.TeklaStructures\RedButton.Common.TeklaStructures.pdb
+G:\Program\RedButton\src\Common\RedButton.Common.TeklaStructures\bin\Debug\RedButton.Common.TeklaStructures.dll
+G:\Program\RedButton\src\Common\RedButton.Common.TeklaStructures\bin\Debug\RedButton.Common.TeklaStructures.pdb
+G:\Program\RedButton\src\ObjDir\2019\RedButton.Common.TeklaStructures\RedButton.Common.TeklaStructures.csproj.AssemblyReference.cache
+G:\Program\RedButton\src\ObjDir\2019\RedButton.Common.TeklaStructures\RedButton.Common.TeklaStructures.csproj.CoreCompileInputs.cache
+G:\Program\RedButton\src\ObjDir\2019\RedButton.Common.TeklaStructures\RedButton.Common.TeklaStructures.dll
+G:\Program\RedButton\src\ObjDir\2019\RedButton.Common.TeklaStructures\RedButton.Common.TeklaStructures.pdb
