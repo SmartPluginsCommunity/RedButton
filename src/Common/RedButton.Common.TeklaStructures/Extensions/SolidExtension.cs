@@ -1,4 +1,5 @@
 ﻿using RedButton.Common.Core.CollectionExtensions;
+using RedButton.Common.TeklaStructures.Model;
 using RedButton.Common.TeklaStructures.Model.Intersections;
 using System.Collections;
 using System.Collections.Generic;
