@@ -53,7 +53,7 @@ namespace RedButton.Common.TeklaStructures.Extensions
             return solid.IntersectAllFaces(p1, p2, p3)
                         .ToIEnumerable<ArrayList>()
                         ?.FirstOrDefault()
-                        .OfType<ArrayList>()
+                        ?.OfType<ArrayList>()
                         .Select(points => points.OfType<Point>().ToList())
                         .ToList();
         }
