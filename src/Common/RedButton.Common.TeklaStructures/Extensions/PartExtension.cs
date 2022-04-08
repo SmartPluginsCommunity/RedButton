@@ -32,6 +32,18 @@ namespace RedButton.Common.TeklaStructures.Extensions
             return GetIntersections(part.GetSolid(solidType), p1, p2, p3);
         }
 
+        /// <summary>
+        /// Get all contours. They're intersect with plane (three points) and solid. 
+        /// A outer contout is first position.
+        /// </summary>
+        /// <param name="part">Деталь, с которой ищется пересечение.</param>
+        /// <param name="solidType">Тип Solid.</param>
+        /// <returns></returns>
+        public static IEnumerable<IEnumerable<Point>> GetAllContours(this Part part, Plane plane, Solid.SolidCreationTypeEnum solidType)
+        {
+            return GetIntersections(part.GetSolid(solidType), plane.Origin, plane.AxisX, plane.AxisY);
+        }
+
         private static IEnumerable<IEnumerable<Point>> GetIntersections(Solid solid, Point p1, Point p2, Point p3)
         {
             if(solid == null)

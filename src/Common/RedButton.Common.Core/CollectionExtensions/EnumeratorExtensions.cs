@@ -9,7 +9,6 @@ namespace RedButton.Common.Core.CollectionExtensions
         /// <summary>
         /// IEnumerator to IEnumerable.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="enumerator"></param>
         /// <returns></returns>
         public static IEnumerable<T> ToIEnumerable<T>(this IEnumerator enumerator)
@@ -22,9 +21,26 @@ namespace RedButton.Common.Core.CollectionExtensions
         }
 
         /// <summary>
+        /// IEnumerator to IList.
+        /// </summary>
+        /// <param name="enumerator"></param>
+        /// <returns></returns>
+        public static IReadOnlyList<T> ToList<T>(this IEnumerator enumerator)
+        {
+            var result = new List<T>();
+            
+            while (enumerator.MoveNext())
+            {
+                if (enumerator.Current is T item)
+                    result.Add(item);
+            }
+
+            return result;
+        }
+
+        /// <summary>
         /// IEnumerator to ConcurrentBag.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="enumerator"></param>
         /// <returns></returns>
         public static ConcurrentBag<T> ToConcurrentBag<T>(this IEnumerator enumerator)
