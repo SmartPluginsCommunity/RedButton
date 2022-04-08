@@ -45,7 +45,7 @@
   <ItemGroup>
     <Compile Include="BaseTest.cs" />
     <Compile Include="RedButton.Common.Core.Geometry\SphereTest.cs" />
-    <Compile Include="UnitTest1.cs" />
+    <Compile Include="ExtensionsTests\SolidExtensionTests.cs" />
     <Compile Include="ExtensionsTests\AssemblyExtensionsTests.cs" />
     <Compile Include="DrawingTests\DrawingUtilsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
