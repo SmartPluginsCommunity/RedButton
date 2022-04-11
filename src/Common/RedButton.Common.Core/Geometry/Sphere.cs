@@ -1,16 +1,25 @@
 using System;
+using System.Collections.Generic;
+using RedButton.Common.Core.Geometry.Enums;
 using RedButton.Common.Core.Geometry.Extensions;
 using RedButton.Common.Core.Geometry.Interfaces;
 
 namespace RedButton.Common.Core.Geometry
 {
     // Sphere 3d class
-    public class Sphere
+    public partial class Sphere : IGeometryObject
     {
-        #region Properties
 
-        public Point Center { get; set; }
+#region Properties
+        public SphereAccuracy Accuracy = SphereAccuracy.degree45;
+        private Point _center;
+        public Point Center { get => _center; set => _center = value; }
         public double Radius { get; set; }
+        public IPoint CenterOfGravity { get => _center; set => _center = new Point(value); }
+        public List<IPoint> ListPoints { 
+            //TODO add logic relative accuracy
+            get => new List<IPoint>{_center};
+         }
 
         #endregion Properties
 

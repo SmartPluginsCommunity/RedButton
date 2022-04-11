@@ -46,6 +46,8 @@
     <Compile Include="Geometry\Interfaces\ILineSegment.cs" />
     <Compile Include="Geometry\Interfaces\IPoint.cs" />
     <Compile Include="Geometry\Interfaces\IVector.cs" />
+    <Compile Include="Geometry\Interfaces\IGeometryObject.cs" />
+    <Compile Include="Geometry\Enums\SphereAccuracy.cs" />
     <Compile Include="Geometry\LineSegment.cs" />
     <Compile Include="Geometry\Plane.cs" />
     <Compile Include="Geometry\Point.cs" />
