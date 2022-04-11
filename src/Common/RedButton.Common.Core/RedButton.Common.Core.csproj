@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CollectionExtensions\EnumerableExtensions.cs" />
     <Compile Include="CollectionExtensions\EnumeratorExtensions.cs" />
     <Compile Include="Geometry\Extensions\PointExtension.cs" />
     <Compile Include="Geometry\Extensions\SphereExtension.cs" />
