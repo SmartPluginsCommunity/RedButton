@@ -5,7 +5,9 @@ namespace RedButton.Common.Core.Geometry.Interfaces
 {
     public interface IGeometryObject
     {
-        IPoint CenterOfGravity {get;set;}
+        IPoint CenterOfGravity {get;}
         List<IPoint> ListPoints {get;}
+
+        IGeometryObject Clone();
     }
 }

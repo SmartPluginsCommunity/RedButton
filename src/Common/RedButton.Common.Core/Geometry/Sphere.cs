@@ -7,18 +7,38 @@ using RedButton.Common.Core.Geometry.Interfaces;
 namespace RedButton.Common.Core.Geometry
 {
     // Sphere 3d class
-    public partial class Sphere : IGeometryObject
+    public class Sphere : IGeometryObject
     {
 
-#region Properties
-        public SphereAccuracy Accuracy = SphereAccuracy.degree45;
+        #region Properties
+        /// <summary>
+        /// Accuracy for 'ListPoints'
+        /// </summary>
+        public SphereAccuracy Accuracy = SphereAccuracy.degree90;
+        
         private Point _center;
-        public Point Center { get => _center; set => _center = value; }
+        public Point Center { 
+            get => _center;
+            private set => _center = value;
+        }
         public double Radius { get; set; }
-        public IPoint CenterOfGravity { get => _center; set => _center = new Point(value); }
-        public List<IPoint> ListPoints { 
-            //TODO add logic relative accuracy
-            get => new List<IPoint>{_center};
+        public IPoint CenterOfGravity { get => _center; }
+        public List<IPoint> ListPoints {
+            get
+            {
+                var result = new List<IPoint>();
+                result.Add(Center);
+                if (Accuracy == SphereAccuracy.degree90)
+                {
+                    result.Add(_center.AddX(Radius));
+                    result.Add(_center.AddX(-Radius));
+                    result.Add(_center.AddY(Radius));
+                    result.Add(_center.AddY(-Radius));
+                    result.Add(_center.AddZ(Radius));
+                    result.Add(_center.AddZ(-Radius));
+                }
+                return result;
+            }
          }
 
         #endregion Properties
@@ -45,6 +65,12 @@ namespace RedButton.Common.Core.Geometry
         #endregion Constructors
         
         #region Methods
+
+        public IGeometryObject Clone()
+        {
+            return new Sphere(Center.NewVector(), (int)Radius) {Accuracy = this.Accuracy};
+        }
+
 
         public bool IsInsidePoint(Point input)
         {
