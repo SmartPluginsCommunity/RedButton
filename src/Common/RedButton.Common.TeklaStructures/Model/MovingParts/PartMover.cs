@@ -3,7 +3,7 @@ using Tekla.Structures.Model;
 using Tekla.Structures.Model.UI;
 using Tekla.Structures.Geometry3d;
 
-namespace RedButton.Common.TeklaStructures.Extensions
+namespace RedButton.Common.TeklaStructures.Model.MovingParts
 {
     /// <summary>
     /// Class with methods to move parts.
