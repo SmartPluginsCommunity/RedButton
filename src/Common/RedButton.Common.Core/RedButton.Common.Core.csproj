@@ -46,16 +46,20 @@
     <Compile Include="Geometry\Interfaces\ILineSegment.cs" />
     <Compile Include="Geometry\Interfaces\IPoint.cs" />
     <Compile Include="Geometry\Interfaces\IVector.cs" />
+    <Compile Include="Geometry\Interfaces\IGeometryObject.cs" />
+    <Compile Include="Geometry\Enums\SphereAccuracy.cs" />
     <Compile Include="Geometry\LineSegment.cs" />
     <Compile Include="Geometry\Plane.cs" />
     <Compile Include="Geometry\Point.cs" />
+    <Compile Include="Geometry\Shape.cs" />
     <Compile Include="Geometry\Sphere.cs" />
     <Compile Include="Geometry\Vector.cs" />
+    <Compile Include="Maths\Common.cs" />
     <Compile Include="Maths\Matrix.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Algorithms\" />
+    <Folder Include="Common" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

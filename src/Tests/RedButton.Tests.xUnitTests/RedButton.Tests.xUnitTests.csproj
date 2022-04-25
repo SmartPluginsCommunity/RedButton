@@ -54,7 +54,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RedButton.Common.Core\Geometry\SphereTest.cs" />
     <Compile Include="RedButton.Common.Core\Geometry\VectorTest.cs" />
-    <Compile Include="UnitTest1.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Common\RedButton.Common.Core\RedButton.Common.Core.csproj">
