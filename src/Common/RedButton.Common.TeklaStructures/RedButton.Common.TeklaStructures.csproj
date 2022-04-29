@@ -83,7 +83,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SectionManager.cs" />
+    <Compile Include="CrossSectionDimension\SectionManager.cs" />
     <Compile Include="CSLib\Compare.cs" />
     <Compile Include="CSLib\Constants.cs" />
     <Compile Include="CSLib\DrawUI.cs" />
