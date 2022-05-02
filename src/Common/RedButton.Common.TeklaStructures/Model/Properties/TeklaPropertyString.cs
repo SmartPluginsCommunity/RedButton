@@ -1,7 +1,12 @@
 ﻿namespace RedButton.Common.TeklaStructures.Model.Properties
 {
-    public sealed class TeklaPropertyString : TeklaPropertyBase
+    public sealed class TeklaPropertyString
     {
+        /// <summary>
+        /// Property name
+        /// </summary>
+        public string Name { get; }
+
         /// <summary>
         /// Value
         /// </summary>
@@ -10,8 +15,8 @@
         /// <summary>
         /// .ctor
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="value"></param>
+        /// <param name="name">Property name</param>
+        /// <param name="value">Property value</param>
         public TeklaPropertyString(string name, string value)
         {
             Name = name;

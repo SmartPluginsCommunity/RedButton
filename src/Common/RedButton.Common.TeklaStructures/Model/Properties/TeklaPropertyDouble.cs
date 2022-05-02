@@ -2,8 +2,13 @@
 
 namespace RedButton.Common.TeklaStructures.Model.Properties
 {
-    public sealed class TeklaPropertyDouble : TeklaPropertyBase
+    public sealed class TeklaPropertyDouble
     {
+        /// <summary>
+        /// Property name
+        /// </summary>
+        public string Name { get; }
+
         /// <summary>
         /// Value
         /// </summary>
@@ -12,8 +17,8 @@ namespace RedButton.Common.TeklaStructures.Model.Properties
         /// <summary>
         /// .ctor
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="value"></param>
+        /// <param name="name">Property name</param>
+        /// <param name="value">Property value</param>
         public TeklaPropertyDouble(string name, double? value)
         {
             Name = name;
