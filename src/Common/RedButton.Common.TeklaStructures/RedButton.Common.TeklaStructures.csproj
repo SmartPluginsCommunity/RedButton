@@ -95,7 +95,6 @@
     <Compile Include="Model\Intersections\IntersectionAllFacesSolid.cs" />
     <Compile Include="Model\Geometry\Polygon.cs" />
     <Compile Include="Model\Properties\PropertiesExtractor.cs" />
-    <Compile Include="Model\Properties\TeklaPropertyBase.cs" />
     <Compile Include="Model\Properties\TeklaPropertyDouble.cs" />
     <Compile Include="Model\Properties\TeklaPropertyInt.cs" />
     <Compile Include="Model\Properties\TeklaPropertyString.cs" />

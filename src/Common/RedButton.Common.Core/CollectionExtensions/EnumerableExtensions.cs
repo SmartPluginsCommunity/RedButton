@@ -7,7 +7,7 @@ namespace RedButton.Common.Core.CollectionExtensions
         /// <summary>
         /// IEnumerable to ArrayList
         /// </summary>
-        /// <param name="enumerable"></param>
+        /// <param name="enumerable">IEnumerable</param>
         /// <returns></returns>
         public static ArrayList ToArrayList(this IEnumerable enumerable)
         {
