@@ -30,7 +30,7 @@ namespace RedButton.Common.TeklaStructures.Model.Properties
         /// <summary>
         /// Add string attribute
         /// </summary>
-        /// <param name="attribute"></param>
+        /// <param name="attribute">Attribute name</param>
         public TeklaPropertyString AddStringAttribute(string attribute)
         {
             var property = new TeklaPropertyString(attribute, null);
