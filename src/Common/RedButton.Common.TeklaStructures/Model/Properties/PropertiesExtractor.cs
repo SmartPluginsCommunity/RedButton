@@ -6,6 +6,9 @@ using Tekla.Structures.Model;
 
 namespace RedButton.Common.TeklaStructures.Model.Properties
 {
+    /// <summary>
+    /// Extract properties for Tekla objects.
+    /// </summary>
     public class PropertiesExtractor
     {
         private ModelObject _modelObject;
@@ -41,7 +44,7 @@ namespace RedButton.Common.TeklaStructures.Model.Properties
         /// <summary>
         ///  Add double attribute
         /// </summary>
-        /// <param name="attribute"></param>
+        /// <param name="attribute">Attribute name</param>
         public TeklaPropertyDouble AddDoubleAttribute(string attribute)
         {
             var property = new TeklaPropertyDouble(attribute, null);
@@ -52,7 +55,7 @@ namespace RedButton.Common.TeklaStructures.Model.Properties
         /// <summary>
         /// Add integer attribute
         /// </summary>
-        /// <param name="attribute"></param>
+        /// <param name="attribute">Attribute name</param>
         public TeklaPropertyInt AddIntegerAttribute(string attribute)
         {
             var property = new TeklaPropertyInt(attribute, null);
@@ -93,8 +96,8 @@ namespace RedButton.Common.TeklaStructures.Model.Properties
         /// <summary>
         /// Get value
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="propertyName"></param>
+        /// <typeparam name="T">Type</typeparam>
+        /// <param name="propertyName">Property name</param>
         /// <returns></returns>
         private T GetExtractValue<T>(string propertyName)
         {
