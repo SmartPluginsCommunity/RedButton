@@ -34,6 +34,7 @@ namespace RedButton.Common.TeklaStructures.Extensions
             v.Z = Math.Abs(v.Z);
             return v;
         }
+        
         /// <summary>
         /// Changes the direction of the vector in the opposite direction
         /// </summary>
@@ -46,6 +47,69 @@ namespace RedButton.Common.TeklaStructures.Extensions
             v.Z = -1*v.Z;
             return v;
         }
+        
+        /// <summary>
+        /// Checks whether the vector is directed along X
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        public static bool IsX(this Vector v)
+        {
+            return  Math.Abs(v.Y) < TOLERANCE && Math.Abs(v.Z) < TOLERANCE && Math.Abs(v.X) > TOLERANCE;
+        }
+        
+        /// <summary>
+        /// Checks whether the vector is directed along Y
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        public static bool IsY(this Vector v)
+        {
+            return  Math.Abs(v.X) < TOLERANCE && Math.Abs(v.Z) < TOLERANCE && Math.Abs(v.Y) > TOLERANCE;
+        }
+        
+        /// <summary>
+        /// Checks whether the vector is directed along Z
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        public static bool IsZ(this Vector v)
+        {
+            return Math.Abs(v.Y)< TOLERANCE && Math.Abs(v.X)  < TOLERANCE && Math.Abs(v.Z) > TOLERANCE;
+        }
+        
+        /// <summary>
+        /// Creates a new orthogonal vector to this
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        public static Vector GetOrthoVector2d(this Vector v)
+        {
+            double x;
+            double y;
+
+            if (!(Math.Abs(v.X) > TOLERANCE) || !(Math.Abs(v.Y) > TOLERANCE))
+            {
+                if (Math.Abs(v.X) < TOLERANCE)
+                {
+                    x = 1;
+                    y = 0;
+                }
+                else
+                {
+                    x = 0;
+                    y = 1;
+                }
+            }
+            else
+            {
+                x = v.Y;
+                y = -v.X;
+            }
+
+            return new Vector(x, y, 0);
+        }
+        
         
     }
 }

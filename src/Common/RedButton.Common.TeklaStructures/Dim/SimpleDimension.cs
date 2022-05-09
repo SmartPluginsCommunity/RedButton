@@ -68,7 +68,7 @@ namespace RedButton.Common.TeklaStructures.Dim
                         var listPolygons = new List<TSM.Polygon>();
 
                         //получаем лист полигонов (включающий координаты границ объекта на чертеже)
-                        CS.GetProjectedShape.GetShape(id, ref listPolygons);
+                        GetProjectedShape.GetShape(id, ref listPolygons);
                         var polygon = listPolygons[0];
 
                         //получаем объект модели
@@ -147,6 +147,13 @@ namespace RedButton.Common.TeklaStructures.Dim
             dimSet.Attributes = dimAttributes;
             dimSet.Distance = dist;
             dimSet.Modify();
+        }
+        
+        public StraightDimensionSet CreateDimensionSet(TSD.ViewBase myViewBase, Point p1, Point p2, Vector vecDim)
+        {
+            var pList = new TSD.PointList { p1, p2 };
+            var dim = new TSD.StraightDimensionSetHandler().CreateDimensionSet(myViewBase, pList, vecDim, 0);
+            return dim;
         }
         
     }
