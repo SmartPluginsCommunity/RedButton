@@ -87,6 +87,7 @@
     <Compile Include="CSLib\Intersect.cs" />
     <Compile Include="CSLib\PolygonOperation.cs" />
     <Compile Include="CSLib\SetPlane.cs" />
+    <Compile Include="Dim\SimpleDimension.cs" />
     <Compile Include="DrawingTable\DrawingUtils.cs" />
     <Compile Include="DrawingTable\ListOfDrawingsTable.cs" />
     <Compile Include="Extensions\GeometryPlaneExtension.cs" />
