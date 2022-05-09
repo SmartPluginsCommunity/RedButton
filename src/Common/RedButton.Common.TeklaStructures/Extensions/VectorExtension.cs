@@ -1,7 +1,7 @@
 ﻿
 using System; 
 using Tekla.Structures;
-using TSM = Tekla.Structures.Model;
+using tsm = Tekla.Structures.Model;
 using Tekla.Structures.Geometry3d;
 
 namespace RedButton.Common.TeklaStructures.Extensions

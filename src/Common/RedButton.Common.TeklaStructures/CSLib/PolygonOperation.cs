@@ -140,6 +140,53 @@ namespace RedButton.Common.TeklaStructures.CSLib
             for (int index = 0; index < count; ++index)
                 polygon.Points[index] = (object)new Point(polygon1.Points[index] as Point);
         }
+        
+        public static void RemoveUnnecessaryPolygonPoints(Polygon polygon)
+        {
+            List<Point> polygon1 = polygon.ConvertPolygon();
+            polygon.Points.Clear();
+            PolygonOperation.RemoveUnnecessaryPolygonPoints(polygon1);
+            polygon.Points.AddRange((ICollection) polygon1);
+        }
+
+        public static void RemoveUnnecessaryPolygonPoints(List<Point> polygon)
+        {
+            List<Point> pointList = new List<Point>();
+            for (int index = polygon.Count - 2; index > -1; --index)
+            {
+                if (Geo.CompareTwoPoints3D(polygon[index], polygon[index + 1]))
+                    polygon.RemoveAt(index);
+            }
+            if (polygon.Count <= 3)
+                return;
+            for (int index1 = 0; index1 < polygon.Count; ++index1)
+            {
+                int num1 = index1 - 1;
+                int index2 = num1 < 0 ? num1 + polygon.Count : num1;
+                int index3 = (index1 + 1) % polygon.Count;
+                Point point1 = polygon[index2];
+                Point point2 = polygon[index1];
+                Point point3 = polygon[index3];
+                double angle = Geo.GetAngle3D(point2, point1, point3) * Constants.RAD_TO_DEG;
+                double beetveenTwoPoints3D1 = Geo.GetDistanceBeetveenTwoPoints3D(point1, point2);
+                double beetveenTwoPoints3D2 = Geo.GetDistanceBeetveenTwoPoints3D(point2, point3);
+                double distance12 = beetveenTwoPoints3D1;
+                double distance23 = beetveenTwoPoints3D2;
+                if (PolygonOperation.CheckAngleBetweenPoints(angle, distance12, distance23))
+                {
+                    pointList.Add(point2);
+                }
+                else
+                {
+                    double beetveenTwoPoints3D3 = Geo.GetDistanceBeetveenTwoPoints3D(point3, point1);
+                    double num2 = (beetveenTwoPoints3D1 + beetveenTwoPoints3D2 + beetveenTwoPoints3D3) / 2.0;
+                    if (Compare.GT(Math.Sqrt(num2 * (num2 - beetveenTwoPoints3D1) * (num2 - beetveenTwoPoints3D2) * (num2 - beetveenTwoPoints3D3)), Constants.CS_EPSILON))
+                        pointList.Add(point2);
+                }
+            }
+            polygon.Clear();
+            polygon.AddRange((IEnumerable<Point>) pointList);
+        }
 
         public static List<Point> ResizePolygon(List<Point> inputPolygon, double offset)
         {

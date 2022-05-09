@@ -84,6 +84,7 @@
     <Compile Include="CSLib\Constants.cs" />
     <Compile Include="CSLib\DrawUI.cs" />
     <Compile Include="CSLib\Geo.cs" />
+    <Compile Include="CSLib\GetProgectedShape.cs" />
     <Compile Include="CSLib\Intersect.cs" />
     <Compile Include="CSLib\PolygonOperation.cs" />
     <Compile Include="CSLib\SetPlane.cs" />
