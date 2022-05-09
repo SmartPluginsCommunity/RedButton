@@ -1,7 +1,8 @@
 ﻿using System;
 using Tekla.Structures.Drawing;
 using Tekla.Structures.Model;
-using  RedButton.Common.Core.CollectionExtensions;
+using RedButton.Common.Core.CollectionExtensions;
+using RedButton.Common.TeklaStructures.Extensions;
 
 using Tekla.Structures.Geometry3d;
 using System.Collections.Generic;
