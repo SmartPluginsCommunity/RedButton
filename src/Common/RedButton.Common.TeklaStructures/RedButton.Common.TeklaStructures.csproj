@@ -94,6 +94,7 @@
     <Compile Include="Extensions\SolidExtension.cs" />
     <Compile Include="Extensions\PointExtension.cs" />
     <Compile Include="Extensions\AssemblyExtension.cs" />
+    <Compile Include="Extensions\VectorExtension.cs" />
     <Compile Include="Model\Intersections\IntersectionAllFacesSolid.cs" />
     <Compile Include="Model\Geometry\Polygon.cs" />
     <Compile Include="Model\Properties\PropertiesExtractor.cs" />
