@@ -156,6 +156,86 @@ namespace RedButton.Common.TeklaStructures.CSLib
         {
             return Intersect.IntersectLineSegmentToLineSegment2D(new LineSegment(lineSegment1Point1, lineSegment1Point2), new LineSegment(lineSegment2Point1, lineSegment2Point2), ref intersectPoints);
         }
+        
+        public static bool IntersectLineSegmentToLineSegment2D(
+            LineSegment lineSegment1,
+            LineSegment lineSegment2,
+            ref List<Point> intersectPoints,
+            bool usedProjectedShape = false)
+        {
+            intersectPoints.Clear();
+            if (Geo.CompareTwoLinesSegment2D(lineSegment1, lineSegment2))
+            {
+                intersectPoints.Add(lineSegment1.Point1);
+                intersectPoints.Add(lineSegment1.Point2);
+            }
+            else
+            {
+                LineSegment line = Intersection.LineToLine(new Line(lineSegment1), new Line(lineSegment2));
+                if (line != (LineSegment) null)
+                {
+                    if (Geo.CompareTwoPoints2D(line.Point1, line.Point2))
+                    {
+                        intersectPoints.Add(line.Point1);
+                    }
+                    else
+                    {
+                        intersectPoints.Add(line.Point1);
+                        intersectPoints.Add(line.Point2);
+                    }
+                    for (int index = 0; index < intersectPoints.Count; ++index)
+                    {
+                        if (!Geo.IsPointInLineSegment2D(lineSegment1.Point1, lineSegment1.Point2, intersectPoints[index]) || !Geo.IsPointInLineSegment2D(lineSegment2.Point1, lineSegment2.Point2, intersectPoints[index]))
+                        {
+                            intersectPoints.RemoveAt(index);
+                            --index;
+                        }
+                    }
+                }
+                else if (!usedProjectedShape)
+                    Intersect.SaveIntersect2DTeklaError(lineSegment1, lineSegment2, ref intersectPoints, usedProjectedShape);
+                if (usedProjectedShape)
+                    Intersect.SaveIntersect2DTeklaError(lineSegment1, lineSegment2, ref intersectPoints, usedProjectedShape);
+            }
+            return intersectPoints.Count > 0;
+        }
+        
+        private static void SaveIntersect2DTeklaError(
+            LineSegment line1,
+            LineSegment line2,
+            ref List<Point> intersectPoints,
+            bool usedProjectedShape)
+        {
+            if (Geo.IsPointInLineSegment2D(line1.Point1, line1.Point2, line2.Point1))
+                intersectPoints.Add(new Point(line2.Point1));
+            if (Geo.IsPointInLineSegment2D(line1.Point1, line1.Point2, line2.Point2))
+                intersectPoints.Add(new Point(line2.Point2));
+            if (Geo.IsPointInLineSegment2D(line2.Point1, line2.Point2, line1.Point1))
+                intersectPoints.Add(new Point(line1.Point1));
+            if (Geo.IsPointInLineSegment2D(line2.Point1, line2.Point2, line1.Point2))
+                intersectPoints.Add(new Point(line1.Point2));
+            for (int index1 = 0; index1 < intersectPoints.Count; ++index1)
+            {
+                for (int index2 = index1 + 1; index2 < intersectPoints.Count; ++index2)
+                {
+                    if (Geo.CompareTwoPoints2D(intersectPoints[index1], intersectPoints[index2]))
+                    {
+                        intersectPoints.RemoveAt(index2);
+                        --index2;
+                    }
+                }
+            }
+            Geo.SortPoints2D(intersectPoints, line1.Point1);
+            for (int index = 0; usedProjectedShape && index < intersectPoints.Count - 2; ++index)
+            {
+                if (Geo.IsPointInLineSegment2D(intersectPoints[index], intersectPoints[index + 2], intersectPoints[index + 1]))
+                {
+                    intersectPoints.RemoveAt(index + 1);
+                    --index;
+                }
+            }
+        }
+
 
         public static bool IntersectLineSegmentToLineSegment3D(
           LineSegment lineSegment1,

@@ -37,12 +37,33 @@ namespace RedButton.Common.TeklaStructures.CSLib
             return pointList;
         }
 
+        
         public static Polygon ConvertPolygonFromListPoint(List<Point> polygonPoints)
         {
             Polygon polygon = new Polygon();
             foreach (Point polygonPoint in polygonPoints)
                 polygon.Points.Add((object)new Point(polygonPoint));
             return polygon;
+        }
+        
+        public static List<Point> ListOfPointsFromPolygon(this Polygon polygon)
+        {
+            List<Point> pointList = new List<Point>(polygon.Points.Count);
+            foreach (Point point in polygon.Points)
+                pointList.Add(new Point(point));
+            return pointList;
+        }
+        
+        public static double GetAngle3D(Point center, Point point1, Point point2)
+        {
+            if (Geo.CompareTwoPoints3D(point1, point2))
+                return 0.0;
+            Vector vectorLineSegment1 = Geo.GetVectorLineSegment(point1, center);
+            Vector vectorLineSegment2 = Geo.GetVectorLineSegment(point2, center);
+            double d = Math.Acos((vectorLineSegment1.X * vectorLineSegment2.X + vectorLineSegment1.Y * vectorLineSegment2.Y + vectorLineSegment1.Z * vectorLineSegment2.Z) / (vectorLineSegment1.GetLength() * vectorLineSegment2.GetLength()));
+            if (double.IsNaN(d))
+                d = 0.0;
+            return d;
         }
 
         public static void ConvexHull(ref List<Point> convexHull)
@@ -55,6 +76,21 @@ namespace RedButton.Common.TeklaStructures.CSLib
             convexHull.Clear();
             Geo.ConvexHullSummary(ref convexHull1);
             convexHull.AddRange((IEnumerable<Point>)convexHull1);
+        }
+        
+        public static void ConvexHull(ref List<Point> convexHull, bool deleteCollinearPoints = true)
+        {
+            Geo.ConvexHullSummary(ref convexHull);
+            if (!(convexHull.Count > 2 & deleteCollinearPoints))
+                return;
+            for (int index = 0; index < convexHull.Count; ++index)
+            {
+                if (Geo.IsPointsCollinear(convexHull[index], convexHull[(index + 1) % convexHull.Count], convexHull[(index + 2) % convexHull.Count]))
+                {
+                    convexHull.RemoveAt((index + 1) % convexHull.Count);
+                    --index;
+                }
+            }
         }
 
         public static void CopyPointPosition(Point pointToCopyTo, Point orginalPoint)

@@ -4,10 +4,16 @@ using System.Collections.Generic;
 using Tekla.Structures.Geometry3d;
 using Tekla.Structures.Model;
 
+//using static RedButton.Common.TeklaStructures.CSLib.Geo;
+
 namespace RedButton.Common.TeklaStructures.CSLib
 {
     public class PolygonOperation
     {
+        private static bool CheckAngleBetweenPoints(double angle, double distance12, double distance23) => 
+            ((!Compare.IE(angle, 178.5, 181.5) & !Compare.IE(angle, -1.5, 1.5) ? 1 : 0) |
+             (!Compare.NZ(angle) || !Compare.NE(angle, 180.0) ? 0 : (Compare.GT(distance12, 4.0 * distance23) ? 1 : (Compare.GT(distance23, 4.0 * distance12) ? 1 : 0)))) != 0;
+        
         public static bool GetPolygonOrientation(Polygon polygon) => PolygonOperation.GetPolygonOrientation(Geo.ConvertListPointsFromPolygon(polygon));
 
         public static bool GetPolygonOrientation(List<Point> polygon)
@@ -143,12 +149,12 @@ namespace RedButton.Common.TeklaStructures.CSLib
         
         public static void RemoveUnnecessaryPolygonPoints(Polygon polygon)
         {
-            List<Point> polygon1 = polygon.ConvertPolygon();
+            List<Point> polygon1 = polygon.ListOfPointsFromPolygon();
             polygon.Points.Clear();
             PolygonOperation.RemoveUnnecessaryPolygonPoints(polygon1);
             polygon.Points.AddRange((ICollection) polygon1);
         }
-
+        
         public static void RemoveUnnecessaryPolygonPoints(List<Point> polygon)
         {
             List<Point> pointList = new List<Point>();
@@ -187,7 +193,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
             polygon.Clear();
             polygon.AddRange((IEnumerable<Point>) pointList);
         }
-
+ 
         public static List<Point> ResizePolygon(List<Point> inputPolygon, double offset)
         {
             List<Point> polygonPoints = new List<Point>(inputPolygon.Count);

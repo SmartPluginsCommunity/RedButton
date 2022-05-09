@@ -8,6 +8,7 @@ using Tekla.Structures.Geometry3d;
 using System.Collections.Generic;
 using Part = Tekla.Structures.Drawing.Part;
 using System.Linq;
+using RedButton.Common.TeklaStructures.CSLib;
 using Line = Tekla.Structures.Geometry3d.Line;
 using TSM = Tekla.Structures.Model;
 using TSD = Tekla.Structures.Drawing;
@@ -81,7 +82,7 @@ namespace RedButton.Common.TeklaStructures.Dim
                         }).ToList();
                         //получаем список точек армирования
                         var points = (from rg in longRg from RebarGeometry geometry in rg.GetRebarGeometries(false) select (Point) geometry.Shape.Points[0]).ToList();
-                        points.AddRange(polygon.Points.ToPointList());
+                        points.AddRange(polygon.ListOfPointsFromPolygon());
                         
                         //находим точки проекций арматуры на оси Х и У
                         var projectedPointsX = (from p in points 
