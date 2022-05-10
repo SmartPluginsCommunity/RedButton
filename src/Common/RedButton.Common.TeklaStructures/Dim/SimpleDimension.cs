@@ -68,7 +68,7 @@ namespace RedButton.Common.TeklaStructures.Dim
 
                         //получаем лист полигонов (включающий координаты границ объекта на чертеже)
                         GetProjectedShape.GetShape(id, ref listPolygons);
-                        var polygon = listPolygons[0];
+                        var polygon = listPolygons.First();
 
                         //получаем объект модели
                         new TSM.Model().SelectModelObject(id);
