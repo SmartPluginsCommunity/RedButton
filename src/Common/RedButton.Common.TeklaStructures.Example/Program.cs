@@ -1,5 +1,6 @@
 ﻿using System;
 using RedButton.Common.TeklaStructures.DrawingTable;
+using RedButton.Common.TeklaStructures.Dim;
 
 namespace RedButton.Common.TeklaStructures.Example
 {
@@ -25,5 +26,10 @@ namespace RedButton.Common.TeklaStructures.Example
             listOfDrawingsTable.CreateTable(drawings);
         }
 
+        public void SimpleDimension()
+        {
+            var dim = new SimpleDimension();
+            dim.SimpleSectionDimension();
+        }
     }
 }
