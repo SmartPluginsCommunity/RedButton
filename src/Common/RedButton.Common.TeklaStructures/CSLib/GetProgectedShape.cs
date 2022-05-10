@@ -12,10 +12,10 @@ namespace RedButton.Common.TeklaStructures.CSLib
   {
     public static bool GetShape(Identifier partId, ref List<Polygon> resultShapePolygons)
     {
-      ModelObject modelObject = new Tekla.Structures.Model.Model().SelectModelObject(partId);
-      bool flag = false;
+      var modelObject = new Tekla.Structures.Model.Model().SelectModelObject(partId);
+      var flag = false;
       if (modelObject != null && modelObject is Part)
-        flag = GetProjectedShape.GetShape(modelObject as Part, ref resultShapePolygons);
+        flag = GetShape(modelObject as Part, ref resultShapePolygons);
       return flag;
     }
 
@@ -24,10 +24,10 @@ namespace RedButton.Common.TeklaStructures.CSLib
       CoordinateSystem coordinateSystem,
       ref List<Polygon> resultShapePolygons)
     {
-      ModelObject modelObject = new Tekla.Structures.Model.Model().SelectModelObject(partId);
-      bool flag = false;
+      var modelObject = new Tekla.Structures.Model.Model().SelectModelObject(partId);
+      var flag = false;
       if (modelObject != null && modelObject is Part)
-        flag = GetProjectedShape.GetShape(modelObject as Part, coordinateSystem, ref resultShapePolygons);
+        flag = GetShape(modelObject as Part, coordinateSystem, ref resultShapePolygons);
       return flag;
     }
 
@@ -36,22 +36,22 @@ namespace RedButton.Common.TeklaStructures.CSLib
       CoordinateSystem coordinateSystem,
       ref List<Polygon> resultShapePolygons)
     {
-      SetPlane setPlane = new SetPlane(new Tekla.Structures.Model.Model());
+      var setPlane = new SetPlane(new Tekla.Structures.Model.Model());
       setPlane.Begin(coordinateSystem);
-      bool flag = GetProjectedShape.GetShape(GetProjectedShape.LineDetermining.GetMainPolygonsFromSolid(part.GetSolid()), ref resultShapePolygons);
-      GeometricPlane Plane = new GeometricPlane();
+      var flag = GetShape(LineDetermining.GetMainPolygonsFromSolid(part.GetSolid()), ref resultShapePolygons);
+      var Plane = new GeometricPlane();
       if (!flag && part is PolyBeam)
       {
         resultShapePolygons.Clear();
         resultShapePolygons.Add(new Polygon());
         foreach (Point Point in part.GetCenterLine(true))
         {
-          Point plane = Projection.PointToPlane(new Point(Point), Plane);
+          var plane = Projection.PointToPlane(new Point(Point), Plane);
           resultShapePolygons[0].Points.Add((object) plane);
         }
         flag = true;
       }
-      foreach (Polygon polygon in resultShapePolygons)
+      foreach (var polygon in resultShapePolygons)
         setPlane.AddPolygons(polygon);    //хер пойми это одно и тоже или нет что и add из родного cs_net_lib
       setPlane.End();
       return flag;
@@ -59,15 +59,15 @@ namespace RedButton.Common.TeklaStructures.CSLib
 
     public static bool GetShape(Part part, ref List<Polygon> resultShapePolygons)
     {
-      bool flag = GetProjectedShape.GetShape(GetProjectedShape.LineDetermining.GetMainPolygonsFromSolid(part.GetSolid()), ref resultShapePolygons);
-      GeometricPlane Plane = new GeometricPlane();
+      var flag = GetShape(LineDetermining.GetMainPolygonsFromSolid(part.GetSolid()), ref resultShapePolygons);
+      var Plane = new GeometricPlane();
       if (!flag && part is PolyBeam)
       {
         resultShapePolygons.Clear();
         resultShapePolygons.Add(new Polygon());
         foreach (Point Point in part.GetCenterLine(true))
         {
-          Point plane = Projection.PointToPlane(new Point(Point), Plane);
+          var plane = Projection.PointToPlane(new Point(Point), Plane);
           resultShapePolygons[0].Points.Add((object) plane);
         }
         flag = true;
@@ -78,32 +78,32 @@ namespace RedButton.Common.TeklaStructures.CSLib
     private static bool GetShape(List<Polygon> polygons, ref List<Polygon> resultShapePolygons)
     {
       resultShapePolygons = new List<Polygon>();
-      Polygon polygon = new Polygon();
-      Point firstLastPoint = new Point();
-      bool flag = true;
-      List<LineSegment> lines = GetProjectedShape.LineDetermining.RemoveUselessLines(GetProjectedShape.LineDetermining.GetLineSegmetsFromPolygons(polygons));
+      var polygon = new Polygon();
+      var firstLastPoint = new Point();
+      var flag = true;
+      var lines = LineDetermining.RemoveUselessLines(LineDetermining.GetLineSegmetsFromPolygons(polygons));
       do
       {
-        List<Point> pointsOfConvexHull = GetProjectedShape.ShapeDetermining.PointsFromConvexHull(lines);
-        List<LineSegment> linesInConvexHull = GetProjectedShape.ShapeDetermining.LinesInConvexHull(lines, pointsOfConvexHull, ref firstLastPoint);
+        var pointsOfConvexHull = ShapeDetermining.PointsFromConvexHull(lines);
+        var linesInConvexHull = ShapeDetermining.LinesInConvexHull(lines, pointsOfConvexHull, ref firstLastPoint);
         if (linesInConvexHull.Count == 0)
         {
-          List<LineSegment> linesFromPoint = GetProjectedShape.LineDetermining.FindLinesFromPoint(pointsOfConvexHull[0], lines);
-          LineSegment startLine = GetProjectedShape.ShapeDetermining.FindStartLine(pointsOfConvexHull[0], pointsOfConvexHull[1], linesFromPoint);
-          firstLastPoint = GetProjectedShape.ShapeDetermining.FindLastPoint(startLine, pointsOfConvexHull[0]);
+          var linesFromPoint = LineDetermining.FindLinesFromPoint(pointsOfConvexHull[0], lines);
+          var startLine = ShapeDetermining.FindStartLine(pointsOfConvexHull[0], pointsOfConvexHull[1], linesFromPoint);
+          firstLastPoint = ShapeDetermining.FindLastPoint(startLine, pointsOfConvexHull[0]);
           linesInConvexHull.Add(startLine);
         }
         try
         {
-          List<LineSegment> linesOfShape = GetProjectedShape.ShapeDetermining.ModelBasicShape(lines, linesInConvexHull, firstLastPoint);
-          ArrayList pointsArrayList = GetProjectedShape.ShapeDetermining.LinesToPointsArrayList(firstLastPoint, linesOfShape);
+          var linesOfShape = ShapeDetermining.ModelBasicShape(lines, linesInConvexHull, firstLastPoint);
+          var pointsArrayList = ShapeDetermining.LinesToPointsArrayList(firstLastPoint, linesOfShape);
           polygon.Points = pointsArrayList;
-          GetProjectedShape.LineDetermining.DeleteLineFromCreatedPolygon(lines, polygon);
+          LineDetermining.DeleteLineFromCreatedPolygon(lines, polygon);
           PolygonOperation.RemoveUnnecessaryPolygonPoints(polygon);
           resultShapePolygons.Add(polygon);
           polygon = new Polygon();
         }
-        catch (GetProjectedShape.ShapeNotFoundException ex)
+        catch (ShapeNotFoundException ex)
         {
           flag = false;
         }
@@ -118,7 +118,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
         List<LineSegment> lines,
         Polygon resultShapePolygon)
       {
-        for (int index = lines.Count - 1; index > -1; --index)
+        for (var index = lines.Count - 1; index > -1; --index)
         {
           if (Geo.IsPointInsidePolygon2D(resultShapePolygon, lines[index].Point1, true))
             lines.RemoveAt(index);
@@ -129,8 +129,8 @@ namespace RedButton.Common.TeklaStructures.CSLib
         Point controlPoint,
         List<LineSegment> lines)
       {
-        List<LineSegment> lineSegmentList = new List<LineSegment>();
-        foreach (LineSegment line in lines)
+        var lineSegmentList = new List<LineSegment>();
+        foreach (var line in lines)
         {
           if (Geo.CompareTwoPoints2D(controlPoint, line.Point1) || Geo.CompareTwoPoints2D(controlPoint, line.Point2))
             lineSegmentList.Add(line);
@@ -141,11 +141,11 @@ namespace RedButton.Common.TeklaStructures.CSLib
       public static List<LineSegment> GetLineSegmetsFromPolygons(
         List<Polygon> polygons)
       {
-        List<LineSegment> lineSegmentList = new List<LineSegment>();
-        foreach (Polygon polygon in polygons)
+        var lineSegmentList = new List<LineSegment>();
+        foreach (var polygon in polygons)
         {
-          ArrayList points = polygon.Points;
-          for (int index = 0; index < points.Count; ++index)
+          var points = polygon.Points;
+          for (var index = 0; index < points.Count; ++index)
           {
             if (index < points.Count - 1)
               lineSegmentList.Add(new LineSegment((Point) points[index], (Point) points[index + 1]));
@@ -156,36 +156,36 @@ namespace RedButton.Common.TeklaStructures.CSLib
         return lineSegmentList;
       }
 
-      public static List<Polygon> GetMainPolygonsFromSolid(Tekla.Structures.Model.Solid solid)
+      public static List<Polygon> GetMainPolygonsFromSolid(Solid solid)
       {
-        GeometricPlane Plane = new GeometricPlane();
-        List<Polygon> polygonList = new List<Polygon>();
-        Polygon polygon = new Polygon();
-        ArrayList arrayList = new ArrayList();
-        FaceEnumerator faceEnumerator = solid.GetFaceEnumerator();
-        int num1 = 0;
-        int num2 = 0;
+        var Plane = new GeometricPlane();
+        var polygonList = new List<Polygon>();
+        var polygon = new Polygon();
+        var arrayList = new ArrayList();
+        var faceEnumerator = solid.GetFaceEnumerator();
+        var num1 = 0;
+        var num2 = 0;
         while (faceEnumerator.MoveNext())
         {
-          Face current1 = faceEnumerator.Current;
+          var current1 = faceEnumerator.Current;
           if (current1 != null)
           {
             arrayList.Add((object) current1.Normal);
-            LoopEnumerator loopEnumerator = current1.GetLoopEnumerator();
+            var loopEnumerator = current1.GetLoopEnumerator();
             while (loopEnumerator.MoveNext())
             {
-              Loop current2 = loopEnumerator.Current;
+              var current2 = loopEnumerator.Current;
               if (current2 != null)
               {
                 if (num2 == 0)
                 {
-                  VertexEnumerator vertexEnumerator = current2.GetVertexEnumerator();
+                  var vertexEnumerator = current2.GetVertexEnumerator();
                   while (vertexEnumerator.MoveNext())
                   {
-                    Point current3 = vertexEnumerator.Current;
+                    var current3 = vertexEnumerator.Current;
                     if (current3 != (Point) null)
                     {
-                      Point plane = Projection.PointToPlane(new Point(current3), Plane);
+                      var plane = Projection.PointToPlane(new Point(current3), Plane);
                       polygon.Points.Add((object) plane);
                     }
                   }
@@ -203,36 +203,36 @@ namespace RedButton.Common.TeklaStructures.CSLib
       }
 
       public static List<Polygon> GetMainPolygonsFromSolid(
-        Tekla.Structures.Model.Solid solid,
+        Solid solid,
         GeometricPlane geoPlane)
       {
-        List<Polygon> polygonList = new List<Polygon>();
-        Polygon polygon = new Polygon();
-        ArrayList arrayList = new ArrayList();
-        FaceEnumerator faceEnumerator = solid.GetFaceEnumerator();
-        int num1 = 0;
-        int num2 = 0;
+        var polygonList = new List<Polygon>();
+        var polygon = new Polygon();
+        var arrayList = new ArrayList();
+        var faceEnumerator = solid.GetFaceEnumerator();
+        var num1 = 0;
+        var num2 = 0;
         while (faceEnumerator.MoveNext())
         {
-          Face current1 = faceEnumerator.Current;
+          var current1 = faceEnumerator.Current;
           if (current1 != null)
           {
             arrayList.Add((object) current1.Normal);
-            LoopEnumerator loopEnumerator = current1.GetLoopEnumerator();
+            var loopEnumerator = current1.GetLoopEnumerator();
             while (loopEnumerator.MoveNext())
             {
-              Loop current2 = loopEnumerator.Current;
+              var current2 = loopEnumerator.Current;
               if (current2 != null)
               {
                 if (num2 == 0)
                 {
-                  VertexEnumerator vertexEnumerator = current2.GetVertexEnumerator();
+                  var vertexEnumerator = current2.GetVertexEnumerator();
                   while (vertexEnumerator.MoveNext())
                   {
-                    Point current3 = vertexEnumerator.Current;
+                    var current3 = vertexEnumerator.Current;
                     if (current3 != (Point) null)
                     {
-                      Point plane = Projection.PointToPlane(new Point(current3), geoPlane);
+                      var plane = Projection.PointToPlane(new Point(current3), geoPlane);
                       polygon.Points.Add((object) plane);
                     }
                   }
@@ -251,15 +251,15 @@ namespace RedButton.Common.TeklaStructures.CSLib
 
       public static List<LineSegment> RemoveUselessLines(List<LineSegment> lines)
       {
-        for (int index1 = 0; index1 < lines.Count; ++index1)
+        for (var index1 = 0; index1 < lines.Count; ++index1)
         {
-          for (int index2 = lines.Count - 1; index2 > index1; --index2)
+          for (var index2 = lines.Count - 1; index2 > index1; --index2)
           {
             if (Geo.CompareTwoLinesSegment2D(lines[index1], lines[index2]))
               lines.RemoveAt(index2);
           }
         }
-        for (int index = lines.Count - 1; index > -1; --index)
+        for (var index = lines.Count - 1; index > -1; --index)
         {
           if (Geo.CompareTwoPoints2D(lines[index].Point1, lines[index].Point2))
             lines.RemoveAt(index);
@@ -272,13 +272,13 @@ namespace RedButton.Common.TeklaStructures.CSLib
     {
       public static double FindAngle(LineSegment lineMain, Point mainPoint, LineSegment line)
       {
-        Point otherPoint = GetProjectedShape.ShapeDetermining.FindOtherPoint(mainPoint, lineMain);
-        Vector vector1_1 = new Vector(mainPoint - otherPoint);
-        Vector vector1_2 = new Vector(vector1_1.Y, -vector1_1.X, 0.0);
-        Vector vector2_1 = new Vector(GetProjectedShape.ShapeDetermining.FindOtherPoint(mainPoint, line) - mainPoint);
-        Vector vector2_2 = vector2_1;
-        double angleBetween2Vectors1 = GetProjectedShape.ShapeDetermining.GetAngleBetween2Vectors(vector1_2, vector2_2);
-        double angleBetween2Vectors2 = GetProjectedShape.ShapeDetermining.GetAngleBetween2Vectors(vector1_1, vector2_1);
+        var otherPoint = FindOtherPoint(mainPoint, lineMain);
+        var vector1_1 = new Vector(mainPoint - otherPoint);
+        var vector1_2 = new Vector(vector1_1.Y, -vector1_1.X, 0.0);
+        var vector2_1 = new Vector(FindOtherPoint(mainPoint, line) - mainPoint);
+        var vector2_2 = vector2_1;
+        var angleBetween2Vectors1 = GetAngleBetween2Vectors(vector1_2, vector2_2);
+        var angleBetween2Vectors2 = GetAngleBetween2Vectors(vector1_1, vector2_1);
         double num;
         if (Compare.LE(angleBetween2Vectors1, 90.0))
         {
@@ -298,15 +298,15 @@ namespace RedButton.Common.TeklaStructures.CSLib
         Point mainPoint,
         List<LineSegment> lines)
       {
-        List<double> doubleList = new List<double>();
-        Point otherPoint = GetProjectedShape.ShapeDetermining.FindOtherPoint(mainPoint, lineMain);
-        Vector vector1_1 = new Vector(mainPoint - otherPoint);
-        Vector vector1_2 = new Vector(vector1_1.Y, -vector1_1.X, 0.0);
-        foreach (LineSegment line in lines)
+        var doubleList = new List<double>();
+        var otherPoint = FindOtherPoint(mainPoint, lineMain);
+        var vector1_1 = new Vector(mainPoint - otherPoint);
+        var vector1_2 = new Vector(vector1_1.Y, -vector1_1.X, 0.0);
+        foreach (var line in lines)
         {
-          Vector vector2 = new Vector(GetProjectedShape.ShapeDetermining.FindOtherPoint(mainPoint, line) - mainPoint);
-          double angleBetween2Vectors1 = GetProjectedShape.ShapeDetermining.GetAngleBetween2Vectors(vector1_2, vector2);
-          double angleBetween2Vectors2 = GetProjectedShape.ShapeDetermining.GetAngleBetween2Vectors(vector1_1, vector2);
+          var vector2 = new Vector(FindOtherPoint(mainPoint, line) - mainPoint);
+          var angleBetween2Vectors1 = GetAngleBetween2Vectors(vector1_2, vector2);
+          var angleBetween2Vectors2 = GetAngleBetween2Vectors(vector1_1, vector2);
           if (Compare.LE(angleBetween2Vectors1, 90.0))
           {
             doubleList.Add(angleBetween2Vectors2 * -1.0);
@@ -328,8 +328,8 @@ namespace RedButton.Common.TeklaStructures.CSLib
         Point pointConvexHull1,
         List<LineSegment> possibleStartLines)
       {
-        List<double> angles = GetProjectedShape.ShapeDetermining.FindAngles(new LineSegment(pointConvexHull1, pointConvexHull0), pointConvexHull0, possibleStartLines);
-        return GetProjectedShape.ShapeDetermining.FindBestLine(GetProjectedShape.ShapeDetermining.FindBestLines(possibleStartLines, angles));
+        var angles = FindAngles(new LineSegment(pointConvexHull1, pointConvexHull0), pointConvexHull0, possibleStartLines);
+        return FindBestLine(FindBestLines(possibleStartLines, angles));
       }
 
       public static List<LineSegment> LinesInConvexHull(
@@ -337,10 +337,10 @@ namespace RedButton.Common.TeklaStructures.CSLib
         List<Point> pointsOfConvexHull,
         ref Point firstLastPoint)
       {
-        List<LineSegment> lineSegmentList1 = new List<LineSegment>();
-        List<LineSegment> lineSegmentList2 = new List<LineSegment>();
-        bool flag = false;
-        for (int ii = 0; ii < pointsOfConvexHull.Count; ii++)
+        var lineSegmentList1 = new List<LineSegment>();
+        var lineSegmentList2 = new List<LineSegment>();
+        var flag = false;
+        for (var ii = 0; ii < pointsOfConvexHull.Count; ii++)
         {
           List<LineSegment> all;
           if (ii != pointsOfConvexHull.Count - 1)
@@ -371,7 +371,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
               firstLastPoint = pointsOfConvexHull[0];
             }
           }
-          foreach (LineSegment lineSegment in all)
+          foreach (var lineSegment in all)
             lineSegmentList1.Add(lineSegment);
         }
         return lineSegmentList1;
@@ -381,19 +381,19 @@ namespace RedButton.Common.TeklaStructures.CSLib
         List<LineSegment> linesOfShape,
         Point firstLastPoint)
       {
-        List<Point> pointList = new List<Point>();
+        var pointList = new List<Point>();
         if (Geo.CompareTwoPoints2D(firstLastPoint, linesOfShape[0].Point1))
         {
-          Point point = new Point(linesOfShape[0].Point1);
+          var point = new Point(linesOfShape[0].Point1);
           linesOfShape[0].Point1 = linesOfShape[0].Point2;
           linesOfShape[0].Point2 = point;
         }
-        foreach (LineSegment lineSegment in linesOfShape)
+        foreach (var lineSegment in linesOfShape)
         {
           pointList.Add(lineSegment.Point1);
           pointList.Add(lineSegment.Point2);
         }
-        GetProjectedShape.ShapeDetermining.RemoveDuplicitPoints((IList) pointList);
+        RemoveDuplicitPoints((IList) pointList);
         return pointList;
       }
 
@@ -401,19 +401,19 @@ namespace RedButton.Common.TeklaStructures.CSLib
         Point firstLastPoint,
         List<LineSegment> linesOfShape)
       {
-        ArrayList arrayList = new ArrayList();
+        var arrayList = new ArrayList();
         if (Geo.CompareTwoPoints2D(firstLastPoint, linesOfShape[0].Point1))
         {
-          Point point = new Point(linesOfShape[0].Point1);
+          var point = new Point(linesOfShape[0].Point1);
           linesOfShape[0].Point1 = linesOfShape[0].Point2;
           linesOfShape[0].Point2 = point;
         }
-        foreach (LineSegment lineSegment in linesOfShape)
+        foreach (var lineSegment in linesOfShape)
         {
           arrayList.Add((object) lineSegment.Point1);
           arrayList.Add((object) lineSegment.Point2);
         }
-        GetProjectedShape.ShapeDetermining.RemoveDuplicitPoints((IList) arrayList);
+        RemoveDuplicitPoints((IList) arrayList);
         return arrayList;
       }
 
@@ -422,39 +422,39 @@ namespace RedButton.Common.TeklaStructures.CSLib
         List<LineSegment> linesInConvexHull,
         Point firstLastPoint)
       {
-        List<LineSegment> lineSegmentList1 = new List<LineSegment>();
-        LineSegment lineSegment1 = new LineSegment();
-        Point point = new Point(firstLastPoint);
-        LineSegment nextLineOfShape = new LineSegment();
-        List<Point> intersectPoints = new List<Point>();
-        List<LineSegment> lineSegmentList2 = new List<LineSegment>();
-        GetProjectedShape.IntersectLineSegments intersectLineSegmetsInOneVectorWithPossibleLine = new GetProjectedShape.IntersectLineSegments();
-        int num1 = 2;
-        bool flag = false;
-        int num2 = 0;
+        var lineSegmentList1 = new List<LineSegment>();
+        var lineSegment1 = new LineSegment();
+        var point = new Point(firstLastPoint);
+        var nextLineOfShape = new LineSegment();
+        var intersectPoints = new List<Point>();
+        var lineSegmentList2 = new List<LineSegment>();
+        var intersectLineSegmetsInOneVectorWithPossibleLine = new IntersectLineSegments();
+        var num1 = 2;
+        var flag = false;
+        var num2 = 0;
         lineSegmentList1.Add(linesInConvexHull[0]);
-        LineSegment nextLine = linesInConvexHull[0];
+        var nextLine = linesInConvexHull[0];
         linesInConvexHull.RemoveAt(0);
-        Point otherPoint1 = GetProjectedShape.ShapeDetermining.FindOtherPoint(point, nextLine);
-        LineSegment lineSegment1_1 = new LineSegment(otherPoint1, firstLastPoint);
+        var otherPoint1 = FindOtherPoint(point, nextLine);
+        var lineSegment1_1 = new LineSegment(otherPoint1, firstLastPoint);
         do
         {
-          if (GetProjectedShape.ShapeDetermining.FindNextLineInConvex(linesInConvexHull, point, ref nextLine))
+          if (FindNextLineInConvex(linesInConvexHull, point, ref nextLine))
           {
-            if (Compare.EQ(-180.0, GetProjectedShape.ShapeDetermining.FindAngle(lineSegmentList1[lineSegmentList1.Count - 1], point, nextLine)))
+            if (Compare.EQ(-180.0, FindAngle(lineSegmentList1[lineSegmentList1.Count - 1], point, nextLine)))
             {
               nextLine = lineSegmentList1[lineSegmentList1.Count - 1];
             }
             else
             {
               lineSegmentList1.Add(nextLine);
-              point = GetProjectedShape.ShapeDetermining.FindLastPoint(nextLine, point);
+              point = FindLastPoint(nextLine, point);
               num1 = 2;
             }
           }
-          else if (Intersect.IntersectLineSegmentToLineSegment2D(lineSegment1_1, nextLine, ref intersectPoints, true) && num2 > 2)
+          else if (Intersect.IntersectLineSegmentToLineSegment2D(lineSegment1_1, nextLine, true).Count>0 && num2 > 2)
           {
-            Point otherPoint2 = GetProjectedShape.ShapeDetermining.FindOtherPoint(point, nextLine);
+            var otherPoint2 = FindOtherPoint(point, nextLine);
             lineSegmentList1[lineSegmentList1.Count - 1].Point2 = otherPoint1;
             lineSegmentList1[lineSegmentList1.Count - 1].Point1 = otherPoint2;
             point = otherPoint1;
@@ -465,28 +465,28 @@ namespace RedButton.Common.TeklaStructures.CSLib
             switch (num1)
             {
               case 0:
-                List<LineSegment> nextLines = GetProjectedShape.ShapeDetermining.FindNextLines(point, lines);
-                List<double> angles1 = GetProjectedShape.ShapeDetermining.FindAngles(nextLine, point, nextLines);
-                lineSegment2 = GetProjectedShape.ShapeDetermining.FindBestLine(GetProjectedShape.ShapeDetermining.FindBestLines(nextLines, angles1));
+                var nextLines = FindNextLines(point, lines);
+                var angles1 = FindAngles(nextLine, point, nextLines);
+                lineSegment2 = FindBestLine(FindBestLines(nextLines, angles1));
                 break;
               case 1:
                 lineSegment2 = nextLineOfShape;
                 break;
               default:
-                List<LineSegment> linesOnEndOfLine = GetProjectedShape.ShapeDetermining.FindPossibleIntersectLinesOnEndOfLine(lines, nextLine, point);
-                List<double> angles2 = GetProjectedShape.ShapeDetermining.FindAngles(nextLine, point, linesOnEndOfLine);
-                lineSegment2 = GetProjectedShape.ShapeDetermining.FindBestLine(GetProjectedShape.ShapeDetermining.FindBestLines(linesOnEndOfLine, angles2));
+                var linesOnEndOfLine = FindPossibleIntersectLinesOnEndOfLine(lines, nextLine, point);
+                var angles2 = FindAngles(nextLine, point, linesOnEndOfLine);
+                lineSegment2 = FindBestLine(FindBestLines(linesOnEndOfLine, angles2));
                 break;
             }
-            GetProjectedShape.IntersectLineSegments possibleIntersectLines = GetProjectedShape.ShapeDetermining.FindPossibleIntersectLines(lines, lineSegment2, point, ref intersectLineSegmetsInOneVectorWithPossibleLine);
+            var possibleIntersectLines = FindPossibleIntersectLines(lines, lineSegment2, point, ref intersectLineSegmetsInOneVectorWithPossibleLine);
             if (possibleIntersectLines.LineSegments.Count > 0)
             {
               do
               {
-                double minDistance = GetProjectedShape.ShapeDetermining.FindMinDistance(possibleIntersectLines);
-                GetProjectedShape.IntersectLineSegments lineSegmetsInMin = GetProjectedShape.ShapeDetermining.FindIntersectLineSegmetsInMin(possibleIntersectLines, minDistance);
-                List<double> angles3 = GetProjectedShape.ShapeDetermining.FindAngles(new LineSegment(point, lineSegmetsInMin.IntersectPoints[0]), lineSegmetsInMin.IntersectPoints[0], lineSegmetsInMin.LineSegments);
-                for (int index = angles3.Count - 1; index > -1; --index)
+                var minDistance = FindMinDistance(possibleIntersectLines);
+                var lineSegmetsInMin = FindIntersectLineSegmetsInMin(possibleIntersectLines, minDistance);
+                var angles3 = FindAngles(new LineSegment(point, lineSegmetsInMin.IntersectPoints[0]), lineSegmetsInMin.IntersectPoints[0], lineSegmetsInMin.LineSegments);
+                for (var index = angles3.Count - 1; index > -1; --index)
                 {
                   if (Compare.ZR(angles3[index]))
                   {
@@ -496,10 +496,10 @@ namespace RedButton.Common.TeklaStructures.CSLib
                     angles3.RemoveAt(index);
                   }
                 }
-                if (GetProjectedShape.ShapeDetermining.FindBestLineAfterIntersect(angles3, lineSegmetsInMin, ref nextLineOfShape))
+                if (FindBestLineAfterIntersect(angles3, lineSegmetsInMin, ref nextLineOfShape))
                 {
-                  if (!GetProjectedShape.ShapeDetermining.IsItGoodIntersect(lineSegment2, lineSegmetsInMin.IntersectPoints[0], point))
-                    lineSegmetsInMin.IntersectPoints[0] = GetProjectedShape.ShapeDetermining.FindOtherPoint(point, lineSegment2);
+                  if (!IsItGoodIntersect(lineSegment2, lineSegmetsInMin.IntersectPoints[0], point))
+                    lineSegmetsInMin.IntersectPoints[0] = FindOtherPoint(point, lineSegment2);
                   num1 = 1;
                   nextLine = new LineSegment(point, lineSegmetsInMin.IntersectPoints[0]);
                   lineSegmentList1.Add(nextLine);
@@ -511,8 +511,8 @@ namespace RedButton.Common.TeklaStructures.CSLib
             }
             if (!flag && intersectLineSegmetsInOneVectorWithPossibleLine.LineSegments.Count > 0)
             {
-              List<double> angles3 = GetProjectedShape.ShapeDetermining.FindAngles(new LineSegment(point, intersectLineSegmetsInOneVectorWithPossibleLine.IntersectPoints[0]), intersectLineSegmetsInOneVectorWithPossibleLine.IntersectPoints[0], intersectLineSegmetsInOneVectorWithPossibleLine.LineSegments);
-              for (int index = angles3.Count - 1; index > -1; --index)
+              var angles3 = FindAngles(new LineSegment(point, intersectLineSegmetsInOneVectorWithPossibleLine.IntersectPoints[0]), intersectLineSegmetsInOneVectorWithPossibleLine.IntersectPoints[0], intersectLineSegmetsInOneVectorWithPossibleLine.LineSegments);
+              for (var index = angles3.Count - 1; index > -1; --index)
               {
                 if (Compare.NZ(angles3[index]))
                 {
@@ -521,10 +521,10 @@ namespace RedButton.Common.TeklaStructures.CSLib
                   angles3.RemoveAt(index);
                 }
               }
-              if (GetProjectedShape.ShapeDetermining.FindBestLineAfterIntersect(angles3, intersectLineSegmetsInOneVectorWithPossibleLine, ref nextLineOfShape))
+              if (FindBestLineAfterIntersect(angles3, intersectLineSegmetsInOneVectorWithPossibleLine, ref nextLineOfShape))
               {
                 num1 = 1;
-                Point otherPoint2 = GetProjectedShape.ShapeDetermining.FindOtherPoint(intersectLineSegmetsInOneVectorWithPossibleLine.IntersectPoints[0], nextLineOfShape);
+                var otherPoint2 = FindOtherPoint(intersectLineSegmetsInOneVectorWithPossibleLine.IntersectPoints[0], nextLineOfShape);
                 nextLineOfShape = new LineSegment(point, otherPoint2);
                 --num2;
                 flag = true;
@@ -535,13 +535,13 @@ namespace RedButton.Common.TeklaStructures.CSLib
               num1 = 0;
               nextLine = lineSegment2;
               lineSegmentList1.Add(nextLine);
-              point = GetProjectedShape.ShapeDetermining.FindLastPoint(nextLine, point);
+              point = FindLastPoint(nextLine, point);
             }
             flag = false;
           }
           ++num2;
           if (num2 > 2 * lines.Count)
-            throw new GetProjectedShape.ShapeNotFoundException("endless cycle");
+            throw new ShapeNotFoundException("endless cycle");
         }
         while (!Geo.CompareTwoPoints2D(point, otherPoint1) && (!Geo.CompareTwoPoints2D(point, firstLastPoint) || num2 <= 2));
         return lineSegmentList1;
@@ -549,24 +549,24 @@ namespace RedButton.Common.TeklaStructures.CSLib
 
       public static List<Point> PointsFromConvexHull(List<LineSegment> lines)
       {
-        List<Point> convexHull = new List<Point>();
-        foreach (LineSegment line in lines)
+        var convexHull = new List<Point>();
+        foreach (var line in lines)
         {
           convexHull.Add(line.Point1);
           convexHull.Add(line.Point2);
         }
-        GetProjectedShape.ShapeDetermining.RemoveDuplicitPoints((IList) convexHull);
+        RemoveDuplicitPoints((IList) convexHull);
         Geo.ConvexHull(ref convexHull, false);
         return convexHull;
       }
 
       private static LineSegment FindBestLine(List<LineSegment> bestLines)
       {
-        double num = 0.0;
-        int index1 = -1;
-        for (int index2 = 0; index2 < bestLines.Count; ++index2)
+        var num = 0.0;
+        var index1 = -1;
+        for (var index2 = 0; index2 < bestLines.Count; ++index2)
         {
-          double beetveenTwoPoints2D = Geo.GetDistanceBeetveenTwoPoints2D(bestLines[index2].Point1, bestLines[index2].Point2);
+          var beetveenTwoPoints2D = Geo.GetDistanceBeetveenTwoPoints2D(bestLines[index2].Point1, bestLines[index2].Point2);
           if (Compare.GT(beetveenTwoPoints2D, num))
           {
             num = beetveenTwoPoints2D;
@@ -578,14 +578,14 @@ namespace RedButton.Common.TeklaStructures.CSLib
 
       private static bool FindBestLineAfterIntersect(
         List<double> angles,
-        GetProjectedShape.IntersectLineSegments intersectLineSegmetsInMin,
+        IntersectLineSegments intersectLineSegmetsInMin,
         ref LineSegment nextLineOfShape)
       {
-        List<LineSegment> bestLines = new List<LineSegment>();
+        var bestLines = new List<LineSegment>();
         nextLineOfShape = new LineSegment();
-        double num1 = -1.0;
-        int num2 = -1;
-        for (int index = 0; index < angles.Count; ++index)
+        var num1 = -1.0;
+        var num2 = -1;
+        for (var index = 0; index < angles.Count; ++index)
         {
           if (Compare.GT(angles[index], num1))
           {
@@ -595,12 +595,12 @@ namespace RedButton.Common.TeklaStructures.CSLib
         }
         if (Compare.LT(num1, 0.0))
           return false;
-        for (int index = num2; index < intersectLineSegmetsInMin.LineSegments.Count; ++index)
+        for (var index = num2; index < intersectLineSegmetsInMin.LineSegments.Count; ++index)
         {
           if (Compare.EQ(angles[index], num1))
             bestLines.Add(intersectLineSegmetsInMin.LineSegments[index]);
         }
-        nextLineOfShape = GetProjectedShape.ShapeDetermining.FindBestLine(bestLines);
+        nextLineOfShape = FindBestLine(bestLines);
         return true;
       }
 
@@ -608,10 +608,10 @@ namespace RedButton.Common.TeklaStructures.CSLib
         List<LineSegment> lines,
         List<double> angles)
       {
-        List<LineSegment> lineSegmentList = new List<LineSegment>();
-        double num1 = -181.0;
-        int num2 = -1;
-        for (int index = 0; index < angles.Count; ++index)
+        var lineSegmentList = new List<LineSegment>();
+        var num1 = -181.0;
+        var num2 = -1;
+        for (var index = 0; index < angles.Count; ++index)
         {
           if (Compare.GT(angles[index], num1))
           {
@@ -620,8 +620,8 @@ namespace RedButton.Common.TeklaStructures.CSLib
           }
         }
         if (Compare.EQ(num1, -181.0))
-          throw new GetProjectedShape.ShapeNotFoundException("Cannot find angles in FindBestLine");
-        for (int index = num2; index < lines.Count; ++index)
+          throw new ShapeNotFoundException("Cannot find angles in FindBestLine");
+        for (var index = num2; index < lines.Count; ++index)
         {
           if (Compare.EQ(angles[index], num1))
             lineSegmentList.Add(lines[index]);
@@ -629,12 +629,12 @@ namespace RedButton.Common.TeklaStructures.CSLib
         return lineSegmentList;
       }
 
-      private static GetProjectedShape.IntersectLineSegments FindIntersectLineSegmetsInMin(
-        GetProjectedShape.IntersectLineSegments intersectLineSegmets,
+      private static IntersectLineSegments FindIntersectLineSegmetsInMin(
+        IntersectLineSegments intersectLineSegmets,
         double minDistance)
       {
-        GetProjectedShape.IntersectLineSegments intersectLineSegments = new GetProjectedShape.IntersectLineSegments();
-        for (int index = 0; index < intersectLineSegmets.Distances.Count; ++index)
+        var intersectLineSegments = new IntersectLineSegments();
+        for (var index = 0; index < intersectLineSegmets.Distances.Count; ++index)
         {
           if (Compare.EQ(intersectLineSegmets.Distances[index], minDistance))
           {
@@ -651,10 +651,10 @@ namespace RedButton.Common.TeklaStructures.CSLib
       }
 
       private static double FindMinDistance(
-        GetProjectedShape.IntersectLineSegments intersectLineSegmets)
+        IntersectLineSegments intersectLineSegmets)
       {
-        double num = intersectLineSegmets.Distances[0];
-        foreach (double distance in intersectLineSegmets.Distances)
+        var num = intersectLineSegmets.Distances[0];
+        foreach (var distance in intersectLineSegmets.Distances)
         {
           if (Compare.LT(distance, num))
             num = distance;
@@ -667,7 +667,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
         Point lastPoint,
         ref LineSegment nextLine)
       {
-        foreach (LineSegment lineSegment in linesInConvexHull)
+        foreach (var lineSegment in linesInConvexHull)
         {
           if (Geo.CompareTwoPoints2D(lastPoint, lineSegment.Point1) || Geo.CompareTwoPoints2D(lastPoint, lineSegment.Point2))
           {
@@ -683,36 +683,37 @@ namespace RedButton.Common.TeklaStructures.CSLib
         Point lastPoint,
         List<LineSegment> lines)
       {
-        List<LineSegment> lineSegmentList = new List<LineSegment>();
-        for (int index = 0; index < lines.Count; ++index)
+        var lineSegmentList = new List<LineSegment>();
+        for (var index = 0; index < lines.Count; ++index)
         {
           if (Geo.CompareTwoPoints2D(lastPoint, lines[index].Point1) || Geo.CompareTwoPoints2D(lastPoint, lines[index].Point2))
             lineSegmentList.Add(lines[index]);
         }
-        return lineSegmentList.Count != 0 ? lineSegmentList : throw new GetProjectedShape.ShapeNotFoundException("Cannot find path on point x: " + lastPoint.X.ToString() + " y: " + lastPoint.Y.ToString());
+        return lineSegmentList.Count != 0 ? lineSegmentList : throw new ShapeNotFoundException("Cannot find path on point x: " + lastPoint.X.ToString() + " y: " + lastPoint.Y.ToString());
       }
 
       private static Point FindOtherPoint(Point mainPoint, LineSegment line) => !Geo.CompareTwoPoints2D(line.Point1, mainPoint) ? line.Point1 : line.Point2;
 
-      private static GetProjectedShape.IntersectLineSegments FindPossibleIntersectLines(
+      private static IntersectLineSegments FindPossibleIntersectLines(
         List<LineSegment> lines,
         LineSegment possibleLineOfShape,
         Point lastPoint,
-        ref GetProjectedShape.IntersectLineSegments intersectLineSegmetsInOneVectorWithPossibleLine)
+        ref IntersectLineSegments intersectLineSegmetsInOneVectorWithPossibleLine)
       {
-        List<Point> intersectPoints = new List<Point>();
-        GetProjectedShape.IntersectLineSegments intersectLineSegments = new GetProjectedShape.IntersectLineSegments();
-        intersectLineSegmetsInOneVectorWithPossibleLine = new GetProjectedShape.IntersectLineSegments();
-        Point otherPoint = GetProjectedShape.ShapeDetermining.FindOtherPoint(lastPoint, possibleLineOfShape);
-        LineSegment lineSegment = new LineSegment(lastPoint, otherPoint);
-        foreach (LineSegment line in lines)
+        var intersectPoints = new List<Point>();
+        var intersectLineSegments = new IntersectLineSegments();
+        intersectLineSegmetsInOneVectorWithPossibleLine = new IntersectLineSegments();
+        var otherPoint = FindOtherPoint(lastPoint, possibleLineOfShape);
+        var lineSegment = new LineSegment(lastPoint, otherPoint);
+        foreach (var line in lines)
         {
-          if (Intersect.IntersectLineSegmentToLineSegment2D(lineSegment, line, ref intersectPoints, true))
+          intersectPoints = Intersect.IntersectLineSegmentToLineSegment2D(lineSegment, line, true);
+          if (intersectPoints.Count>0)
           {
             if (intersectPoints.Count > 1)
             {
-              double angleBetween2Vectors = GetProjectedShape.ShapeDetermining.GetAngleBetween2Vectors(new Vector(lineSegment.Point2 - lineSegment.Point1), new Vector(line.Point2 - line.Point1));
-              if (GetProjectedShape.ShapeDetermining.IsIntersectLineSegmetsNotParallel(angleBetween2Vectors))
+              var angleBetween2Vectors = GetAngleBetween2Vectors(new Vector(lineSegment.Point2 - lineSegment.Point1), new Vector(line.Point2 - line.Point1));
+              if (IsIntersectLineSegmetsNotParallel(angleBetween2Vectors))
               {
                 if (Geo.CompareTwoPoints2D(intersectPoints[1], lineSegment.Point1) || Geo.CompareTwoPoints2D(intersectPoints[1], lineSegment.Point2) || (Geo.CompareTwoPoints2D(intersectPoints[1], line.Point1) || Geo.CompareTwoPoints2D(intersectPoints[1], line.Point2)))
                   intersectPoints.Remove(intersectPoints[0]);
@@ -721,8 +722,8 @@ namespace RedButton.Common.TeklaStructures.CSLib
               }
               else if (Geo.CompareTwoPoints2D(intersectPoints[1], otherPoint) && !Geo.CompareTwoPoints2D(intersectPoints[1], line.Point1) && !Geo.CompareTwoPoints2D(intersectPoints[1], line.Point2))
               {
-                double beetveenTwoPoints2D = Geo.GetDistanceBeetveenTwoPoints2D(intersectPoints[0], lineSegment.Point2);
-                Point point2 = !Compare.ZR(angleBetween2Vectors) ? line.Point1 : line.Point2;
+                var beetveenTwoPoints2D = Geo.GetDistanceBeetveenTwoPoints2D(intersectPoints[0], lineSegment.Point2);
+                var point2 = !Compare.ZR(angleBetween2Vectors) ? line.Point1 : line.Point2;
                 if (Compare.LT(Geo.GetDistanceBeetveenTwoPoints2D(intersectPoints[0], point2), beetveenTwoPoints2D))
                   intersectPoints[1] = point2;
               }
@@ -734,7 +735,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
                 intersectLineSegmetsInOneVectorWithPossibleLine.LineSegments.Add(new LineSegment(otherPoint, line.Point2));
               }
             }
-            if (intersectPoints.Count == 1 && GetProjectedShape.ShapeDetermining.IsItLineForIntersect(line, lastPoint) && (GetProjectedShape.ShapeDetermining.IsItLineForIntersect(line, otherPoint) && GetProjectedShape.ShapeDetermining.IsItGoodIntersect(lineSegment, intersectPoints[0], line)))
+            if (intersectPoints.Count == 1 && IsItLineForIntersect(line, lastPoint) && (IsItLineForIntersect(line, otherPoint) && IsItGoodIntersect(lineSegment, intersectPoints[0], line)))
             {
               if (Geo.CompareTwoPoints2D(intersectPoints[0], line.Point1) || Geo.CompareTwoPoints2D(intersectPoints[0], line.Point2))
               {
@@ -762,14 +763,15 @@ namespace RedButton.Common.TeklaStructures.CSLib
         LineSegment lastLineOfShape,
         Point lastPoint)
       {
-        List<Point> intersectPoints = new List<Point>();
-        List<LineSegment> lineSegmentList = new List<LineSegment>();
-        LineSegment lineSegment1 = new LineSegment(GetProjectedShape.ShapeDetermining.FindOtherPoint(lastPoint, lastLineOfShape), lastPoint);
-        foreach (LineSegment line in lines)
+        var intersectPoints = new List<Point>();
+        var lineSegmentList = new List<LineSegment>();
+        var lineSegment1 = new LineSegment(FindOtherPoint(lastPoint, lastLineOfShape), lastPoint);
+        foreach (var line in lines)
         {
-          if (Intersect.IntersectLineSegmentToLineSegment2D(lineSegment1, line, ref intersectPoints, true))
+          intersectPoints = Intersect.IntersectLineSegmentToLineSegment2D(lineSegment1, line, true);
+          if (intersectPoints.Count>0)
           {
-            if (!GetProjectedShape.ShapeDetermining.IsItLineForIntersect(line, lastPoint) && intersectPoints.Count == 1)
+            if (!IsItLineForIntersect(line, lastPoint) && intersectPoints.Count == 1)
               lineSegmentList.Add(line);
             else if (intersectPoints.Count > 1 && Geo.CompareTwoPoints2D(intersectPoints[1], lastPoint) && (!Geo.CompareTwoPoints2D(intersectPoints[1], line.Point1) && !Geo.CompareTwoPoints2D(intersectPoints[1], line.Point2)))
             {
@@ -785,7 +787,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
 
       private static double GetAngleBetween2Vectors(Vector vector1, Vector vector2)
       {
-        double num = vector1.GetAngleBetween(vector2) * Constants.RAD_TO_DEG;
+        var num = vector1.GetAngleBetween(vector2) * Constants.RAD_TO_DEG;
         if (Compare.GT(vector1.GetNormal().Cross(vector2.GetNormal()).GetNormal().Y, 0.0))
           num = 360.0 - num;
         return num;
@@ -795,16 +797,16 @@ namespace RedButton.Common.TeklaStructures.CSLib
 
       private static bool IsItGoodIntersect(LineSegment mainLine, Point intersect)
       {
-        bool flag = true;
-        if (Compare.GE(GetProjectedShape.ShapeDetermining.GetAngleBetween2Vectors(new Vector(mainLine.Point2 - mainLine.Point1), new Vector(intersect - mainLine.Point1)), 89.96))
+        var flag = true;
+        if (Compare.GE(GetAngleBetween2Vectors(new Vector(mainLine.Point2 - mainLine.Point1), new Vector(intersect - mainLine.Point1)), 89.96))
           flag = false;
         return flag;
       }
 
       private static bool IsItGoodIntersect(LineSegment mainLine, Point intersect, Point lastPoint)
       {
-        bool flag = true;
-        if (Compare.GE(GetProjectedShape.ShapeDetermining.GetAngleBetween2Vectors(new Vector(lastPoint - GetProjectedShape.ShapeDetermining.FindOtherPoint(lastPoint, mainLine)), new Vector(intersect - GetProjectedShape.ShapeDetermining.FindOtherPoint(lastPoint, mainLine))), 90.0))
+        var flag = true;
+        if (Compare.GE(GetAngleBetween2Vectors(new Vector(lastPoint - FindOtherPoint(lastPoint, mainLine)), new Vector(intersect - FindOtherPoint(lastPoint, mainLine))), 90.0))
           flag = false;
         return flag;
       }
@@ -814,18 +816,18 @@ namespace RedButton.Common.TeklaStructures.CSLib
         Point intersect,
         LineSegment nextPossibleLine)
       {
-        bool flag = true;
-        Vector vector1_1 = new Vector(mainLine.Point2 - mainLine.Point1);
-        Vector vector2_1 = new Vector(intersect - mainLine.Point1);
-        double angleBetween2Vectors1 = GetProjectedShape.ShapeDetermining.GetAngleBetween2Vectors(vector1_1, vector2_1);
-        Point otherPoint = GetProjectedShape.ShapeDetermining.FindOtherPoint(intersect, nextPossibleLine);
-        Vector vector1_2 = new Vector(vector1_1.Y, -vector1_1.X, 0.0);
+        var flag = true;
+        var vector1_1 = new Vector(mainLine.Point2 - mainLine.Point1);
+        var vector2_1 = new Vector(intersect - mainLine.Point1);
+        var angleBetween2Vectors1 = GetAngleBetween2Vectors(vector1_1, vector2_1);
+        var otherPoint = FindOtherPoint(intersect, nextPossibleLine);
+        var vector1_2 = new Vector(vector1_1.Y, -vector1_1.X, 0.0);
         if (Compare.GT(angleBetween2Vectors1, 0.0))
         {
-          Vector vector2_2 = new Vector(otherPoint - intersect);
-          double angleBetween2Vectors2 = GetProjectedShape.ShapeDetermining.GetAngleBetween2Vectors(vector1_2, vector2_2);
-          double angleBetween2Vectors3 = GetProjectedShape.ShapeDetermining.GetAngleBetween2Vectors(vector1_1, vector2_2);
-          double num = !Compare.LE(angleBetween2Vectors2, 90.0) ? angleBetween2Vectors3 : angleBetween2Vectors3 * -1.0;
+          var vector2_2 = new Vector(otherPoint - intersect);
+          var angleBetween2Vectors2 = GetAngleBetween2Vectors(vector1_2, vector2_2);
+          var angleBetween2Vectors3 = GetAngleBetween2Vectors(vector1_1, vector2_2);
+          var num = !Compare.LE(angleBetween2Vectors2, 90.0) ? angleBetween2Vectors3 : angleBetween2Vectors3 * -1.0;
           if (Compare.LE(num, 0.0) || Compare.GE(num, 90.0))
             flag = false;
         }
@@ -836,9 +838,9 @@ namespace RedButton.Common.TeklaStructures.CSLib
 
       private static void RemoveDuplicitPoints(IList points)
       {
-        for (int index1 = 0; index1 < points.Count; ++index1)
+        for (var index1 = 0; index1 < points.Count; ++index1)
         {
-          for (int index2 = points.Count - 1; index2 > index1; --index2)
+          for (var index2 = points.Count - 1; index2 > index1; --index2)
           {
             if (Geo.CompareTwoPoints2D((Point) points[index1], (Point) points[index2]))
               points.RemoveAt(index2);
@@ -851,9 +853,9 @@ namespace RedButton.Common.TeklaStructures.CSLib
     {
       public IntersectLineSegments()
       {
-        this.IntersectPoints = new List<Point>();
-        this.LineSegments = new List<LineSegment>();
-        this.Distances = new List<double>();
+        IntersectPoints = new List<Point>();
+        LineSegments = new List<LineSegment>();
+        Distances = new List<double>();
       }
 
       public List<double> Distances { get; set; }

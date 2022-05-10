@@ -9,37 +9,37 @@ namespace RedButton.Common.TeklaStructures.CSLib
     public class SetPlane
     {
         private Tekla.Structures.Model.Model _model;
-        private List<Tekla.Structures.Geometry3d.Point> dynamicPoints;
-        private List<Tekla.Structures.Model.Polygon> dynamicPolygons;
+        private List<Point> dynamicPoints;
+        private List<Polygon> dynamicPolygons;
         private List<ModelObject> dynamicObjects;
         private List<Matrix> listOfMatrices;
         private List<TransformationPlane> listOfOriginalPlanes;
 
         public SetPlane(Tekla.Structures.Model.Model actualModel)
         {
-            this.dynamicPoints = new List<Tekla.Structures.Geometry3d.Point>();
-            this.dynamicPolygons = new List<Tekla.Structures.Model.Polygon>();
-            this.dynamicObjects = new List<ModelObject>();
-            this.listOfMatrices = new List<Matrix>();
-            this.listOfOriginalPlanes = new List<TransformationPlane>();
-            this._model = actualModel;
+            dynamicPoints = new List<Point>();
+            dynamicPolygons = new List<Polygon>();
+            dynamicObjects = new List<ModelObject>();
+            listOfMatrices = new List<Matrix>();
+            listOfOriginalPlanes = new List<TransformationPlane>();
+            _model = actualModel;
         }
 
-        public void Begin(CoordinateSystem newSystem) => this.Begin(newSystem.Origin, newSystem.AxisX, newSystem.AxisY);
+        public void Begin(CoordinateSystem newSystem) => Begin(newSystem.Origin, newSystem.AxisX, newSystem.AxisY);
 
-        public void Begin(Tekla.Structures.Geometry3d.Point newOrigin, Vector newVectorX, Vector newVectorY)
+        public void Begin(Point newOrigin, Vector newVectorX, Vector newVectorY)
         {
             try
             {
                 newVectorY = Geo.GetNormalVectorInPlane(newVectorX, newVectorY);
                 CoordinateSystem coordinateSystem1 = new CoordinateSystem(newOrigin, newVectorX, newVectorY);
                 TransformationPlane TransformationPlane = new TransformationPlane(coordinateSystem1);
-                this.listOfOriginalPlanes.Add(this._model.GetWorkPlaneHandler().GetCurrentTransformationPlane());
+                listOfOriginalPlanes.Add(_model.GetWorkPlaneHandler().GetCurrentTransformationPlane());
                 Matrix coordinateSystem2 = MatrixFactory.ToCoordinateSystem(coordinateSystem1);
-                this.listOfMatrices.Add(coordinateSystem2);
-                this.TransformAll(coordinateSystem2);
-                this._model.GetWorkPlaneHandler().SetCurrentTransformationPlane(TransformationPlane);
-                this.TransformModelObjects();
+                listOfMatrices.Add(coordinateSystem2);
+                TransformAll(coordinateSystem2);
+                _model.GetWorkPlaneHandler().SetCurrentTransformationPlane(TransformationPlane);
+                TransformModelObjects();
             }
             catch (Exception)
             {
@@ -48,19 +48,19 @@ namespace RedButton.Common.TeklaStructures.CSLib
 
         public void TransformAll(Matrix transformationMatrix)
         {
-            if (this.dynamicPoints != null)
-                this.TransformPoints(transformationMatrix);
-            if (this.dynamicPolygons == null)
+            if (dynamicPoints != null)
+                TransformPoints(transformationMatrix);
+            if (dynamicPolygons == null)
                 return;
-            this.TransformPolygons(transformationMatrix);
+            TransformPolygons(transformationMatrix);
         }
 
         public void TransformPoints(Matrix transformationMatrix)
         {
-            for (int index = 0; index < this.dynamicPoints.Count; ++index)
+            for (int index = 0; index < dynamicPoints.Count; ++index)
             {
-                Tekla.Structures.Geometry3d.Point orginalPoint = transformationMatrix.Transform(this.dynamicPoints[index]);
-                Geo.CopyPointPosition(this.dynamicPoints[index], orginalPoint);
+                Point orginalPoint = transformationMatrix.Transform(dynamicPoints[index]);
+                Geo.CopyPointPosition(dynamicPoints[index], orginalPoint);
             }
         }
 
@@ -70,8 +70,8 @@ namespace RedButton.Common.TeklaStructures.CSLib
             {
                 for (int index = 0; index < pointsToMoveList.Count; ++index)
                 {
-                    Tekla.Structures.Geometry3d.Point orginalPoint = transformationMatrix.Transform((Tekla.Structures.Geometry3d.Point)pointsToMoveList[index]);
-                    Geo.CopyPointPosition((Tekla.Structures.Geometry3d.Point)pointsToMoveList[index], orginalPoint);
+                    Point orginalPoint = transformationMatrix.Transform((Point)pointsToMoveList[index]);
+                    Geo.CopyPointPosition((Point)pointsToMoveList[index], orginalPoint);
                 }
             }
             catch (Exception)
@@ -81,53 +81,53 @@ namespace RedButton.Common.TeklaStructures.CSLib
 
         public void TransformPolygons(Matrix transformationMatrix)
         {
-            for (int index = 0; index < this.dynamicPolygons.Count; ++index)
-                this.TransformPoints(transformationMatrix, this.dynamicPolygons[index].Points);
+            for (int index = 0; index < dynamicPolygons.Count; ++index)
+                TransformPoints(transformationMatrix, dynamicPolygons[index].Points);
         }
 
         public void TransformModelObjects()
         {
-            if (this.dynamicObjects == null)
+            if (dynamicObjects == null)
                 return;
-            for (int index = 0; index < this.dynamicObjects.Count; ++index)
-                this.dynamicObjects[index].Select();
+            for (int index = 0; index < dynamicObjects.Count; ++index)
+                dynamicObjects[index].Select();
         }
 
         public void End()
         {
-            int index1 = this.listOfMatrices.Count - 1;
-            int index2 = this.listOfOriginalPlanes.Count - 1;
+            int index1 = listOfMatrices.Count - 1;
+            int index2 = listOfOriginalPlanes.Count - 1;
             if (index1 <= -1 || index2 <= -1)
                 return;
-            Matrix listOfMatrix = this.listOfMatrices[index1];
+            Matrix listOfMatrix = listOfMatrices[index1];
             listOfMatrix.Transpose();
-            this.TransformAll(listOfMatrix);
-            TransformationPlane listOfOriginalPlane = this.listOfOriginalPlanes[index2];
-            this._model.GetWorkPlaneHandler().SetCurrentTransformationPlane(listOfOriginalPlane);
-            this.TransformModelObjects();
-            this.listOfMatrices.RemoveAt(index1);
-            this.listOfOriginalPlanes.RemoveAt(index2);
+            TransformAll(listOfMatrix);
+            TransformationPlane listOfOriginalPlane = listOfOriginalPlanes[index2];
+            _model.GetWorkPlaneHandler().SetCurrentTransformationPlane(listOfOriginalPlane);
+            TransformModelObjects();
+            listOfMatrices.RemoveAt(index1);
+            listOfOriginalPlanes.RemoveAt(index2);
         }
 
-        public Tekla.Structures.Geometry3d.Point Point(double X, double Y, double Z)
+        public Point Point(double X, double Y, double Z)
         {
-            Tekla.Structures.Geometry3d.Point point = new Tekla.Structures.Geometry3d.Point(X, Y, Z);
-            this.dynamicPoints.Add(point);
+            Point point = new Point(X, Y, Z);
+            dynamicPoints.Add(point);
             return point;
         }
 
-        public Tekla.Structures.Model.Polygon Polygon()
+        public Polygon Polygon()
         {
-            Tekla.Structures.Model.Polygon polygon = new Tekla.Structures.Model.Polygon();
-            this.dynamicPolygons.Add(polygon);
+            Polygon polygon = new Polygon();
+            dynamicPolygons.Add(polygon);
             return polygon;
         }
 
-        public void AddPoints(params Tekla.Structures.Geometry3d.Point[] dynamicPointsToAdd) => this.dynamicPoints.AddRange((IEnumerable<Tekla.Structures.Geometry3d.Point>)dynamicPointsToAdd);
+        public void AddPoints(params Point[] dynamicPointsToAdd) => dynamicPoints.AddRange((IEnumerable<Point>)dynamicPointsToAdd);
 
-        public void AddPolygons(params Tekla.Structures.Model.Polygon[] dynamicPolygonsToAdd) => this.dynamicPolygons.AddRange((IEnumerable<Tekla.Structures.Model.Polygon>)dynamicPolygonsToAdd);
+        public void AddPolygons(params Polygon[] dynamicPolygonsToAdd) => dynamicPolygons.AddRange((IEnumerable<Polygon>)dynamicPolygonsToAdd);
 
-        public void AddModelObjects(params ModelObject[] dynamicObjectsToAdd) => this.dynamicObjects.AddRange((IEnumerable<ModelObject>)dynamicObjectsToAdd);
+        public void AddModelObjects(params ModelObject[] dynamicObjectsToAdd) => dynamicObjects.AddRange((IEnumerable<ModelObject>)dynamicObjectsToAdd);
 
         public void AddArrayList(ArrayList list)
         {
@@ -136,47 +136,47 @@ namespace RedButton.Common.TeklaStructures.CSLib
             for (int index = 0; index < list.Count; ++index)
             {
                 if (list[index] is ArrayList)
-                    this.AddArrayList(list[index] as ArrayList);
-                else if ((object)(list[index] as Tekla.Structures.Geometry3d.Point) != null)
+                    AddArrayList(list[index] as ArrayList);
+                else if ((object)(list[index] as Point) != null)
                 {
-                    Tekla.Structures.Geometry3d.Point point = (Tekla.Structures.Geometry3d.Point)list[index];
-                    if (point != (Tekla.Structures.Geometry3d.Point)null)
-                        this.AddPoints(point);
+                    Point point = (Point)list[index];
+                    if (point != (Point)null)
+                        AddPoints(point);
                 }
-                else if (list[index] is Tekla.Structures.Model.Polygon)
+                else if (list[index] is Polygon)
                 {
-                    Tekla.Structures.Model.Polygon polygon = (Tekla.Structures.Model.Polygon)list[index];
+                    Polygon polygon = (Polygon)list[index];
                     if (polygon != null)
-                        this.AddPolygons(polygon);
+                        AddPolygons(polygon);
                 }
                 else if (list[index] is ModelObject)
-                    this.AddModelObjects(list[index] as ModelObject);
+                    AddModelObjects(list[index] as ModelObject);
             }
         }
 
-        public void RemovePoints(params Tekla.Structures.Geometry3d.Point[] dynamicPointsToRemove)
+        public void RemovePoints(params Point[] dynamicPointsToRemove)
         {
             for (int index = 0; index < dynamicPointsToRemove.Length; ++index)
-                this.dynamicPoints.Remove(dynamicPointsToRemove[index]);
+                dynamicPoints.Remove(dynamicPointsToRemove[index]);
         }
 
-        public void RemovePolygons(params Tekla.Structures.Model.Polygon[] dynamicPolygonsToRemove)
+        public void RemovePolygons(params Polygon[] dynamicPolygonsToRemove)
         {
             for (int index = 0; index < dynamicPolygonsToRemove.Length; ++index)
-                this.dynamicPolygons.Remove(dynamicPolygonsToRemove[index]);
+                dynamicPolygons.Remove(dynamicPolygonsToRemove[index]);
         }
 
         public void RemoveModelObjects(params ModelObject[] dynamicObjectsToRemove)
         {
             for (int index = 0; index < dynamicObjectsToRemove.Length; ++index)
-                this.dynamicObjects.Remove(dynamicObjectsToRemove[index]);
+                dynamicObjects.Remove(dynamicObjectsToRemove[index]);
         }
 
-        public void RemoveAllPoints() => this.dynamicPoints.Clear();
+        public void RemoveAllPoints() => dynamicPoints.Clear();
 
-        public void RemoveAllPolygons() => this.dynamicPolygons.Clear();
+        public void RemoveAllPolygons() => dynamicPolygons.Clear();
 
-        public void RemoveAllModelObjects() => this.dynamicObjects.Clear();
+        public void RemoveAllModelObjects() => dynamicObjects.Clear();
 
         public void RemoveArrayList(ArrayList list)
         {
@@ -185,21 +185,21 @@ namespace RedButton.Common.TeklaStructures.CSLib
             for (int index = 0; index < list.Count; ++index)
             {
                 if (list[index] is ArrayList)
-                    this.RemoveArrayList(list[index] as ArrayList);
-                else if ((object)(list[index] as Tekla.Structures.Geometry3d.Point) != null)
+                    RemoveArrayList(list[index] as ArrayList);
+                else if ((object)(list[index] as Point) != null)
                 {
-                    Tekla.Structures.Geometry3d.Point point = (Tekla.Structures.Geometry3d.Point)list[index];
-                    if (point != (Tekla.Structures.Geometry3d.Point)null)
-                        this.RemovePoints(point);
+                    Point point = (Point)list[index];
+                    if (point != (Point)null)
+                        RemovePoints(point);
                 }
-                else if (list[index] is Tekla.Structures.Model.Polygon)
+                else if (list[index] is Polygon)
                 {
-                    Tekla.Structures.Model.Polygon polygon = (Tekla.Structures.Model.Polygon)list[index];
+                    Polygon polygon = (Polygon)list[index];
                     if (polygon != null)
-                        this.RemovePolygons(polygon);
+                        RemovePolygons(polygon);
                 }
                 else if (list[index] is ModelObject)
-                    this.RemoveModelObjects(list[index] as ModelObject);
+                    RemoveModelObjects(list[index] as ModelObject);
             }
         }
     }

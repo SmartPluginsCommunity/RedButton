@@ -4,7 +4,7 @@
     {
         public static bool GT(double a, double b) => a - b > Constants.CS_EPSILON;
         
-        public static bool IE(double value1, double value2, double value3) => Compare.GE(value1, value2) && Compare.LE(value1, value3);
+        public static bool IE(double value1, double value2, double value3) => GE(value1, value2) && LE(value1, value3);
 
         public static bool LT(double a, double b) => GT(b, a);
 

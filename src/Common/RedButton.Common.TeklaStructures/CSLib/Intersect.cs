@@ -12,7 +12,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
     {
         public static List<List<Point>> GetPartFacesPointsWithCuts(Part part)
         {
-            Tekla.Structures.Model.Solid solid = part.GetSolid();
+            Solid solid = part.GetSolid();
             List<List<Point>> pointListList = new List<List<Point>>();
             List<Point> pointList = new List<Point>();
             FaceEnumerator faceEnumerator = solid.GetFaceEnumerator();
@@ -49,7 +49,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
             List<List<Point>> pointListList = new List<List<Point>>();
             if (part1 != null)
             {
-                Tekla.Structures.Model.Solid solid = part1.GetSolid();
+                Solid solid = part1.GetSolid();
                 List<Point> pointList = new List<Point>();
                 FaceEnumerator faceEnumerator = solid.GetFaceEnumerator();
                 while (faceEnumerator.MoveNext())
@@ -82,7 +82,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
         }
 
         public static ArrayList IntersectAllFaces(
-          Tekla.Structures.Model.Solid solid,
+          Solid solid,
           Point point1,
           Point point2,
           Point point3)
@@ -154,16 +154,15 @@ namespace RedButton.Common.TeklaStructures.CSLib
           Point lineSegment2Point2,
           ref List<Point> intersectPoints)
         {
-            return Intersect.IntersectLineSegmentToLineSegment2D(new LineSegment(lineSegment1Point1, lineSegment1Point2), new LineSegment(lineSegment2Point1, lineSegment2Point2), ref intersectPoints);
+            return IntersectLineSegmentToLineSegment2D(new LineSegment(lineSegment1Point1, lineSegment1Point2), new LineSegment(lineSegment2Point1, lineSegment2Point2), ref intersectPoints);
         }
         
-        public static bool IntersectLineSegmentToLineSegment2D(
+        public static List<Point> IntersectLineSegmentToLineSegment2D(
             LineSegment lineSegment1,
             LineSegment lineSegment2,
-            ref List<Point> intersectPoints,
             bool usedProjectedShape = false)
         {
-            intersectPoints.Clear();
+            var intersectPoints = new List<Point>();
             if (Geo.CompareTwoLinesSegment2D(lineSegment1, lineSegment2))
             {
                 intersectPoints.Add(lineSegment1.Point1);
@@ -171,7 +170,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
             }
             else
             {
-                LineSegment line = Intersection.LineToLine(new Line(lineSegment1), new Line(lineSegment2));
+                var line = Intersection.LineToLine(new Line(lineSegment1), new Line(lineSegment2));
                 if (line != (LineSegment) null)
                 {
                     if (Geo.CompareTwoPoints2D(line.Point1, line.Point2))
@@ -193,11 +192,11 @@ namespace RedButton.Common.TeklaStructures.CSLib
                     }
                 }
                 else if (!usedProjectedShape)
-                    Intersect.SaveIntersect2DTeklaError(lineSegment1, lineSegment2, ref intersectPoints, usedProjectedShape);
+                    SaveIntersect2DTeklaError(lineSegment1, lineSegment2, ref intersectPoints, usedProjectedShape);
                 if (usedProjectedShape)
-                    Intersect.SaveIntersect2DTeklaError(lineSegment1, lineSegment2, ref intersectPoints, usedProjectedShape);
+                    SaveIntersect2DTeklaError(lineSegment1, lineSegment2, ref intersectPoints, usedProjectedShape);
             }
-            return intersectPoints.Count > 0;
+            return intersectPoints;
         }
         
         private static void SaveIntersect2DTeklaError(
@@ -305,7 +304,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
           Point lineSegment2Point2,
           ref List<Point> intersectPoints)
         {
-            return Intersect.IntersectLineSegmentToLineSegment3D(new LineSegment(lineSegment1Point1, lineSegment1Point2), new LineSegment(lineSegment2Point1, lineSegment2Point2), ref intersectPoints);
+            return IntersectLineSegmentToLineSegment3D(new LineSegment(lineSegment1Point1, lineSegment1Point2), new LineSegment(lineSegment2Point1, lineSegment2Point2), ref intersectPoints);
         }
 
         public static bool IntersectLineToCircle2D(
@@ -318,7 +317,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
             intersectPoints.Clear();
             double num1 = linePoint2.X - linePoint1.X;
             double num2 = linePoint2.Y - linePoint1.Y;
-            double[] numArray = Intersect.QuadraticEquation(num1 * num1 + num2 * num2, 2.0 * (num1 * (linePoint1.X - centre.X) + num2 * (linePoint1.Y - centre.Y)), (linePoint1.X - centre.X) * (linePoint1.X - centre.X) + (linePoint1.Y - centre.Y) * (linePoint1.Y - centre.Y) - radius * radius);
+            double[] numArray = QuadraticEquation(num1 * num1 + num2 * num2, 2.0 * (num1 * (linePoint1.X - centre.X) + num2 * (linePoint1.Y - centre.Y)), (linePoint1.X - centre.X) * (linePoint1.X - centre.X) + (linePoint1.Y - centre.Y) * (linePoint1.Y - centre.Y) - radius * radius);
             if (!double.IsNaN(numArray[0]))
                 intersectPoints.Add(new Point(linePoint1.X + numArray[0] * num1, linePoint1.Y + numArray[0] * num2));
             if (!double.IsNaN(numArray[1]))
@@ -333,7 +332,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
           Point lineSegmentPoint2,
           ref List<Point> intersectPoints)
         {
-            return Intersect.IntersectLineToLineSegment2D(new Line(linePoint1, linePoint2), new LineSegment(lineSegmentPoint1, lineSegmentPoint2), ref intersectPoints);
+            return IntersectLineToLineSegment2D(new Line(linePoint1, linePoint2), new LineSegment(lineSegmentPoint1, lineSegmentPoint2), ref intersectPoints);
         }
 
         public static bool IntersectLineToLineSegment2D(
@@ -381,7 +380,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
           Point lineSegmentPoint2,
           ref List<Point> intersectPoints)
         {
-            return Intersect.IntersectLineToLineSegment3D(new Line(linePoint1, linePoint2), new LineSegment(lineSegmentPoint1, lineSegmentPoint2), ref intersectPoints);
+            return IntersectLineToLineSegment3D(new Line(linePoint1, linePoint2), new LineSegment(lineSegmentPoint1, lineSegmentPoint2), ref intersectPoints);
         }
 
         public static bool IntersectLineToLineSegment3D(
@@ -452,12 +451,12 @@ namespace RedButton.Common.TeklaStructures.CSLib
 
         public class PlaneSolidIntersect
         {
-            private Intersect.PlaneSolidIntersect.SummaryPlane intersectPlane;
+            private SummaryPlane intersectPlane;
             private Tekla.Structures.Model.Model model;
-            private List<Intersect.PlaneSolidIntersect.SummaryPlane> partPlanes;
+            private List<SummaryPlane> partPlanes;
             private PolygonOperation po;
 
-            public PlaneSolidIntersect(Tekla.Structures.Model.Model actualModel) => this.model = actualModel;
+            public PlaneSolidIntersect(Tekla.Structures.Model.Model actualModel) => model = actualModel;
 
             public ArrayList PlaneIntersect(
               Part partToIntersect,
@@ -465,7 +464,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
               Point point2,
               Point point3)
             {
-                List<List<Point>> pointListList = this.PlaneIntersectList(partToIntersect, point1, point2, point3);
+                List<List<Point>> pointListList = PlaneIntersectList(partToIntersect, point1, point2, point3);
                 ArrayList arrayList = new ArrayList(pointListList.Count);
                 foreach (List<Point> pointList in pointListList)
                 {
@@ -481,7 +480,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
               Point point2,
               Point point3)
             {
-                List<List<Point>> pointListList = this.PlaneIntersectList(partToIntersectFaces, point1, point2, point3);
+                List<List<Point>> pointListList = PlaneIntersectList(partToIntersectFaces, point1, point2, point3);
                 ArrayList arrayList = new ArrayList(pointListList.Count);
                 foreach (List<Point> pointList in pointListList)
                 {
@@ -497,7 +496,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
               Point point2,
               Point point3)
             {
-                return this.PlaneIntersectList(Intersect.GetPartFacesPointsWithCuts(partToIntersect), point1, point2, point3);
+                return PlaneIntersectList(GetPartFacesPointsWithCuts(partToIntersect), point1, point2, point3);
             }
 
             public List<List<Point>> PlaneIntersectList(
@@ -506,7 +505,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
               Point point2,
               Point point3)
             {
-                List<List<List<Point>>> pointListListList = this.PlaneIntersectPolygonsWithHolesList(partToIntersectFaces, point1, point2, point3);
+                List<List<List<Point>>> pointListListList = PlaneIntersectPolygonsWithHolesList(partToIntersectFaces, point1, point2, point3);
                 List<List<Point>> pointListList = new List<List<Point>>();
                 for (int index1 = pointListListList.Count - 1; index1 >= 0; --index1)
                 {
@@ -527,7 +526,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
               Point point2,
               Point point3)
             {
-                List<List<List<Point>>> pointListListList = this.PlaneIntersectPolygonsWithHolesList(Intersect.GetPartFacesPointsWithCuts(partToIntersect), point1, point2, point3);
+                List<List<List<Point>>> pointListListList = PlaneIntersectPolygonsWithHolesList(GetPartFacesPointsWithCuts(partToIntersect), point1, point2, point3);
                 ArrayList arrayList1 = new ArrayList(pointListListList.Count);
                 foreach (List<List<Point>> pointListList in pointListListList)
                 {
@@ -548,7 +547,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
               Point point2,
               Point point3)
             {
-                List<List<List<Point>>> pointListListList = this.PlaneIntersectPolygonsWithHolesList(partToIntersectFaces, point1, point2, point3);
+                List<List<List<Point>>> pointListListList = PlaneIntersectPolygonsWithHolesList(partToIntersectFaces, point1, point2, point3);
                 ArrayList arrayList1 = new ArrayList(pointListListList.Count);
                 foreach (List<List<Point>> pointListList in pointListListList)
                 {
@@ -569,7 +568,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
               Point point2,
               Point point3)
             {
-                return this.PlaneIntersectPolygonsWithHolesList(Intersect.GetPartFacesPointsWithCuts(partToIntersect), point1, point2, point3);
+                return PlaneIntersectPolygonsWithHolesList(GetPartFacesPointsWithCuts(partToIntersect), point1, point2, point3);
             }
 
             public List<List<List<Point>>> PlaneIntersectPolygonsWithHolesList(
@@ -579,7 +578,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
               Point point3)
             {
                 List<List<List<Point>>> pointListListList = new List<List<List<Point>>>();
-                SetPlane setPlane = new SetPlane(this.model);
+                SetPlane setPlane = new SetPlane(model);
                 setPlane.AddPoints(point1, point2, point3);
                 foreach (List<Point> partToIntersectFace in partToIntersectFaces)
                     setPlane.AddPoints(partToIntersectFace.ToArray());
@@ -588,15 +587,15 @@ namespace RedButton.Common.TeklaStructures.CSLib
                 setPlane.Begin(point1, vectorLineSegment, newVectorY);
                 try
                 {
-                    this.model = new Tekla.Structures.Model.Model();
-                    this.po = new PolygonOperation();
-                    this.partPlanes = new List<Intersect.PlaneSolidIntersect.SummaryPlane>();
-                    this.intersectPlane = new Intersect.PlaneSolidIntersect.SummaryPlane(new List<Point>(3)
+                    model = new Tekla.Structures.Model.Model();
+                    po = new PolygonOperation();
+                    partPlanes = new List<SummaryPlane>();
+                    intersectPlane = new SummaryPlane(new List<Point>(3)
           {
             new Point(point1),
             new Point(point2),
             new Point(point3)
-          }, this.model);
+          }, model);
                     List<List<Point>> faces = new List<List<Point>>(partToIntersectFaces.Count);
                     foreach (List<Point> partToIntersectFace in partToIntersectFaces)
                     {
@@ -606,16 +605,16 @@ namespace RedButton.Common.TeklaStructures.CSLib
                         if (pointList.Count > 0)
                             faces.Add(pointList);
                     }
-                    this.RemoveLinesInFaces(faces);
-                    this.CreateSummaryPlanes(faces);
-                    Intersect.LineSolidIntersect lineSolidIntersect = new Intersect.LineSolidIntersect(this.model);
+                    RemoveLinesInFaces(faces);
+                    CreateSummaryPlanes(faces);
+                    LineSolidIntersect lineSolidIntersect = new LineSolidIntersect(model);
                     List<LineSegment> lines = new List<LineSegment>(10);
                     List<List<Point>> pointListList1 = new List<List<Point>>();
-                    foreach (Intersect.PlaneSolidIntersect.SummaryPlane partPlane in this.partPlanes)
+                    foreach (SummaryPlane partPlane in partPlanes)
                     {
                         if (!partPlane.IsIntersectFace)
                         {
-                            Line line = this.intersectPlane.IntersectPlane(partPlane);
+                            Line line = intersectPlane.IntersectPlane(partPlane);
                             if (line != null)
                                 lines.AddRange((IEnumerable<LineSegment>)partPlane.IntersectLine(line));
                         }
@@ -670,7 +669,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
                         //int num = (int)MessageBox.Show(ex.ToString());
                     }
                     returnPolygons.AddRange((IEnumerable<Polygon>)polygonList1);
-                    foreach (List<Polygon> polygonList2 in this.PreparePolygon(returnPolygons))
+                    foreach (List<Polygon> polygonList2 in PreparePolygon(returnPolygons))
                     {
                         List<List<Point>> pointListList2 = new List<List<Point>>();
                         foreach (Polygon polygon in polygonList2)
@@ -696,20 +695,20 @@ namespace RedButton.Common.TeklaStructures.CSLib
             private void CreateSummaryPlanes(List<List<Point>> faces)
             {
                 foreach (List<Point> face in faces)
-                    this.partPlanes.Add(new Intersect.PlaneSolidIntersect.SummaryPlane(face, this.model));
-                for (int index1 = 0; index1 < this.partPlanes.Count; ++index1)
+                    partPlanes.Add(new SummaryPlane(face, model));
+                for (int index1 = 0; index1 < partPlanes.Count; ++index1)
                 {
-                    SetPlane setPlane = new SetPlane(this.model);
-                    setPlane.AddPoints(this.partPlanes[index1].Polygon.ToArray());
-                    for (int index2 = index1 + 1; index2 < this.partPlanes.Count; ++index2)
-                        setPlane.AddPoints(this.partPlanes[index2].Polygon.ToArray());
-                    setPlane.Begin(this.partPlanes[index1].Polygon[0], this.partPlanes[index1].VectorT, this.partPlanes[index1].VectorS);
+                    SetPlane setPlane = new SetPlane(model);
+                    setPlane.AddPoints(partPlanes[index1].Polygon.ToArray());
+                    for (int index2 = index1 + 1; index2 < partPlanes.Count; ++index2)
+                        setPlane.AddPoints(partPlanes[index2].Polygon.ToArray());
+                    setPlane.Begin(partPlanes[index1].Polygon[0], partPlanes[index1].VectorT, partPlanes[index1].VectorS);
                     try
                     {
-                        for (int index2 = index1 + 1; index2 < this.partPlanes.Count; ++index2)
+                        for (int index2 = index1 + 1; index2 < partPlanes.Count; ++index2)
                         {
                             bool flag = true;
-                            foreach (Point point in this.partPlanes[index2].Polygon)
+                            foreach (Point point in partPlanes[index2].Polygon)
                             {
                                 if (Compare.NE(point.Z, 0.0))
                                 {
@@ -719,16 +718,16 @@ namespace RedButton.Common.TeklaStructures.CSLib
                             }
                             if (flag)
                             {
-                                switch (this.po.CsCmpTwoPolygons(Geo.ConvertPolygonFromListPoint(this.partPlanes[index1].Polygon), Geo.ConvertPolygonFromListPoint(this.partPlanes[index2].Polygon)))
+                                switch (po.CsCmpTwoPolygons(Geo.ConvertPolygonFromListPoint(partPlanes[index1].Polygon), Geo.ConvertPolygonFromListPoint(partPlanes[index2].Polygon)))
                                 {
                                     case PolygonOperation.ComparePolygonTypeEnum.POL1_IN_POL2:
-                                        this.partPlanes[index2].SamePlanes.Add(this.partPlanes[index1]);
-                                        this.partPlanes.RemoveAt(index1);
+                                        partPlanes[index2].SamePlanes.Add(partPlanes[index1]);
+                                        partPlanes.RemoveAt(index1);
                                         --index1;
                                         goto label_24;
                                     case PolygonOperation.ComparePolygonTypeEnum.POL2_IN_POL1:
-                                        this.partPlanes[index1].SamePlanes.Add(this.partPlanes[index2]);
-                                        this.partPlanes.RemoveAt(index2);
+                                        partPlanes[index1].SamePlanes.Add(partPlanes[index2]);
+                                        partPlanes.RemoveAt(index2);
                                         --index2;
                                         continue;
                                     default:
@@ -743,14 +742,14 @@ namespace RedButton.Common.TeklaStructures.CSLib
                 label_24:
                     setPlane.End();
                 }
-                SetPlane setPlane1 = new SetPlane(this.model);
-                setPlane1.AddPoints(this.intersectPlane.Polygon.ToArray());
-                foreach (Intersect.PlaneSolidIntersect.SummaryPlane partPlane in this.partPlanes)
+                SetPlane setPlane1 = new SetPlane(model);
+                setPlane1.AddPoints(intersectPlane.Polygon.ToArray());
+                foreach (SummaryPlane partPlane in partPlanes)
                     setPlane1.AddPoints(partPlane.Polygon.ToArray());
-                setPlane1.Begin(this.intersectPlane.Polygon[0], this.intersectPlane.VectorT, this.intersectPlane.VectorS);
+                setPlane1.Begin(intersectPlane.Polygon[0], intersectPlane.VectorT, intersectPlane.VectorS);
                 try
                 {
-                    foreach (Intersect.PlaneSolidIntersect.SummaryPlane partPlane in this.partPlanes)
+                    foreach (SummaryPlane partPlane in partPlanes)
                     {
                         foreach (Point point in partPlane.Polygon)
                         {
@@ -771,9 +770,9 @@ namespace RedButton.Common.TeklaStructures.CSLib
             private List<List<Polygon>> PreparePolygon(List<Polygon> polygons)
             {
                 List<List<Polygon>> polygonListList = new List<List<Polygon>>();
-                SetPlane setPlane = new SetPlane(this.model);
+                SetPlane setPlane = new SetPlane(model);
                 setPlane.AddPolygons(polygons.ToArray());
-                setPlane.Begin(this.intersectPlane.Polygon[0], this.intersectPlane.VectorS, this.intersectPlane.VectorT);
+                setPlane.Begin(intersectPlane.Polygon[0], intersectPlane.VectorS, intersectPlane.VectorT);
                 try
                 {
                     foreach (Polygon polygon in polygons)
@@ -786,14 +785,14 @@ namespace RedButton.Common.TeklaStructures.CSLib
                     {
                         for (int index2 = index1 + 1; index2 < polygons.Count; ++index2)
                         {
-                            switch (this.po.CsCmpTwoPolygons(polygons[index1], polygons[index2]))
+                            switch (po.CsCmpTwoPolygons(polygons[index1], polygons[index2]))
                             {
                                 case PolygonOperation.ComparePolygonTypeEnum.POL1_EQ_POL2:
                                     polygons.RemoveAt(index2);
                                     --index2;
                                     break;
                                 case PolygonOperation.ComparePolygonTypeEnum.POL1_COLLIDE_POL2:
-                                    List<PolygonOperation.PolygonWithHoles> polygonWithHolesList = this.po.PolygonOperations(polygons[index1], polygons[index2], PolygonOperation.PolygonOperationsEnum.UNION);
+                                    List<PolygonOperation.PolygonWithHoles> polygonWithHolesList = po.PolygonOperations(polygons[index1], polygons[index2], PolygonOperation.PolygonOperationsEnum.UNION);
                                     if (polygonWithHolesList.Count == 1)
                                     {
                                         polygons[index1] = polygonWithHolesList[0].contourPolygon;
@@ -821,7 +820,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
                             bool polygonOrientation2 = PolygonOperation.GetPolygonOrientation(polygons[index1]);
                             for (int index2 = 0; index2 < polygons.Count; ++index2)
                             {
-                                if (index1 != index2 && this.po.CsCmpTwoPolygons(polygons[index1], polygons[index2]) == PolygonOperation.ComparePolygonTypeEnum.POL1_IN_POL2)
+                                if (index1 != index2 && po.CsCmpTwoPolygons(polygons[index1], polygons[index2]) == PolygonOperation.ComparePolygonTypeEnum.POL1_IN_POL2)
                                 {
                                     flag = false;
                                     break;
@@ -841,7 +840,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
                         {
                             foreach (List<Polygon> polygonList in polygonListList)
                             {
-                                if (polygon != polygonList[0] && this.po.CsCmpTwoPolygons(polygon, polygonList[0]) == PolygonOperation.ComparePolygonTypeEnum.POL1_IN_POL2)
+                                if (polygon != polygonList[0] && po.CsCmpTwoPolygons(polygon, polygonList[0]) == PolygonOperation.ComparePolygonTypeEnum.POL1_IN_POL2)
                                 {
                                     polygonList.Add(polygon);
                                     break;
@@ -890,20 +889,20 @@ namespace RedButton.Common.TeklaStructures.CSLib
 
                 public SummaryPlane(List<Point> facePolygon, Tekla.Structures.Model.Model actualModel)
                 {
-                    this.model = actualModel;
-                    this.IsIntersectFace = true;
-                    this.SamePlanes = new List<Intersect.PlaneSolidIntersect.SummaryPlane>();
-                    this.Polygon = new List<Point>((IEnumerable<Point>)facePolygon);
-                    this.VectorS = Geo.GetVectorLineSegment(this.Polygon[1], this.Polygon[0]).GetNormal();
-                    this.VectorT = Geo.GetVectorLineSegment(this.Polygon[2], this.Polygon[0]).GetNormal();
-                    this.Normal = new Vector(this.VectorT.Y * this.VectorS.Z - this.VectorT.Z * this.VectorS.Y, this.VectorT.Z * this.VectorS.X - this.VectorT.X * this.VectorS.Z, this.VectorT.X * this.VectorS.Y - this.VectorT.Y * this.VectorS.X);
+                    model = actualModel;
+                    IsIntersectFace = true;
+                    SamePlanes = new List<SummaryPlane>();
+                    Polygon = new List<Point>((IEnumerable<Point>)facePolygon);
+                    VectorS = Geo.GetVectorLineSegment(Polygon[1], Polygon[0]).GetNormal();
+                    VectorT = Geo.GetVectorLineSegment(Polygon[2], Polygon[0]).GetNormal();
+                    Normal = new Vector(VectorT.Y * VectorS.Z - VectorT.Z * VectorS.Y, VectorT.Z * VectorS.X - VectorT.X * VectorS.Z, VectorT.X * VectorS.Y - VectorT.Y * VectorS.X);
                 }
 
                 public bool IsIntersectFace { get; set; }
 
                 public List<Point> Polygon { get; private set; }
 
-                public List<Intersect.PlaneSolidIntersect.SummaryPlane> SamePlanes { get; set; }
+                public List<SummaryPlane> SamePlanes { get; set; }
 
                 public Vector VectorS { get; set; }
 
@@ -915,30 +914,30 @@ namespace RedButton.Common.TeklaStructures.CSLib
                 {
                     List<Point> points = new List<Point>();
                     List<LineSegment> lineSegmentList1 = new List<LineSegment>();
-                    for (int index1 = 0; index1 < this.Polygon.Count; ++index1)
+                    for (int index1 = 0; index1 < Polygon.Count; ++index1)
                     {
                         int index2 = index1 + 1;
-                        if (index2 == this.Polygon.Count)
+                        if (index2 == Polygon.Count)
                             index2 = 0;
                         List<Point> intersectPoints = new List<Point>();
-                        Intersect.IntersectLineToLineSegment3D(line, new LineSegment(this.Polygon[index1], this.Polygon[index2]), ref intersectPoints);
+                        IntersectLineToLineSegment3D(line, new LineSegment(Polygon[index1], Polygon[index2]), ref intersectPoints);
                         points.AddRange((IEnumerable<Point>)intersectPoints);
                     }
-                    List<Point> pointList = this.SortPoints(points);
+                    List<Point> pointList = SortPoints(points);
                     if (pointList.Count > 0)
                     {
-                        SetPlane setPlane = new SetPlane(this.model);
+                        SetPlane setPlane = new SetPlane(model);
                         setPlane.AddPoints(pointList.ToArray());
-                        setPlane.AddPoints(this.Polygon.ToArray());
-                        foreach (Intersect.PlaneSolidIntersect.SummaryPlane samePlane in this.SamePlanes)
+                        setPlane.AddPoints(Polygon.ToArray());
+                        foreach (SummaryPlane samePlane in SamePlanes)
                             setPlane.AddPoints(samePlane.Polygon.ToArray());
-                        setPlane.Begin(this.Polygon[0], this.VectorT, this.VectorS);
+                        setPlane.Begin(Polygon[0], VectorT, VectorS);
                         try
                         {
                             if (pointList.Count == 1)
                             {
                                 bool flag = true;
-                                foreach (Intersect.PlaneSolidIntersect.SummaryPlane samePlane in this.SamePlanes)
+                                foreach (SummaryPlane samePlane in SamePlanes)
                                 {
                                     if (Geo.IsPointInsidePolygon2D(samePlane.Polygon, pointList[0]))
                                     {
@@ -954,7 +953,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
                                 for (int index1 = 0; index1 < pointList.Count - 1; ++index1)
                                 {
                                     int index2 = index1 + 1;
-                                    if (Geo.IsPointInsidePolygon2D(this.Polygon, Geo.GetCenterPoint2D(pointList[index1], pointList[index2]), true))
+                                    if (Geo.IsPointInsidePolygon2D(Polygon, Geo.GetCenterPoint2D(pointList[index1], pointList[index2]), true))
                                         lineSegmentList1.Add(new LineSegment(new Point(pointList[index1]), new Point(pointList[index2])));
                                 }
                                 for (int index1 = 0; index1 < lineSegmentList1.Count - 1; ++index1)
@@ -967,7 +966,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
                                         --index1;
                                     }
                                 }
-                                foreach (Intersect.PlaneSolidIntersect.SummaryPlane samePlane in this.SamePlanes)
+                                foreach (SummaryPlane samePlane in SamePlanes)
                                 {
                                     List<LineSegment> lineSegmentList2 = new List<LineSegment>();
                                     foreach (LineSegment lineSegment in lineSegmentList1)
@@ -976,8 +975,8 @@ namespace RedButton.Common.TeklaStructures.CSLib
                                 }
                             }
                             setPlane.RemoveAllPoints();
-                            setPlane.AddPoints(this.Polygon.ToArray());
-                            foreach (Intersect.PlaneSolidIntersect.SummaryPlane samePlane in this.SamePlanes)
+                            setPlane.AddPoints(Polygon.ToArray());
+                            foreach (SummaryPlane samePlane in SamePlanes)
                                 setPlane.AddPoints(samePlane.Polygon.ToArray());
                             foreach (LineSegment lineSegment in lineSegmentList1)
                                 setPlane.AddPoints(lineSegment.Point1, lineSegment.Point2);
@@ -990,16 +989,16 @@ namespace RedButton.Common.TeklaStructures.CSLib
                     return lineSegmentList1;
                 }
 
-                public Line IntersectPlane(Intersect.PlaneSolidIntersect.SummaryPlane other)
+                public Line IntersectPlane(SummaryPlane other)
                 {
                     Line line = (Line)null;
-                    Vector Direction = new Vector(this.Normal.Y * other.Normal.Z - this.Normal.Z * other.Normal.Y, this.Normal.Z * other.Normal.X - this.Normal.X * other.Normal.Z, this.Normal.X * other.Normal.Y - this.Normal.Y * other.Normal.X);
+                    Vector Direction = new Vector(Normal.Y * other.Normal.Z - Normal.Z * other.Normal.Y, Normal.Z * other.Normal.X - Normal.X * other.Normal.Z, Normal.X * other.Normal.Y - Normal.Y * other.Normal.X);
                     Vector vector = new Vector(other.Normal.Y * Direction.Z - other.Normal.Z * Direction.Y, other.Normal.Z * Direction.X - other.Normal.X * Direction.Z, other.Normal.X * Direction.Y - other.Normal.Y * Direction.X);
-                    double num1 = this.Normal.X * vector.X + this.Normal.Y * vector.Y + this.Normal.Z * vector.Z;
+                    double num1 = Normal.X * vector.X + Normal.Y * vector.Y + Normal.Z * vector.Z;
                     if (Math.Abs(num1) > 0.0)
                     {
-                        Vector vectorLineSegment = Geo.GetVectorLineSegment(this.Polygon[0], other.Polygon[0]);
-                        double num2 = (this.Normal.X * vectorLineSegment.X + this.Normal.Y * vectorLineSegment.Y + this.Normal.Z * vectorLineSegment.Z) / num1;
+                        Vector vectorLineSegment = Geo.GetVectorLineSegment(Polygon[0], other.Polygon[0]);
+                        double num2 = (Normal.X * vectorLineSegment.X + Normal.Y * vectorLineSegment.Y + Normal.Z * vectorLineSegment.Z) / num1;
                         line = new Line(other.Polygon[0] + (Point)(num2 * vector), Direction);
                     }
                     return line;
@@ -1059,39 +1058,39 @@ namespace RedButton.Common.TeklaStructures.CSLib
 
         public class LineSolidIntersect
         {
-            private List<Intersect.LineSolidIntersect.IntersectPointResult> intersectResults;
+            private List<IntersectPointResult> intersectResults;
             private Tekla.Structures.Model.Model model;
             private List<Point> results;
 
-            public LineSolidIntersect(Tekla.Structures.Model.Model actualModel) => this.model = actualModel;
+            public LineSolidIntersect(Tekla.Structures.Model.Model actualModel) => model = actualModel;
 
             public List<Point> LineIntersect(
               List<List<Point>> partFacesPoints,
               Point beginLinePoint,
               Point endLinePoint)
             {
-                this.intersectResults = new List<Intersect.LineSolidIntersect.IntersectPointResult>();
-                this.results = new List<Point>();
+                intersectResults = new List<IntersectPointResult>();
+                results = new List<Point>();
                 for (int index = 0; index < partFacesPoints.Count; ++index)
                 {
-                    Point point = this.IntersectLinePart(partFacesPoints[index][0], partFacesPoints[index][1], partFacesPoints[index][2], beginLinePoint, endLinePoint);
-                    if (!double.IsNaN(point.X) && !double.IsNaN(point.Y) && (!double.IsNaN(point.Z) && this.TestIsPointValid(partFacesPoints[index], point)))
+                    Point point = IntersectLinePart(partFacesPoints[index][0], partFacesPoints[index][1], partFacesPoints[index][2], beginLinePoint, endLinePoint);
+                    if (!double.IsNaN(point.X) && !double.IsNaN(point.Y) && (!double.IsNaN(point.Z) && TestIsPointValid(partFacesPoints[index], point)))
                     {
-                        Intersect.LineSolidIntersect.IntersectPointResult intersectPointResult = new Intersect.LineSolidIntersect.IntersectPointResult(point, index);
-                        intersectPointResult.IsInLine = this.IsInLine(partFacesPoints[index], intersectPointResult.Point);
-                        this.intersectResults.Add(intersectPointResult);
+                        IntersectPointResult intersectPointResult = new IntersectPointResult(point, index);
+                        intersectPointResult.IsInLine = IsInLine(partFacesPoints[index], intersectPointResult.Point);
+                        intersectResults.Add(intersectPointResult);
                     }
                 }
-                this.UniquePoints();
-                for (int index = 0; index < this.intersectResults.Count; ++index)
+                UniquePoints();
+                for (int index = 0; index < intersectResults.Count; ++index)
                 {
-                    if (this.intersectResults[index].IsInLine)
-                        this.results.Add(this.intersectResults[index].Point);
-                    else if (this.intersectResults[index].ParentFaces.Count == 1)
-                        this.results.Add(this.intersectResults[index].Point);
+                    if (intersectResults[index].IsInLine)
+                        results.Add(intersectResults[index].Point);
+                    else if (intersectResults[index].ParentFaces.Count == 1)
+                        results.Add(intersectResults[index].Point);
                 }
-                this.SortResults(beginLinePoint);
-                return this.results;
+                SortResults(beginLinePoint);
+                return results;
             }
 
             public List<Point> LineIntersect(
@@ -1099,10 +1098,10 @@ namespace RedButton.Common.TeklaStructures.CSLib
               Point beginLinePoint,
               Point endLinePoint)
             {
-                return this.LineIntersect(Intersect.GetPartFacesPointsWithCuts(partToIntersect), beginLinePoint, endLinePoint);
+                return LineIntersect(GetPartFacesPointsWithCuts(partToIntersect), beginLinePoint, endLinePoint);
             }
 
-            public List<Point> LineIntersect(Part partToIntersect, LineSegment lineSegment) => this.LineIntersect(partToIntersect, lineSegment.Point1, lineSegment.Point2);
+            public List<Point> LineIntersect(Part partToIntersect, LineSegment lineSegment) => LineIntersect(partToIntersect, lineSegment.Point1, lineSegment.Point2);
 
             public List<Point> LineIntersect(Part partToIntersect, Line line)
             {
@@ -1111,7 +1110,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
                 double num = 1000.0;
                 Point endLinePoint = new Point(line.Origin.X + vector.X * num, line.Origin.Y + vector.Y * num, line.Origin.Z + vector.Z * num);
                 Point beginLinePoint = new Point(line.Origin.X - vector.X * num, line.Origin.Y - vector.Y * num, line.Origin.Z - vector.Z * num);
-                return this.LineIntersect(partToIntersect, beginLinePoint, endLinePoint);
+                return LineIntersect(partToIntersect, beginLinePoint, endLinePoint);
             }
 
             private Point IntersectLinePart(
@@ -1176,31 +1175,31 @@ namespace RedButton.Common.TeklaStructures.CSLib
 
             private void SortResults(Point beginLinePoint)
             {
-                Point[] pointArray = new Point[this.results.Count];
-                for (int index = 0; index < this.results.Count; ++index)
-                    pointArray[index] = this.results[index];
+                Point[] pointArray = new Point[results.Count];
+                for (int index = 0; index < results.Count; ++index)
+                    pointArray[index] = results[index];
                 bool flag = true;
                 while (flag)
                 {
                     flag = false;
-                    for (int index = 0; index < this.results.Count; ++index)
+                    for (int index = 0; index < results.Count; ++index)
                     {
-                        if (index + 1 < this.results.Count && this.IsNear(ref pointArray[index], ref pointArray[index + 1], beginLinePoint))
+                        if (index + 1 < results.Count && IsNear(ref pointArray[index], ref pointArray[index + 1], beginLinePoint))
                             flag = true;
                     }
                 }
-                int count = this.results.Count;
-                this.results.Clear();
+                int count = results.Count;
+                results.Clear();
                 for (int index = 0; index < count; ++index)
-                    this.results.Add(pointArray[index]);
+                    results.Add(pointArray[index]);
             }
 
             private bool TestIsPointValid(List<Point> polygonPoints, Point testPoint)
             {
                 bool flag = false;
-                if (this.IsInLine(polygonPoints, testPoint))
+                if (IsInLine(polygonPoints, testPoint))
                     return !flag;
-                SetPlane setPlane = new SetPlane(this.model);
+                SetPlane setPlane = new SetPlane(model);
                 foreach (Point polygonPoint in polygonPoints)
                     setPlane.AddPoints(polygonPoint);
                 setPlane.AddPoints(testPoint);
@@ -1220,16 +1219,16 @@ namespace RedButton.Common.TeklaStructures.CSLib
 
             private void UniquePoints()
             {
-                for (int index1 = 0; index1 < this.intersectResults.Count; ++index1)
+                for (int index1 = 0; index1 < intersectResults.Count; ++index1)
                 {
-                    for (int index2 = 0; index2 < this.intersectResults.Count; ++index2)
+                    for (int index2 = 0; index2 < intersectResults.Count; ++index2)
                     {
-                        if (index2 != index1 && Geo.CompareTwoPoints3D(this.intersectResults[index1].Point, this.intersectResults[index2].Point))
+                        if (index2 != index1 && Geo.CompareTwoPoints3D(intersectResults[index1].Point, intersectResults[index2].Point))
                         {
-                            if (this.intersectResults[index1].IsInLine || this.intersectResults[index2].IsInLine)
-                                this.intersectResults[index1].IsInLine = true;
-                            this.intersectResults[index1].ParentFaces.AddRange((IEnumerable<int>)this.intersectResults[index2].ParentFaces);
-                            this.intersectResults.RemoveAt(index2);
+                            if (intersectResults[index1].IsInLine || intersectResults[index2].IsInLine)
+                                intersectResults[index1].IsInLine = true;
+                            intersectResults[index1].ParentFaces.AddRange((IEnumerable<int>)intersectResults[index2].ParentFaces);
+                            intersectResults.RemoveAt(index2);
                             --index2;
                         }
                     }
@@ -1240,10 +1239,10 @@ namespace RedButton.Common.TeklaStructures.CSLib
             {
                 public IntersectPointResult(Point resultPoint, int parentface)
                 {
-                    this.Point = resultPoint;
-                    this.IsInLine = false;
-                    this.ParentFaces = new List<int>();
-                    this.ParentFaces.Add(parentface);
+                    Point = resultPoint;
+                    IsInLine = false;
+                    ParentFaces = new List<int>();
+                    ParentFaces.Add(parentface);
                 }
 
                 public bool IsInLine { get; set; }
@@ -1258,9 +1257,9 @@ namespace RedButton.Common.TeklaStructures.CSLib
         {
             public LinearEquationsWithUnknowns(int numberOfUnknowns)
             {
-                this.CountOfUnknowns = numberOfUnknowns;
-                this.Data = new double[numberOfUnknowns, numberOfUnknowns + 1];
-                this.Result = new double[numberOfUnknowns];
+                CountOfUnknowns = numberOfUnknowns;
+                Data = new double[numberOfUnknowns, numberOfUnknowns + 1];
+                Result = new double[numberOfUnknowns];
             }
 
             public int CountOfUnknowns { get; private set; }
@@ -1271,12 +1270,12 @@ namespace RedButton.Common.TeklaStructures.CSLib
 
             public void Sum()
             {
-                for (int unknown = 0; unknown < this.CountOfUnknowns - 1; ++unknown)
-                    this.TerminateUnknown(unknown);
-                for (int index = this.CountOfUnknowns - 1; index >= 0; --index)
+                for (int unknown = 0; unknown < CountOfUnknowns - 1; ++unknown)
+                    TerminateUnknown(unknown);
+                for (int index = CountOfUnknowns - 1; index >= 0; --index)
                 {
-                    double num = this.SummaryUnknovn(index, index);
-                    this.Result[index] = (this.Data[index, this.CountOfUnknowns] - num) / this.Data[index, index];
+                    double num = SummaryUnknovn(index, index);
+                    Result[index] = (Data[index, CountOfUnknowns] - num) / Data[index, index];
                 }
             }
 
@@ -1284,50 +1283,50 @@ namespace RedButton.Common.TeklaStructures.CSLib
             {
                 if (line1 == line2)
                     return;
-                for (int index = 0; index < this.CountOfUnknowns + 1; ++index)
-                    this.Data[line1, index] = this.Data[line1, index] + this.Data[line2, index];
+                for (int index = 0; index < CountOfUnknowns + 1; ++index)
+                    Data[line1, index] = Data[line1, index] + Data[line2, index];
             }
 
             private void GetNonZero(int unknown)
             {
                 int line2 = unknown;
                 int line1 = unknown;
-                while (line1 < this.CountOfUnknowns && this.Data[line1, unknown] == 0.0)
+                while (line1 < CountOfUnknowns && Data[line1, unknown] == 0.0)
                     ++line1;
-                this.ChangeLine(line1, line2);
+                ChangeLine(line1, line2);
             }
 
             private void ChangeLine(int line1, int line2)
             {
-                if (line1 == this.CountOfUnknowns || line2 == this.CountOfUnknowns || line1 == line2)
+                if (line1 == CountOfUnknowns || line2 == CountOfUnknowns || line1 == line2)
                     return;
-                double[] numArray = new double[this.CountOfUnknowns + 1];
-                for (int index = 0; index < this.CountOfUnknowns + 1; ++index)
-                    numArray[index] = this.Data[line2, index];
-                for (int index = 0; index < this.CountOfUnknowns + 1; ++index)
-                    this.Data[line2, index] = this.Data[line1, index];
-                for (int index = 0; index < this.CountOfUnknowns + 1; ++index)
-                    this.Data[line1, index] = numArray[index];
+                double[] numArray = new double[CountOfUnknowns + 1];
+                for (int index = 0; index < CountOfUnknowns + 1; ++index)
+                    numArray[index] = Data[line2, index];
+                for (int index = 0; index < CountOfUnknowns + 1; ++index)
+                    Data[line2, index] = Data[line1, index];
+                for (int index = 0; index < CountOfUnknowns + 1; ++index)
+                    Data[line1, index] = numArray[index];
             }
 
             private void MultiplyLine(int line, double constant)
             {
-                for (int index = 0; index < this.CountOfUnknowns + 1; ++index)
-                    this.Data[line, index] = this.Data[line, index] * constant;
+                for (int index = 0; index < CountOfUnknowns + 1; ++index)
+                    Data[line, index] = Data[line, index] * constant;
             }
 
-            private double SummaryUnknovn(int unknovn, int line) => line == this.CountOfUnknowns - 1 ? 0.0 : this.SummaryUnknovn(unknovn, line + 1) + this.Data[unknovn, line + 1] * this.Result[line + 1];
+            private double SummaryUnknovn(int unknovn, int line) => line == CountOfUnknowns - 1 ? 0.0 : SummaryUnknovn(unknovn, line + 1) + Data[unknovn, line + 1] * Result[line + 1];
 
             private void TerminateUnknown(int unknown)
             {
-                this.GetNonZero(unknown);
-                for (int index = unknown + 1; index < this.CountOfUnknowns; ++index)
+                GetNonZero(unknown);
+                for (int index = unknown + 1; index < CountOfUnknowns; ++index)
                 {
-                    if (this.Data[index, unknown] != 0.0)
+                    if (Data[index, unknown] != 0.0)
                     {
-                        double constant = this.Data[unknown, unknown] / -this.Data[index, unknown];
-                        this.MultiplyLine(index, constant);
-                        this.AddLine(index, unknown);
+                        double constant = Data[unknown, unknown] / -Data[index, unknown];
+                        MultiplyLine(index, constant);
+                        AddLine(index, unknown);
                     }
                 }
             }
