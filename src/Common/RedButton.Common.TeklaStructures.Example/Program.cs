@@ -24,5 +24,6 @@ namespace RedButton.Common.TeklaStructures.Example
             //Insert table on drawing in Tekla
             listOfDrawingsTable.CreateTable(drawings);
         }
+
     }
 }

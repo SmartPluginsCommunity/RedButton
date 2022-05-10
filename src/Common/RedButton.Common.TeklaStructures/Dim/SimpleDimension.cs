@@ -17,12 +17,11 @@ namespace RedButton.Common.TeklaStructures.Dim
 {
     public class SimpleDimension
     {
-        private Beam MyBeam = new Beam();
-        private TransformationPlane StartPlane;
-        private StraightDimensionSet.StraightDimensionSetAttributes DimAttributes;
-        private ViewBase MyViewBase;
-        private double ScaleView;
-        private static StraightDimensionSet.StraightDimensionSetAttributes _dimAttributes;
+        private Beam _myBeam = new Beam();
+        private TransformationPlane _startPlane;
+        private StraightDimensionSet.StraightDimensionSetAttributes _dimAttributes;
+        private ViewBase _myViewBase;
+        private double _scaleView;
         
         public void SimpleSectionDimension()
         {
@@ -36,19 +35,19 @@ namespace RedButton.Common.TeklaStructures.Dim
                 if (currentDrawing == null) return;
                 var myModel = new TSM.Model();
                 var myWorkPlaneHandler = myModel.GetWorkPlaneHandler();
-                StartPlane = myWorkPlaneHandler.GetCurrentTransformationPlane();
+                _startPlane = myWorkPlaneHandler.GetCurrentTransformationPlane();
 
                 //загружаем настройки аттрибутов размеров
-                DimAttributes = new StraightDimensionSet.StraightDimensionSetAttributes(null, "MyAttributes");
-                SetDimAttributes(DimAttributes);
+                _dimAttributes = new StraightDimensionSet.StraightDimensionSetAttributes(null, "MyAttributes");
+                SetDimAttributes(_dimAttributes);
 
                 //пока не знаю как программно выбрать вид для образмеривания, поэтому выбираю с помощью пикера. Для этого нужно выбрать точку, но она в дальнейшем не нужна 
                 var isPart = false;
                 while (!isPart)
                 {
                     var picker = new DrawingHandler().GetPicker();
-                    picker.PickObject("Выберите вид для образмеривания", out var dObj, out MyViewBase);
-                    ScaleView = (MyViewBase as View).Attributes.Scale;
+                    picker.PickObject("Выберите вид для образмеривания", out var dObj, out _myViewBase);
+                    _scaleView = (_myViewBase as View).Attributes.Scale;
 
                     if (dObj is Part)
                     {
@@ -56,14 +55,14 @@ namespace RedButton.Common.TeklaStructures.Dim
                         var myPart = (Part)dObj;
                         var id = myPart.ModelIdentifier;
                         //выбираем балку в модели, соотвутствующую изображению на чертеже
-                        MyBeam.Identifier = id;
-                        MyBeam.Select();
+                        _myBeam.Identifier = id;
+                        _myBeam.Select();
 
                         //получаем текущий вид
-                        var currentView = MyViewBase as View;
+                        var currentView = _myViewBase as View;
                         var cs = currentView.ViewCoordinateSystem;
                         var viewPlane = new TransformationPlane(currentView.ViewCoordinateSystem);
-                        var vecBeam = new Vector().TwoPointVector(MyBeam.EndPoint, MyBeam.StartPoint).GetNormal();
+                        var vecBeam = new Vector().TwoPointVector(_myBeam.EndPoint, _myBeam.StartPoint).GetNormal();
                         //список полигонов
                         var listPolygons = new List<TSM.Polygon>();
 
@@ -75,7 +74,7 @@ namespace RedButton.Common.TeklaStructures.Dim
                         new TSM.Model().SelectModelObject(id);
                         
                         //выбираем группы продольной арматуры
-                        var longRg = MyBeam.GetChildren().ToList<TSM.ModelObject>().OfType<RebarGroup>().Where(g =>
+                        var longRg = _myBeam.GetChildren().ToList<TSM.ModelObject>().OfType<RebarGroup>().Where(g =>
                         {
                             var vecRg = new Vector().TwoPointVector(g.EndPoint, g.StartPoint).GetNormal();
                             return !vecRg.Equals(vecBeam);
@@ -94,8 +93,8 @@ namespace RedButton.Common.TeklaStructures.Dim
                         var pointY = projectedPointsY.Select(p => p.TransformToLocal(cs)).ToList();
                         
                         //чертим размеры
-                        CreateMultiDim(MyViewBase,40.0,pointX, DimAttributes);
-                        CreateMultiDim(MyViewBase,40.0,pointY, DimAttributes);
+                        CreateMultiDim(_myViewBase,40.0,pointX, _dimAttributes);
+                        CreateMultiDim(_myViewBase,40.0,pointY, _dimAttributes);
                     }
                 }
             }
