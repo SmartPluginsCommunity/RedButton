@@ -115,5 +115,41 @@ namespace RedButton.Common.TeklaStructures.Extensions
         {
             return new Point(p1.X + v1.X, p1.Y + v1.Y, p1.Z + v1.Z);
         }
+        
+        /// <summary>
+        /// Transform current point to local coordinate system
+        /// </summary>
+        /// <param name="p"></param>
+        /// <param name="destinationCs">Destination coordinate system</param>
+        /// <returns></returns>
+        public static Point TransformToLocal(this Point p, CoordinateSystem destinationCs)
+        {
+            var matrix = MatrixFactory.ToCoordinateSystem(destinationCs);
+            return matrix.Transform(p);
+        }
+        
+        /// <summary>
+        /// Transform current point to global coordinate system
+        /// </summary>
+        /// <param name="p"></param>
+        /// <param name="fromCs">local coordinate system</param>
+        /// <returns></returns>
+        public static Point TransformToGlobal(this Point p, CoordinateSystem fromCs)
+        {
+            var tp = new tsm.TransformationPlane(fromCs);
+            return tp.TransformationMatrixToGlobal.Transform(p);
+        }
+        
+        /// <summary>
+        /// Transform current point to global coordinate system
+        /// </summary>
+        /// <param name="p"></param>
+        /// <param name="fromCs">local transformation plane</param>
+        /// <returns></returns>
+        public static Point TransformToGlobal(this Point p, tsm.TransformationPlane fromTp)
+        {
+            return fromTp.TransformationMatrixToGlobal.Transform(p);
+        }
+        
     }
 }

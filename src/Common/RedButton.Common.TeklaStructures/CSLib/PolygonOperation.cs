@@ -4,11 +4,17 @@ using System.Collections.Generic;
 using Tekla.Structures.Geometry3d;
 using Tekla.Structures.Model;
 
+//using static RedButton.Common.TeklaStructures.CSLib.Geo;
+
 namespace RedButton.Common.TeklaStructures.CSLib
 {
     public class PolygonOperation
     {
-        public static bool GetPolygonOrientation(Polygon polygon) => PolygonOperation.GetPolygonOrientation(Geo.ConvertListPointsFromPolygon(polygon));
+        private static bool CheckAngleBetweenPoints(double angle, double distance12, double distance23) => 
+            ((!Compare.IE(angle, 178.5, 181.5) & !Compare.IE(angle, -1.5, 1.5) ? 1 : 0) |
+             (!Compare.NZ(angle) || !Compare.NE(angle, 180.0) ? 0 : (Compare.GT(distance12, 4.0 * distance23) ? 1 : (Compare.GT(distance23, 4.0 * distance12) ? 1 : 0)))) != 0;
+        
+        public static bool GetPolygonOrientation(Polygon polygon) => GetPolygonOrientation(Geo.ConvertListPointsFromPolygon(polygon));
 
         public static bool GetPolygonOrientation(List<Point> polygon)
         {
@@ -140,12 +146,59 @@ namespace RedButton.Common.TeklaStructures.CSLib
             for (int index = 0; index < count; ++index)
                 polygon.Points[index] = (object)new Point(polygon1.Points[index] as Point);
         }
-
+        
+        public static void RemoveUnnecessaryPolygonPoints(Polygon polygon)
+        {
+            List<Point> polygon1 = polygon.ListOfPointsFromPolygon();
+            polygon.Points.Clear();
+            RemoveUnnecessaryPolygonPoints(polygon1);
+            polygon.Points.AddRange((ICollection) polygon1);
+        }
+        
+        public static void RemoveUnnecessaryPolygonPoints(List<Point> polygon)
+        {
+            List<Point> pointList = new List<Point>();
+            for (int index = polygon.Count - 2; index > -1; --index)
+            {
+                if (Geo.CompareTwoPoints3D(polygon[index], polygon[index + 1]))
+                    polygon.RemoveAt(index);
+            }
+            if (polygon.Count <= 3)
+                return;
+            for (int index1 = 0; index1 < polygon.Count; ++index1)
+            {
+                int num1 = index1 - 1;
+                int index2 = num1 < 0 ? num1 + polygon.Count : num1;
+                int index3 = (index1 + 1) % polygon.Count;
+                Point point1 = polygon[index2];
+                Point point2 = polygon[index1];
+                Point point3 = polygon[index3];
+                double angle = Geo.GetAngle3D(point2, point1, point3) * Constants.RAD_TO_DEG;
+                double beetveenTwoPoints3D1 = Geo.GetDistanceBeetveenTwoPoints3D(point1, point2);
+                double beetveenTwoPoints3D2 = Geo.GetDistanceBeetveenTwoPoints3D(point2, point3);
+                double distance12 = beetveenTwoPoints3D1;
+                double distance23 = beetveenTwoPoints3D2;
+                if (CheckAngleBetweenPoints(angle, distance12, distance23))
+                {
+                    pointList.Add(point2);
+                }
+                else
+                {
+                    double beetveenTwoPoints3D3 = Geo.GetDistanceBeetveenTwoPoints3D(point3, point1);
+                    double num2 = (beetveenTwoPoints3D1 + beetveenTwoPoints3D2 + beetveenTwoPoints3D3) / 2.0;
+                    if (Compare.GT(Math.Sqrt(num2 * (num2 - beetveenTwoPoints3D1) * (num2 - beetveenTwoPoints3D2) * (num2 - beetveenTwoPoints3D3)), Constants.CS_EPSILON))
+                        pointList.Add(point2);
+                }
+            }
+            polygon.Clear();
+            polygon.AddRange((IEnumerable<Point>) pointList);
+        }
+ 
         public static List<Point> ResizePolygon(List<Point> inputPolygon, double offset)
         {
             List<Point> polygonPoints = new List<Point>(inputPolygon.Count);
             List<Line> lineList = new List<Line>();
-            bool polygonOrientation1 = PolygonOperation.GetPolygonOrientation(inputPolygon);
+            bool polygonOrientation1 = GetPolygonOrientation(inputPolygon);
             if (polygonOrientation1)
                 inputPolygon.Reverse();
             for (int index1 = 0; index1 < inputPolygon.Count; ++index1)
@@ -188,7 +241,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
                     polygon2_1.Points.Add((object)new Point(point2));
                 PolygonOperation polygonOperation = new PolygonOperation();
                 List<LineSegment> lines = new List<LineSegment>();
-                polygonOperation.CsGetLinesList(polygon1_1, polygon2_1, lines, PolygonOperation.SelectionTypeEnum.GET_ALL_LINES);
+                polygonOperation.CsGetLinesList(polygon1_1, polygon2_1, lines, SelectionTypeEnum.GET_ALL_LINES);
                 double b = Math.Abs(offset);
                 for (int index1 = lines.Count - 1; index1 >= 0; --index1)
                 {
@@ -205,12 +258,12 @@ namespace RedButton.Common.TeklaStructures.CSLib
                     }
                 }
                 List<Polygon> returnPolygons = new List<Polygon>();
-                new PolygonOperation.CreatePolygons().Create(lines, ref returnPolygons);
+                new CreatePolygons().Create(lines, ref returnPolygons);
                 if (returnPolygons.Count == 1)
                 {
                     polygon1 = Geo.ConvertListPointsFromPolygon(returnPolygons[0]);
-                    PolygonOperation.RemoveUnnecessaryPointsFromPolygon(polygon1);
-                    bool polygonOrientation2 = PolygonOperation.GetPolygonOrientation(polygon1);
+                    RemoveUnnecessaryPointsFromPolygon(polygon1);
+                    bool polygonOrientation2 = GetPolygonOrientation(polygon1);
                     if (polygonOrientation1 != polygonOrientation2)
                         polygon1.Reverse();
                 }
@@ -228,7 +281,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
         {
             if (offsets == null || offsets.Count < 1 || (inputPolygon == null || inputPolygon.Count < 3))
                 return (List<Point>)null;
-            bool polygonOrientation1 = PolygonOperation.GetPolygonOrientation(inputPolygon);
+            bool polygonOrientation1 = GetPolygonOrientation(inputPolygon);
             if (polygonOrientation1)
             {
                 inputPolygon.Reverse();
@@ -289,7 +342,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
                     lines2.Add(new LineSegment(new Point(pointList[index1]), new Point(pointList[index2])));
                 }
                 List<LineSegment> lines3 = new List<LineSegment>();
-                PolygonOperation.CsGetLinesList(lines1, lines2, lines3, PolygonOperation.SelectionTypeEnum.GET_ALL_LINES);
+                CsGetLinesList(lines1, lines2, lines3, SelectionTypeEnum.GET_ALL_LINES);
                 for (int index1 = lines3.Count - 1; index1 >= 0; --index1)
                 {
                     for (int index2 = 0; index2 < inputPolygon.Count; ++index2)
@@ -313,12 +366,12 @@ namespace RedButton.Common.TeklaStructures.CSLib
                 }
                 List<LineSegment> lines4 = new List<LineSegment>((IEnumerable<LineSegment>)lines3);
                 List<Polygon> returnPolygons = new List<Polygon>();
-                new PolygonOperation.CreatePolygons().Create(lines4, ref returnPolygons);
+                new CreatePolygons().Create(lines4, ref returnPolygons);
                 if (returnPolygons.Count == 1)
                 {
                     polygon = Geo.ConvertListPointsFromPolygon(returnPolygons[0]);
-                    PolygonOperation.RemoveUnnecessaryPointsFromPolygon(polygon);
-                    bool polygonOrientation2 = PolygonOperation.GetPolygonOrientation(polygon);
+                    RemoveUnnecessaryPointsFromPolygon(polygon);
+                    bool polygonOrientation2 = GetPolygonOrientation(polygon);
                     if (polygonOrientation1 != polygonOrientation2)
                         polygon.Reverse();
                 }
@@ -343,25 +396,25 @@ namespace RedButton.Common.TeklaStructures.CSLib
                 return 0.0;
             List<Point> polygon1 = Geo.ConvertListPointsFromPolygon(polygon);
             polygon1.Add(new Point(polygon1[0]));
-            return Math.Abs(PolygonOperation.SummaryPolygonArea2DStep(polygon1)) / 2.0;
+            return Math.Abs(SummaryPolygonArea2DStep(polygon1)) / 2.0;
         }
 
         public static double SummaryPolygonArea2D(List<Point> polygon)
         {
             if (polygon.Count < 3)
                 return 0.0;
-            return Math.Abs(PolygonOperation.SummaryPolygonArea2DStep(new List<Point>((IEnumerable<Point>)polygon)
+            return Math.Abs(SummaryPolygonArea2DStep(new List<Point>((IEnumerable<Point>)polygon)
       {
         new Point(polygon[0])
       })) / 2.0;
         }
 
-        public PolygonOperation.ComparePolygonTypeEnum CsCmpTwoPolygons(
+        public ComparePolygonTypeEnum CsCmpTwoPolygons(
           Polygon polygon1,
           Polygon polygon2)
         {
             int index1 = 0;
-            if (Compare.EQ(this.CsTwoPolygonsMinDist2D(polygon1, polygon2), 0.0))
+            if (Compare.EQ(CsTwoPolygonsMinDist2D(polygon1, polygon2), 0.0))
             {
                 if (polygon1.Points.Count == polygon2.Points.Count)
                 {
@@ -386,31 +439,31 @@ namespace RedButton.Common.TeklaStructures.CSLib
                         while (num1 < polygon1.Points.Count && Geo.CompareTwoPoints2D(polygon1.Points[(num1 + index2) % polygon1.Points.Count] as Point, polygon2.Points[(num1 + index1) % polygon2.Points.Count] as Point))
                             ++num1;
                         if (num1 == polygon1.Points.Count)
-                            return PolygonOperation.ComparePolygonTypeEnum.POL1_EQ_POL2;
+                            return ComparePolygonTypeEnum.POL1_EQ_POL2;
                         int num2 = 0;
                         while (num2 < polygon1.Points.Count && Geo.CompareTwoPoints2D(polygon1.Points[(index2 + num2 + polygon1.Points.Count) % polygon1.Points.Count] as Point, polygon2.Points[(index1 - num2 + polygon2.Points.Count) % polygon2.Points.Count] as Point))
                             ++num2;
                         if (num2 == polygon1.Points.Count)
-                            return PolygonOperation.ComparePolygonTypeEnum.POL1_EQ_POL2;
+                            return ComparePolygonTypeEnum.POL1_EQ_POL2;
                     }
                 }
-                return PolygonOperation.ComparePolygonTypeEnum.POL1_COLLIDE_POL2;
+                return ComparePolygonTypeEnum.POL1_COLLIDE_POL2;
             }
             int index3 = 0;
             while (index3 < polygon1.Points.Count && Geo.IsPointInsidePolygon2D(polygon2, polygon1.Points[index3] as Point, false))
                 ++index3;
             if (index3 == polygon1.Points.Count)
-                return PolygonOperation.ComparePolygonTypeEnum.POL1_IN_POL2;
+                return ComparePolygonTypeEnum.POL1_IN_POL2;
             int index4 = 0;
             while (index4 < polygon2.Points.Count && Geo.IsPointInsidePolygon2D(polygon1, polygon2.Points[index4] as Point, false))
                 ++index4;
-            return index4 == polygon2.Points.Count ? PolygonOperation.ComparePolygonTypeEnum.POL2_IN_POL1 : PolygonOperation.ComparePolygonTypeEnum.POL_OUTSIDE;
+            return index4 == polygon2.Points.Count ? ComparePolygonTypeEnum.POL2_IN_POL1 : ComparePolygonTypeEnum.POL_OUTSIDE;
         }
 
-        public List<PolygonOperation.PolygonWithHoles> PolygonOperations(
+        public List<PolygonWithHoles> PolygonOperations(
           Polygon polygon1,
           Polygon polygon2,
-          PolygonOperation.PolygonOperationsEnum operation)
+          PolygonOperationsEnum operation)
         {
             Polygon polygon3 = new Polygon();
             Polygon polygon4 = new Polygon();
@@ -418,26 +471,26 @@ namespace RedButton.Common.TeklaStructures.CSLib
                 polygon3.Points.Add((object)new Point(point));
             foreach (Point point in polygon2.Points)
                 polygon4.Points.Add((object)new Point(point));
-            List<PolygonOperation.PolygonWithHoles> resultPolygons = new List<PolygonOperation.PolygonWithHoles>();
+            List<PolygonWithHoles> resultPolygons = new List<PolygonWithHoles>();
             List<LineSegment> lines1 = new List<LineSegment>();
             List<LineSegment> lines2 = new List<LineSegment>();
             List<LineSegment> lines3 = new List<LineSegment>();
             List<LineSegment> lines4 = new List<LineSegment>();
             List<Polygon> returnPolygons1 = new List<Polygon>();
-            PolygonOperation.CreatePolygons createPolygons = new PolygonOperation.CreatePolygons();
+            CreatePolygons createPolygons = new CreatePolygons();
             switch (operation)
             {
-                case PolygonOperation.PolygonOperationsEnum.UNION:
-                    this.CsGetLinesList(polygon3, polygon4, lines1, PolygonOperation.SelectionTypeEnum.GET_ALL_LINES);
-                    this.CsGetLinesList(polygon4, polygon3, lines1, PolygonOperation.SelectionTypeEnum.GET_ALL_LINES);
+                case PolygonOperationsEnum.UNION:
+                    CsGetLinesList(polygon3, polygon4, lines1, SelectionTypeEnum.GET_ALL_LINES);
+                    CsGetLinesList(polygon4, polygon3, lines1, SelectionTypeEnum.GET_ALL_LINES);
                     createPolygons.Create(lines1, ref returnPolygons1);
                     break;
-                case PolygonOperation.PolygonOperationsEnum.DIFFERENCE:
-                    this.CsGetLinesList(polygon3, polygon4, lines3, PolygonOperation.SelectionTypeEnum.GET_ALL_LINES);
+                case PolygonOperationsEnum.DIFFERENCE:
+                    CsGetLinesList(polygon3, polygon4, lines3, SelectionTypeEnum.GET_ALL_LINES);
                     goto default;
                 default:
-                    this.CsGetLinesList(polygon3, polygon4, lines2, PolygonOperation.SelectionTypeEnum.GET_INTERSECTION_LINES);
-                    this.CsGetLinesList(polygon4, polygon3, lines2, PolygonOperation.SelectionTypeEnum.GET_INTERSECTION_LINES);
+                    CsGetLinesList(polygon3, polygon4, lines2, SelectionTypeEnum.GET_INTERSECTION_LINES);
+                    CsGetLinesList(polygon4, polygon3, lines2, SelectionTypeEnum.GET_INTERSECTION_LINES);
                     for (int index1 = 0; index1 < lines2.Count; ++index1)
                     {
                         for (int index2 = index1 + 1; index2 < lines2.Count; ++index2)
@@ -451,17 +504,17 @@ namespace RedButton.Common.TeklaStructures.CSLib
                     }
                     switch (operation)
                     {
-                        case PolygonOperation.PolygonOperationsEnum.INTERSECT:
+                        case PolygonOperationsEnum.INTERSECT:
                             createPolygons.Create(lines2, ref returnPolygons1);
                             break;
-                        case PolygonOperation.PolygonOperationsEnum.DIFFERENCE:
+                        case PolygonOperationsEnum.DIFFERENCE:
                             List<Polygon> returnPolygons2 = new List<Polygon>();
                             createPolygons.Create(lines2, ref returnPolygons2);
                             for (int index = 0; index < returnPolygons2.Count; ++index)
                             {
                                 polygon4.Points.Clear();
                                 polygon4.Points.AddRange((ICollection)returnPolygons2[index].Points);
-                                this.CsGetLinesList(polygon4, polygon3, lines2, PolygonOperation.SelectionTypeEnum.GET_INTERSECTION_LINES);
+                                CsGetLinesList(polygon4, polygon3, lines2, SelectionTypeEnum.GET_INTERSECTION_LINES);
                             }
                             for (int index = 0; index < lines2.Count; ++index)
                             {
@@ -515,7 +568,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
                     }
                     break;
             }
-            this.SeparateHoles(returnPolygons1, resultPolygons);
+            SeparateHoles(returnPolygons1, resultPolygons);
             return resultPolygons;
         }
 
@@ -523,7 +576,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
           List<LineSegment> lines1,
           List<LineSegment> lines2,
           List<LineSegment> lines,
-          PolygonOperation.SelectionTypeEnum selectionType)
+          SelectionTypeEnum selectionType)
         {
             for (int index1 = 0; index1 < lines2.Count; ++index1)
             {
@@ -581,14 +634,14 @@ namespace RedButton.Common.TeklaStructures.CSLib
             double num = polygon[0].X * polygon[1].Y - polygon[1].X * polygon[0].Y;
             List<Point> polygon1 = new List<Point>((IEnumerable<Point>)polygon);
             polygon1.RemoveAt(0);
-            return num + PolygonOperation.SummaryPolygonArea2DStep(polygon1);
+            return num + SummaryPolygonArea2DStep(polygon1);
         }
 
         private void CsGetLinesList(
           Polygon polygon1,
           Polygon polygon2,
           List<LineSegment> lines,
-          PolygonOperation.SelectionTypeEnum selectionType)
+          SelectionTypeEnum selectionType)
         {
             List<LineSegment> lineSegmentList1 = new List<LineSegment>();
             List<LineSegment> lineSegmentList2 = new List<LineSegment>();
@@ -633,7 +686,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
                 }
                 lineSegmentList1 = lineSegmentList3;
             }
-            if (selectionType == PolygonOperation.SelectionTypeEnum.GET_INTERSECTION_LINES)
+            if (selectionType == SelectionTypeEnum.GET_INTERSECTION_LINES)
             {
                 for (int index = lineSegmentList1.Count - 1; index >= 0; --index)
                 {
@@ -659,7 +712,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
                     line1.Point2 = polygon1.Points[(index1 + 1) % polygon1.Points.Count] as Point;
                     line2.Point1 = polygon2.Points[index2] as Point;
                     line2.Point2 = polygon2.Points[(index2 + 1) % polygon2.Points.Count] as Point;
-                    double distanceBetweenSegments = this.FindDistanceBetweenSegments(line1, line2);
+                    double distanceBetweenSegments = FindDistanceBetweenSegments(line1, line2);
                     if (num > distanceBetweenSegments)
                     {
                         num = distanceBetweenSegments;
@@ -674,20 +727,20 @@ namespace RedButton.Common.TeklaStructures.CSLib
         private double FindDistanceBetweenSegments(LineSegment line1, LineSegment line2)
         {
             bool segmentsIntersect;
-            this.FindIntersection(line1, line2, out segmentsIntersect);
+            FindIntersection(line1, line2, out segmentsIntersect);
             if (segmentsIntersect)
                 return 0.0;
             double num = double.MaxValue;
-            double distanceToSegment1 = this.FindDistanceToSegment(line1.Point1, line2.Point1, line2.Point2);
+            double distanceToSegment1 = FindDistanceToSegment(line1.Point1, line2.Point1, line2.Point2);
             if (distanceToSegment1 < num)
                 num = distanceToSegment1;
-            double distanceToSegment2 = this.FindDistanceToSegment(line1.Point2, line2.Point1, line2.Point2);
+            double distanceToSegment2 = FindDistanceToSegment(line1.Point2, line2.Point1, line2.Point2);
             if (distanceToSegment2 < num)
                 num = distanceToSegment2;
-            double distanceToSegment3 = this.FindDistanceToSegment(line2.Point1, line1.Point1, line1.Point2);
+            double distanceToSegment3 = FindDistanceToSegment(line2.Point1, line1.Point1, line1.Point2);
             if (distanceToSegment3 < num)
                 num = distanceToSegment3;
-            double distanceToSegment4 = this.FindDistanceToSegment(line2.Point2, line1.Point1, line1.Point2);
+            double distanceToSegment4 = FindDistanceToSegment(line2.Point2, line1.Point1, line1.Point2);
             if (distanceToSegment4 < num)
                 num = distanceToSegment4;
             return num;
@@ -722,7 +775,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
 
         private void SeparateHoles(
           List<Polygon> allPolygons,
-          List<PolygonOperation.PolygonWithHoles> resultPolygons)
+          List<PolygonWithHoles> resultPolygons)
         {
             List<Polygon> polygonList1 = new List<Polygon>();
             List<Polygon> polygonList2 = new List<Polygon>();
@@ -737,7 +790,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
                         polygon1.Points.AddRange((ICollection)allPolygons[index2].Points);
                         Polygon polygon2 = new Polygon();
                         polygon2.Points.AddRange((ICollection)allPolygons[index1].Points);
-                        if (this.CsCmpTwoPolygons(polygon1, polygon2) == PolygonOperation.ComparePolygonTypeEnum.POL2_IN_POL1)
+                        if (CsCmpTwoPolygons(polygon1, polygon2) == ComparePolygonTypeEnum.POL2_IN_POL1)
                             break;
                     }
                 }
@@ -750,11 +803,11 @@ namespace RedButton.Common.TeklaStructures.CSLib
             }
             for (int index1 = 0; index1 < polygonList1.Count; ++index1)
             {
-                PolygonOperation.PolygonWithHoles polygonWithHoles = new PolygonOperation.PolygonWithHoles();
+                PolygonWithHoles polygonWithHoles = new PolygonWithHoles();
                 polygonWithHoles.contourPolygon = polygonList1[index1];
                 for (int index2 = 0; index2 < polygonList2.Count; ++index2)
                 {
-                    if (this.CsCmpTwoPolygons(polygonList1[index1], polygonList2[index2]) == PolygonOperation.ComparePolygonTypeEnum.POL2_IN_POL1)
+                    if (CsCmpTwoPolygons(polygonList1[index1], polygonList2[index2]) == ComparePolygonTypeEnum.POL2_IN_POL1)
                         polygonWithHoles.innerPolygons.Add(polygonList2[index2]);
                 }
                 resultPolygons.Add(polygonWithHoles);
@@ -789,7 +842,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
 
             public void Create(List<LineSegment> lines, ref List<Polygon> returnPolygons)
             {
-                PolygonOperation.CreatePolygons.PolygonLine.GeneratorID = 1;
+                PolygonLine.GeneratorID = 1;
                 returnPolygons.Clear();
                 if (lines.Count <= 2)
                     return;
@@ -812,36 +865,36 @@ namespace RedButton.Common.TeklaStructures.CSLib
                 setPlane.Begin(lines[0].Point1, normal, newVectorY);
                 try
                 {
-                    List<PolygonOperation.CreatePolygons.PolygonLine> lines1 = new List<PolygonOperation.CreatePolygons.PolygonLine>();
+                    List<PolygonLine> lines1 = new List<PolygonLine>();
                     foreach (LineSegment line in lines)
                     {
                         bool flag2 = false;
-                        foreach (PolygonOperation.CreatePolygons.PolygonLine polygonLine in lines1)
+                        foreach (PolygonLine polygonLine in lines1)
                         {
                             double beetveenTwoPoints3D1 = Geo.GetDistanceBeetveenTwoPoints3D(line.Point1, polygonLine.Point1);
                             double beetveenTwoPoints3D2 = Geo.GetDistanceBeetveenTwoPoints3D(line.Point2, polygonLine.Point2);
-                            if (Compare.LE(beetveenTwoPoints3D1, PolygonOperation.CreatePolygons.offset) && Compare.LE(beetveenTwoPoints3D2, PolygonOperation.CreatePolygons.offset))
+                            if (Compare.LE(beetveenTwoPoints3D1, offset) && Compare.LE(beetveenTwoPoints3D2, offset))
                             {
                                 flag2 = true;
                                 break;
                             }
                             double beetveenTwoPoints3D3 = Geo.GetDistanceBeetveenTwoPoints3D(line.Point1, polygonLine.Point2);
                             double beetveenTwoPoints3D4 = Geo.GetDistanceBeetveenTwoPoints3D(line.Point2, polygonLine.Point1);
-                            if (Compare.LE(beetveenTwoPoints3D3, PolygonOperation.CreatePolygons.offset) && Compare.LE(beetveenTwoPoints3D4, PolygonOperation.CreatePolygons.offset))
+                            if (Compare.LE(beetveenTwoPoints3D3, offset) && Compare.LE(beetveenTwoPoints3D4, offset))
                             {
                                 flag2 = true;
                                 break;
                             }
                         }
                         if (!flag2)
-                            lines1.Add(new PolygonOperation.CreatePolygons.PolygonLine(line));
+                            lines1.Add(new PolygonLine(line));
                     }
-                    List<PolygonOperation.CreatePolygons.PolygonLine> polygonsByLines = new List<PolygonOperation.CreatePolygons.PolygonLine>();
-                    List<PolygonOperation.CreatePolygons.PolygonLine> allPolygonLines = new List<PolygonOperation.CreatePolygons.PolygonLine>((IEnumerable<PolygonOperation.CreatePolygons.PolygonLine>)lines1);
-                    List<PolygonOperation.CreatePolygons.PolygonLine> polygonLineList1 = new List<PolygonOperation.CreatePolygons.PolygonLine>();
+                    List<PolygonLine> polygonsByLines = new List<PolygonLine>();
+                    List<PolygonLine> allPolygonLines = new List<PolygonLine>((IEnumerable<PolygonLine>)lines1);
+                    List<PolygonLine> polygonLineList1 = new List<PolygonLine>();
                     while (lines1.Count > 0)
                     {
-                        PolygonOperation.CreatePolygons.PolygonLine polygonLine = lines1[0];
+                        PolygonLine polygonLine = lines1[0];
                         polygonLine.FoundNeighbours(lines1, true);
                         polygonsByLines.Add(polygonLine);
                         for (int index = lines1.Count - 1; index >= 0; --index)
@@ -854,15 +907,15 @@ namespace RedButton.Common.TeklaStructures.CSLib
                             }
                         }
                     }
-                    List<PolygonOperation.CreatePolygons.PolygonLine> polygonLineList2;
+                    List<PolygonLine> polygonLineList2;
                     for (; polygonLineList1.Count > 0; polygonLineList1 = polygonLineList2)
                     {
-                        polygonLineList2 = new List<PolygonOperation.CreatePolygons.PolygonLine>();
-                        foreach (PolygonOperation.CreatePolygons.PolygonLine polygonLine in polygonLineList1)
+                        polygonLineList2 = new List<PolygonLine>();
+                        foreach (PolygonLine polygonLine in polygonLineList1)
                             allPolygonLines.Remove(polygonLine);
-                        foreach (PolygonOperation.CreatePolygons.PolygonLine polygonLine1 in allPolygonLines)
+                        foreach (PolygonLine polygonLine1 in allPolygonLines)
                         {
-                            foreach (PolygonOperation.CreatePolygons.PolygonLine polygonLine2 in polygonLineList1)
+                            foreach (PolygonLine polygonLine2 in polygonLineList1)
                             {
                                 if (polygonLine1.Neighbours1.Contains(polygonLine2))
                                     polygonLine1.Neighbours1.Remove(polygonLine2);
@@ -873,10 +926,10 @@ namespace RedButton.Common.TeklaStructures.CSLib
                                 polygonLineList2.Add(polygonLine1);
                         }
                     }
-                    List<List<PolygonOperation.CreatePolygons.PolygonLine>> linesPolygons = new List<List<PolygonOperation.CreatePolygons.PolygonLine>>();
-                    linesPolygons.Add(new List<PolygonOperation.CreatePolygons.PolygonLine>());
-                    this.SetStartLines(allPolygonLines, polygonsByLines);
-                    foreach (PolygonOperation.CreatePolygons.PolygonLine polygonLine in polygonsByLines)
+                    List<List<PolygonLine>> linesPolygons = new List<List<PolygonLine>>();
+                    linesPolygons.Add(new List<PolygonLine>());
+                    SetStartLines(allPolygonLines, polygonsByLines);
+                    foreach (PolygonLine polygonLine in polygonsByLines)
                         returnPolygons.Add(polygonLine.GeneratePolygons(linesPolygons, polygonLine.Neighbours1.Count > 0, true));
                     for (int index = returnPolygons.Count - 1; index >= 0; --index)
                     {
@@ -901,20 +954,20 @@ namespace RedButton.Common.TeklaStructures.CSLib
             }
 
             private void SetStartLines(
-              List<PolygonOperation.CreatePolygons.PolygonLine> allPolygonLines,
-              List<PolygonOperation.CreatePolygons.PolygonLine> polygonsByLines)
+              List<PolygonLine> allPolygonLines,
+              List<PolygonLine> polygonsByLines)
             {
                 List<List<int>> intListList = new List<List<int>>();
-                foreach (PolygonOperation.CreatePolygons.PolygonLine allPolygonLine in allPolygonLines)
+                foreach (PolygonLine allPolygonLine in allPolygonLines)
                 {
                     if (intListList.Count == 0)
                     {
                         List<int> intList = new List<int>();
                         intList.Add(allPolygonLine.ID);
                         intListList.Add(intList);
-                        foreach (PolygonOperation.CreatePolygons.PolygonLine polygonLine in allPolygonLine.Neighbours1)
+                        foreach (PolygonLine polygonLine in allPolygonLine.Neighbours1)
                             intList.Add(polygonLine.ID);
-                        foreach (PolygonOperation.CreatePolygons.PolygonLine polygonLine in allPolygonLine.Neighbours2)
+                        foreach (PolygonLine polygonLine in allPolygonLine.Neighbours2)
                             intList.Add(polygonLine.ID);
                     }
                     else
@@ -924,12 +977,12 @@ namespace RedButton.Common.TeklaStructures.CSLib
                         {
                             if (intList.Contains(allPolygonLine.ID))
                             {
-                                foreach (PolygonOperation.CreatePolygons.PolygonLine polygonLine in allPolygonLine.Neighbours1)
+                                foreach (PolygonLine polygonLine in allPolygonLine.Neighbours1)
                                 {
                                     if (!intList.Contains(polygonLine.ID))
                                         intList.Add(polygonLine.ID);
                                 }
-                                foreach (PolygonOperation.CreatePolygons.PolygonLine polygonLine in allPolygonLine.Neighbours2)
+                                foreach (PolygonLine polygonLine in allPolygonLine.Neighbours2)
                                 {
                                     if (!intList.Contains(polygonLine.ID))
                                         intList.Add(polygonLine.ID);
@@ -943,9 +996,9 @@ namespace RedButton.Common.TeklaStructures.CSLib
                             List<int> intList = new List<int>();
                             intList.Add(allPolygonLine.ID);
                             intListList.Add(intList);
-                            foreach (PolygonOperation.CreatePolygons.PolygonLine polygonLine in allPolygonLine.Neighbours1)
+                            foreach (PolygonLine polygonLine in allPolygonLine.Neighbours1)
                                 intList.Add(polygonLine.ID);
-                            foreach (PolygonOperation.CreatePolygons.PolygonLine polygonLine in allPolygonLine.Neighbours2)
+                            foreach (PolygonLine polygonLine in allPolygonLine.Neighbours2)
                                 intList.Add(polygonLine.ID);
                         }
                     }
@@ -989,8 +1042,8 @@ namespace RedButton.Common.TeklaStructures.CSLib
                         if (intList.Contains(polygonsByLines[index].ID))
                         {
                             int num = int.MaxValue;
-                            PolygonOperation.CreatePolygons.PolygonLine polygonLine = polygonsByLines[index];
-                            foreach (PolygonOperation.CreatePolygons.PolygonLine allPolygonLine in allPolygonLines)
+                            PolygonLine polygonLine = polygonsByLines[index];
+                            foreach (PolygonLine allPolygonLine in allPolygonLines)
                             {
                                 if (intList.Contains(allPolygonLine.ID) && num > allPolygonLine.Neighbours1.Count + allPolygonLine.Neighbours2.Count)
                                 {
@@ -1011,44 +1064,44 @@ namespace RedButton.Common.TeklaStructures.CSLib
                 public PolygonLine(LineSegment line)
                   : base(new Point(line.Point1), new Point(line.Point2))
                 {
-                    this.Neighbours1 = new List<PolygonOperation.CreatePolygons.PolygonLine>();
-                    this.Neighbours2 = new List<PolygonOperation.CreatePolygons.PolygonLine>();
-                    this.Expanded = false;
-                    this.ID = PolygonOperation.CreatePolygons.PolygonLine.GeneratorID++;
+                    Neighbours1 = new List<PolygonLine>();
+                    Neighbours2 = new List<PolygonLine>();
+                    Expanded = false;
+                    ID = GeneratorID++;
                 }
 
                 public bool Expanded { get; set; }
 
                 public int ID { get; private set; }
 
-                public List<PolygonOperation.CreatePolygons.PolygonLine> Neighbours1 { get; set; }
+                public List<PolygonLine> Neighbours1 { get; set; }
 
-                public List<PolygonOperation.CreatePolygons.PolygonLine> Neighbours2 { get; set; }
+                public List<PolygonLine> Neighbours2 { get; set; }
 
                 public void FoundNeighbours(
-                  List<PolygonOperation.CreatePolygons.PolygonLine> lines,
+                  List<PolygonLine> lines,
                   bool first)
                 {
-                    if (this.Expanded)
+                    if (Expanded)
                         return;
-                    this.Expanded = true;
-                    foreach (PolygonOperation.CreatePolygons.PolygonLine line in lines)
+                    Expanded = true;
+                    foreach (PolygonLine line in lines)
                     {
                         if ((LineSegment)line != (LineSegment)this)
                         {
-                            double a = Math.Min(Geo.GetDistanceBeetveenTwoPoints3D(line.Point1, this.Point1), Geo.GetDistanceBeetveenTwoPoints3D(line.Point2, this.Point1));
-                            double num = Math.Min(Geo.GetDistanceBeetveenTwoPoints3D(line.Point1, this.Point2), Geo.GetDistanceBeetveenTwoPoints3D(line.Point2, this.Point2));
+                            double a = Math.Min(Geo.GetDistanceBeetveenTwoPoints3D(line.Point1, Point1), Geo.GetDistanceBeetveenTwoPoints3D(line.Point2, Point1));
+                            double num = Math.Min(Geo.GetDistanceBeetveenTwoPoints3D(line.Point1, Point2), Geo.GetDistanceBeetveenTwoPoints3D(line.Point2, Point2));
                             if (Compare.LE(a, num))
                             {
-                                if (Compare.LE(a, PolygonOperation.CreatePolygons.offset))
+                                if (Compare.LE(a, offset))
                                 {
-                                    this.Neighbours1.Add(line);
+                                    Neighbours1.Add(line);
                                     line.FoundNeighbours(lines, false);
                                 }
                             }
-                            else if (Compare.LE(num, PolygonOperation.CreatePolygons.offset))
+                            else if (Compare.LE(num, offset))
                             {
-                                this.Neighbours2.Add(line);
+                                Neighbours2.Add(line);
                                 line.FoundNeighbours(lines, false);
                             }
                         }
@@ -1056,35 +1109,35 @@ namespace RedButton.Common.TeklaStructures.CSLib
                 }
 
                 public Polygon GeneratePolygons(
-                  List<List<PolygonOperation.CreatePolygons.PolygonLine>> linesPolygons,
+                  List<List<PolygonLine>> linesPolygons,
                   bool usePoint1,
                   bool first)
                 {
                     Polygon polygon1 = new Polygon();
-                    List<PolygonOperation.CreatePolygons.PolygonLine> linesPolygon1 = linesPolygons[linesPolygons.Count - 1];
-                    int index1 = this.IsPolygonCompleted(linesPolygon1, usePoint1);
+                    List<PolygonLine> linesPolygon1 = linesPolygons[linesPolygons.Count - 1];
+                    int index1 = IsPolygonCompleted(linesPolygon1, usePoint1);
                     if (index1 == -1)
                     {
                         linesPolygon1.Add(this);
                         if (usePoint1)
                         {
-                            foreach (PolygonOperation.CreatePolygons.PolygonLine polygonLine in this.Neighbours1)
-                                polygonLine.GeneratePolygons(linesPolygons, Geo.GetDistanceBeetveenTwoPoints3D(this.Point1, polygonLine.Point1) > PolygonOperation.CreatePolygons.offset, false);
+                            foreach (PolygonLine polygonLine in Neighbours1)
+                                polygonLine.GeneratePolygons(linesPolygons, Geo.GetDistanceBeetveenTwoPoints3D(Point1, polygonLine.Point1) > offset, false);
                         }
                         else
                         {
-                            foreach (PolygonOperation.CreatePolygons.PolygonLine polygonLine in this.Neighbours2)
-                                polygonLine.GeneratePolygons(linesPolygons, Geo.GetDistanceBeetveenTwoPoints3D(this.Point2, polygonLine.Point1) > PolygonOperation.CreatePolygons.offset, false);
+                            foreach (PolygonLine polygonLine in Neighbours2)
+                                polygonLine.GeneratePolygons(linesPolygons, Geo.GetDistanceBeetveenTwoPoints3D(Point2, polygonLine.Point1) > offset, false);
                         }
                         linesPolygon1.RemoveAt(linesPolygon1.Count - 1);
                     }
                     else
                     {
                         linesPolygon1.Add(this);
-                        List<PolygonOperation.CreatePolygons.PolygonLine> polygon2 = new List<PolygonOperation.CreatePolygons.PolygonLine>();
+                        List<PolygonLine> polygon2 = new List<PolygonLine>();
                         for (; index1 < linesPolygon1.Count; ++index1)
                             polygon2.Add(linesPolygon1[index1]);
-                        if (!this.CheckIfExist(linesPolygons, polygon2))
+                        if (!CheckIfExist(linesPolygons, polygon2))
                             linesPolygons.Insert(0, polygon2);
                         linesPolygon1.Remove(this);
                     }
@@ -1092,7 +1145,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
                     {
                         linesPolygons.RemoveAt(linesPolygons.Count - 1);
                         double b = double.MinValue;
-                        foreach (List<PolygonOperation.CreatePolygons.PolygonLine> linesPolygon2 in linesPolygons)
+                        foreach (List<PolygonLine> linesPolygon2 in linesPolygons)
                         {
                             Polygon polygon2 = new Polygon();
                             for (int index2 = 0; index2 < linesPolygon2.Count; ++index2)
@@ -1105,7 +1158,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
                                 else
                                     polygon2.Points.Add((object)linesPolygon2[index2].Point2);
                             }
-                            double a = PolygonOperation.SummaryPolygonArea2D(polygon2);
+                            double a = SummaryPolygonArea2D(polygon2);
                             if (Compare.GE(a, b))
                             {
                                 b = a;
@@ -1113,14 +1166,14 @@ namespace RedButton.Common.TeklaStructures.CSLib
                             }
                         }
                         linesPolygons.Clear();
-                        linesPolygons.Add(new List<PolygonOperation.CreatePolygons.PolygonLine>());
+                        linesPolygons.Add(new List<PolygonLine>());
                     }
                     return polygon1;
                 }
 
                 private bool CheckIfExist(
-                  List<List<PolygonOperation.CreatePolygons.PolygonLine>> linesPolygons,
-                  List<PolygonOperation.CreatePolygons.PolygonLine> polygon)
+                  List<List<PolygonLine>> linesPolygons,
+                  List<PolygonLine> polygon)
                 {
                     bool flag1 = linesPolygons.Count != 1;
                     for (int index = 0; index < linesPolygons.Count - 1; ++index)
@@ -1129,7 +1182,7 @@ namespace RedButton.Common.TeklaStructures.CSLib
                         if (linesPolygons[index].Count == polygon.Count)
                         {
                             bool flag2 = true;
-                            foreach (PolygonOperation.CreatePolygons.PolygonLine polygonLine in polygon)
+                            foreach (PolygonLine polygonLine in polygon)
                             {
                                 flag2 &= linesPolygons[index].Contains(polygonLine);
                                 if (!flag2)
@@ -1147,25 +1200,25 @@ namespace RedButton.Common.TeklaStructures.CSLib
                 }
 
                 private int IsPolygonCompleted(
-                  List<PolygonOperation.CreatePolygons.PolygonLine> actualPolygon,
+                  List<PolygonLine> actualPolygon,
                   bool usePoint1)
                 {
                     int num = -1;
                     List<int> intList = new List<int>();
                     if (usePoint1)
                     {
-                        for (int index = this.Neighbours1.Count - 1; index >= 0; --index)
+                        for (int index = Neighbours1.Count - 1; index >= 0; --index)
                         {
-                            num = actualPolygon.IndexOf(this.Neighbours1[index]);
+                            num = actualPolygon.IndexOf(Neighbours1[index]);
                             if (num != -1)
                                 intList.Add(num);
                         }
                     }
                     else
                     {
-                        for (int index = this.Neighbours2.Count - 1; index >= 0; --index)
+                        for (int index = Neighbours2.Count - 1; index >= 0; --index)
                         {
-                            num = actualPolygon.IndexOf(this.Neighbours2[index]);
+                            num = actualPolygon.IndexOf(Neighbours2[index]);
                             if (num != -1)
                                 intList.Add(num);
                         }
@@ -1187,8 +1240,8 @@ namespace RedButton.Common.TeklaStructures.CSLib
 
             public PolygonWithHoles()
             {
-                this.contourPolygon = new Polygon();
-                this.innerPolygons = new List<Polygon>();
+                contourPolygon = new Polygon();
+                innerPolygons = new List<Polygon>();
             }
         }
     }
