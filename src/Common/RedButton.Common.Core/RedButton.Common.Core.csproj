@@ -46,6 +46,26 @@
     <Compile Include="Geometry\Extensions\VectorExtension.cs" />
     <Compile Include="Geometry\Interfaces\ILineSegment.cs" />
     <Compile Include="Geometry\Interfaces\IPoint.cs" />
+    <Compile Include="Structure\Beam.cs" />
+    <Compile Include="Structure\Coloumn.cs" />
+    <Compile Include="Structure\Grid.cs" />
+    <Compile Include="Structure\Interfaces\Enum\ProfileType.cs" />
+    <Compile Include="Structure\Interfaces\Foundation\IPadFoundation.cs" />
+    <Compile Include="Structure\Interfaces\Foundation\IPile.cs" />
+    <Compile Include="Structure\Interfaces\Foundation\ISlabFoundation.cs" />
+    <Compile Include="Structure\Interfaces\Foundation\IStripFoundation.cs" />
+    <Compile Include="Structure\Interfaces\Structural\IBeam.cs" />
+    <Compile Include="Structure\Interfaces\Structural\IColumn.cs" />
+    <Compile Include="Structure\Interfaces\IGrid.cs" />
+    <Compile Include="Structure\Interfaces\Structural\IPlate.cs" />
+    <Compile Include="Structure\Interfaces\Structural\ISlab.cs" />
+    <Compile Include="Structure\Interfaces\IStructureElement.cs" />
+    <Compile Include="Structure\Interfaces\Structural\IWall.cs" />
+    <Compile Include="Structure\Interfaces\Enum\Material.cs" />
+    <Compile Include="Structure\PadFoundation.cs" />
+    <Compile Include="Structure\Pile.cs" />
+    <Compile Include="Structure\Plate.cs" />
+    <Compile Include="Structure\Slab.cs" />
     <Compile Include="Geometry\Interfaces\IVector.cs" />
     <Compile Include="Geometry\Interfaces\IGeometryObject.cs" />
     <Compile Include="Geometry\Enums\SphereAccuracy.cs" />
@@ -58,9 +78,12 @@
     <Compile Include="Maths\Common.cs" />
     <Compile Include="Maths\Matrix.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Structure\SlabFoundation.cs" />
+    <Compile Include="Structure\StripFoundation.cs" />
+    <Compile Include="Structure\Wall.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Common" />
+    <Folder Include="Common\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
