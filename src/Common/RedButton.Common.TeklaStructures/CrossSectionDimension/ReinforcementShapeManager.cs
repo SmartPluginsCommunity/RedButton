@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections;
 using Tekla.Structures.Drawing;
-using Tekla.Structures.Geometry3d;
 using Tekla.Structures.Model;
 using TSD = Tekla.Structures.Drawing;
 using TSM = Tekla.Structures.Model;
@@ -21,7 +17,7 @@ namespace RedButton.Common.TeklaStructures.CrossSectionDimension
         private DrawingHandler _drawinghandler;
         private ViewBase _drawingview;
 
-        public List<Point> RebarNormalPoints { get; private set; }
+        public List<TSG.Point> RebarNormalPoints { get; private set; }
  
         
         #endregion Properties
@@ -82,16 +78,16 @@ namespace RedButton.Common.TeklaStructures.CrossSectionDimension
             {
                 if (item.Points.Count < 3)
                 {
-                    var startPoint = item.Points[0] as Point;
-                    var endPoint = item.Points[1] as Point;
+                    var startPoint = item.Points[0] as TSG.Point;
+                    var endPoint = item.Points[1] as TSG.Point;
                     if (IsPlaneIntersectedByLine(startPoint, endPoint))
                     {
-                        RebarNormalPoints.Add(new Point(startPoint.X, startPoint.Y, 0));
+                        RebarNormalPoints.Add(new TSG.Point(startPoint.X, startPoint.Y, 0));
                     }
                 }
             }
         }
-        public static bool IsPlaneIntersectedByLine(Point startPoint, Point endPoint)
+        public static bool IsPlaneIntersectedByLine(TSG.Point startPoint, TSG.Point endPoint)
         {
             bool flag1 = (endPoint.X - startPoint.X < 0.001) && (endPoint.Y - startPoint.Y < 0.001);
             bool flag2 = (endPoint.Z * startPoint.Z < 1);
