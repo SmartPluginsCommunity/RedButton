@@ -1,7 +1,18 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\src",
+    "\\src\\Common",
+    "\\src\\Common\\RedButton.Common.TeklaStructures",
+    "\\src\\Common\\RedButton.Common.TeklaStructures\\Extensions",
+    "\\src\\Common\\RedButton.Common.TeklaStructures\\Extensions\\GeometryProcessing",
+    "\\src\\Common\\RedButton.Common.TeklaStructures\\Extensions\\GeometryProcessing\\Abstraction",
+    "\\src\\ObjDir",
+    "\\src\\ObjDir\\2019",
+    "\\src\\ObjDir\\2019\\RedButton.Common.TeklaStructures",
+    "\\src\\Tests",
+    "\\src\\Tests\\RedButton.Tests.UnitTests"
   ],
-  "SelectedNode": "\\RedButton.Common.Core.sln",
+  "SelectedNode": "\\src\\Common\\RedButton.Common.TeklaStructures\\Extensions\\GeometryProcessing\\Abstraction\\Point.cs",
   "PreviewInSolutionExplorer": false
 }

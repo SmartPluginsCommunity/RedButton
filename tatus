@@ -1,0 +1,217 @@
+[33mcommit 1ab7ea84b25db0a7f0eebbe39f4724d33116fa8a[m[33m ([m[1;36mHEAD -> [m[1;32morig/feature/GeometryProcessing[m[33m)[m
+Author: mrzdish mrzdish <skopodrop@gmail.com>
+Date:   Sun Apr 3 15:08:50 2022 +0300
+
+    New methods and classes were added
+
+[33mcommit 735c0b811f989587b712baa346bf2a89fb96d802[m[33m ([m[1;31morigin/orig/feature/GeometryProcessing[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m
+Merge: 9c7d1cf 8cf376d
+Author: AndrejjerdnA <48621895+andrejjerdna@users.noreply.github.com>
+Date:   Thu Mar 31 09:06:44 2022 +0300
+
+    Merge pull request #4 from SmartPluginsCommunity/feature/extensions
+    
+    Changes:
+
+[33mcommit 8cf376dc2a20c631cea25e4206d5df425a31183a[m
+Merge: 73b0190 9c7d1cf
+Author: AndrejjerdnA <48621895+andrejjerdna@users.noreply.github.com>
+Date:   Thu Mar 31 09:06:16 2022 +0300
+
+    Merge branch 'main' into feature/extensions
+
+[33mcommit 73b019094d28d10414302b066b881e82aae1e8f5[m
+Author: arnkey <arnkey@gmail.com>
+Date:   Wed Mar 30 21:38:04 2022 +1000
+
+    fix by comment in pull request's
+
+[33mcommit 9c7d1cfcdda9bb860ef23f5f8046ac60780b6838[m
+Merge: 595f782 332d0fb
+Author: AndrejjerdnA <48621895+andrejjerdna@users.noreply.github.com>
+Date:   Wed Mar 30 09:11:55 2022 +0300
+
+    Merge pull request #3 from SmartPluginsCommunity/feature/get-all-parts
+    
+    Added assembly extension GetAllParts
+
+[33mcommit 332d0fb6d9020f071a20a28c29a56a02a1848f8e[m
+Author: Andrei Stepanov <web.andrej@gmail.com>
+Date:   Tue Mar 29 19:28:42 2022 +0300
+
+    Added yield return
+
+[33mcommit af675b0edb716ed4528f931815be76c2de69d777[m
+Author: arnkey <arnkey@gmail.com>
+Date:   Wed Mar 30 00:43:18 2022 +1000
+
+    Changes:
+    - add GeometryPlaneExtension.cs, PointExtension.cs;
+    - add some methods;
+
+[33mcommit 4eaa9191a1f18d054af27890736aad0f61919b18[m
+Author: astepanov-sl <astepanov@sodislab.com>
+Date:   Tue Mar 29 15:48:07 2022 +0300
+
+    Cleanup
+
+[33mcommit 29a6950b36b03bd468a41ae5a7ec0daee7981619[m
+Author: astepanov-sl <astepanov@sodislab.com>
+Date:   Tue Mar 29 15:47:00 2022 +0300
+
+    Optimized
+
+[33mcommit 350b2211457419016710e51c059f5f67ee3d313a[m
+Author: astepanov-sl <astepanov@sodislab.com>
+Date:   Tue Mar 29 15:40:32 2022 +0300
+
+    Cleanup
+
+[33mcommit e18ad9a6365d9530bdbb1efc933b69b170a78c9c[m
+Author: astepanov-sl <astepanov@sodislab.com>
+Date:   Tue Mar 29 15:38:26 2022 +0300
+
+    Added GetAllParts
+
+[33mcommit 595f7826c82682d947eef3d3167bde09d9471da7[m
+Merge: 1e7ba22 51f4b22
+Author: vadsemenov <49451201+vadsemenov@users.noreply.github.com>
+Date:   Fri Mar 25 16:26:17 2022 +0300
+
+    Merge pull request #4 from andrejjerdna/feature/DrawingTable
+    
+    Feature/drawing table
+
+[33mcommit 51f4b222371ecbf387f9a4bf211820607bcaffe2[m
+Author: Vadim Semenov <semenov@comfortlab.ru>
+Date:   Fri Mar 25 16:11:07 2022 +0300
+
+    Make correction of CreateTable method
+
+[33mcommit d8246ddd3c3cad86f3a475c2b05a64bc01d64ebe[m
+Author: astepanov-sl <astepanov@sodislab.com>
+Date:   Fri Mar 25 15:48:03 2022 +0300
+
+    Bug reference
+
+[33mcommit 4a0104893066f00181eaa80849c676110171773e[m
+Author: Vadim Semenov <semenov@comfortlab.ru>
+Date:   Fri Mar 25 15:45:59 2022 +0300
+
+    Merge with server branch
+
+[33mcommit 330064793118cc247db53e4807b58995720a3d2b[m
+Merge: fbcf44e c010e1d
+Author: Vadim Semenov <semenov@comfortlab.ru>
+Date:   Fri Mar 25 15:30:02 2022 +0300
+
+    Merge branch 'feature/DrawingTable' of https://github.com/andrejjerdna/RedButton into feature/DrawingTable
+
+[33mcommit fbcf44eac9dc341877edba15e019513a7f531171[m
+Author: Vadim Semenov <semenov@comfortlab.ru>
+Date:   Fri Mar 25 15:29:46 2022 +0300
+
+    Made changes by pull request
+
+[33mcommit c010e1d56ac5cee112417f2c50d12b4baa6f0668[m
+Merge: 08c5ee3 1e7ba22
+Author: AndrejjerdnA <48621895+andrejjerdna@users.noreply.github.com>
+Date:   Fri Mar 25 14:39:30 2022 +0300
+
+    Merge branch 'main' into feature/DrawingTable
+
+[33mcommit 1e7ba22ae856121da68cb20327f9bd1b0bbc7939[m
+Merge: 02fddc3 80a3998
+Author: AndrejjerdnA <48621895+andrejjerdna@users.noreply.github.com>
+Date:   Fri Mar 25 14:28:43 2022 +0300
+
+    Merge pull request #5 from andrejjerdna/feature/basetests
+    
+    Added base tests
+
+[33mcommit 80a3998b05e4cb49eeaeb64386e0268f167b065f[m
+Author: astepanov-sl <astepanov@sodislab.com>
+Date:   Thu Mar 24 21:26:34 2022 +0300
+
+    Added base tests
+
+[33mcommit 08c5ee30291239a786d877b17ae44ca2a689081b[m
+Author: Vadim Semenov <semenov@comfortlab.ru>
+Date:   Mon Mar 21 21:22:58 2022 +0300
+
+    Resharper Clean code
+
+[33mcommit 39e84aca86dff077e9043b4d9d7c404a27430529[m
+Author: Vadim Semenov <semenov@comfortlab.ru>
+Date:   Mon Mar 21 20:54:27 2022 +0300
+
+    Git ignore
+
+[33mcommit e399e31ef6fd71f0eff1514b21cd39ebe49df103[m
+Author: Vadim Semenov <semenov@comfortlab.ru>
+Date:   Mon Mar 21 20:49:53 2022 +0300
+
+    Replace project
+
+[33mcommit fe7c8b4533c589e02f929555b09f6b41eb2e1977[m
+Author: Vadim Semenov <semenov@comfortlab.ru>
+Date:   Mon Mar 21 17:39:34 2022 +0300
+
+    Add example ListOfDrawing
+
+[33mcommit f1175fdcbc5346f7e8ec1167f6ae42c221da7aa1[m
+Author: Vadim Semenov <semenov@comfortlab.ru>
+Date:   Mon Mar 21 15:52:49 2022 +0300
+
+    Extract DrawingUtils class
+
+[33mcommit d566e5ca88888033c968a187a9dc256775af63af[m
+Author: Vadim Semenov <semenov@comfortlab.ru>
+Date:   Mon Mar 21 11:58:36 2022 +0300
+
+    Add ListOfDrawing Table
+
+[33mcommit 02fddc36ce730393df64ea10e0422a6d61ea769c[m
+Merge: c091892 a56502d
+Author: AndrejjerdnA <48621895+andrejjerdna@users.noreply.github.com>
+Date:   Sun Mar 20 21:30:23 2022 +0300
+
+    Merge pull request #2 from andrejjerdna/feature/test-task
+    
+    Feature/test task
+
+[33mcommit a56502dcf5486f49a82ef95c5e23629916557daa[m
+Author: astepanov-sl <astepanov@sodislab.com>
+Date:   Sun Mar 20 21:21:31 2022 +0300
+
+    name
+
+[33mcommit 32e45e3753b047220fd752d1fd07ca63c00d91d8[m
+Author: astepanov-sl <astepanov@sodislab.com>
+Date:   Sat Mar 19 21:23:10 2022 +0300
+
+    First pull request
+
+[33mcommit c0918920ae1279198923d9dbff0ac8dfb7b41460[m
+Author: astepanov-sl <astepanov@sodislab.com>
+Date:   Sat Mar 19 21:18:22 2022 +0300
+
+    Test delete
+
+[33mcommit 9b9f231c16330bbc0ae4439a8b59a21a7dcb218f[m
+Author: astepanov-sl <astepanov@sodislab.com>
+Date:   Sat Mar 19 21:17:44 2022 +0300
+
+    Added .gitignore
+
+[33mcommit 909e59028999a6e62585d7253df4111f860b22d5[m
+Author: astepanov-sl <astepanov@sodislab.com>
+Date:   Sat Mar 19 21:16:37 2022 +0300
+
+    Start commit
+
+[33mcommit 5b496e2e5905621db0d944a5153657ccb0ce491f[m
+Author: AndrejjerdnA <48621895+andrejjerdna@users.noreply.github.com>
+Date:   Thu Mar 10 22:11:10 2022 +0300
+
+    Initial commit
