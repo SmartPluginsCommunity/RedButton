@@ -83,7 +83,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CrossSectionDimension\ReinforcementManager.cs" />
+    <Compile Include="CrossSectionDimension\ReinforcementShapeManager.cs" />
     <Compile Include="CrossSectionDimension\SectionManager.cs" />
     <Compile Include="CSLib\Compare.cs" />
     <Compile Include="CSLib\Constants.cs" />

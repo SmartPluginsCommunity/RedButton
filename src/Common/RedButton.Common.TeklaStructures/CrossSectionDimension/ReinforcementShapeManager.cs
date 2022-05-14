@@ -14,24 +14,25 @@ using TSG = Tekla.Structures.Geometry3d;
 
 namespace RedButton.Common.TeklaStructures.CrossSectionDimension
 {
-    internal class ReinforcementManager
+    internal class ReinforcementShapeManager
     {
         #region Properties
         private TSM.Model _model;
         private DrawingHandler _drawinghandler;
         private ViewBase _pickedview;
-        private DrawingObject _drawingObject;
-        private TSM.Part _pickedpart;
         private View _view;
-        public List<List<Point>> Points { get; private set; }
+        public List<Point> RebarNormalPoints { get; private set; }
+ 
+        
         #endregion Properties
 
         #region Constructors
 
-        public ReinforcementManager()
+        public ReinforcementShapeManager()
         {
             _model = new Model();
             _drawinghandler = new DrawingHandler();
+            _view = (TSD.View)_pickedview;
         }
 
         #endregion Constructors
@@ -43,7 +44,7 @@ namespace RedButton.Common.TeklaStructures.CrossSectionDimension
         #region Methods
         public List<TSG.PolyLine> GetRebarsCurves(TSD.Part drawingPart)
         {
-            List<TSG.PolyLine> polyLineList = new List<TSG.PolyLine>();
+            List<TSG.PolyLine> rebarShapePolylineList = new List<TSG.PolyLine>();
             TSM.Part modelPart = _model.SelectModelObject(drawingPart.ModelIdentifier) as TSM.Part;
             bool flag = (modelPart != null);
             var reinforcementEnumerator = _view.GetAllObjects(typeof(ReinforcementBase));
@@ -61,9 +62,9 @@ namespace RedButton.Common.TeklaStructures.CrossSectionDimension
                             for (int i = 0; i < rebarGeometry.Count; i++)
                             {
                                 var rebarShape = rebarGeometry[i] as RebarGeometry;
-                                if (rebarShape != null)
+                                if (rebarShape != null) 
                                 {
-                                    polyLineList.Add(rebarShape.Shape);
+                                    rebarShapePolylineList.Add(rebarShape.Shape);
                                 }
                             }
                         }
@@ -71,11 +72,11 @@ namespace RedButton.Common.TeklaStructures.CrossSectionDimension
                 }
             }
 
-            return polyLineList;
+            return rebarShapePolylineList;
         }
-        public List<Point> GetIntersectedPoints(List<TSG.PolyLine> incomeList, double viewDepth)
+        public void GetIntersectedPoints(List<TSG.PolyLine> incomeList, double viewDepth)
         {
-            List<Point> pointList = new List<Point>();
+  
             foreach (var item in incomeList)
             {
                 if (item.Points.Count < 3)
@@ -84,13 +85,10 @@ namespace RedButton.Common.TeklaStructures.CrossSectionDimension
                     var endPoint = item.Points[1] as Point;
                     if (IsPlaneIntersectedByLine(startPoint, endPoint))
                     {
-                        pointList.Add(new Point(startPoint.X, startPoint.Y, 0));
+                        RebarNormalPoints.Add(new Point(startPoint.X, startPoint.Y, 0));
                     }
                 }
-
             }
-
-            return pointList;
         }
         public static bool IsPlaneIntersectedByLine(Point startPoint, Point endPoint)
         {
