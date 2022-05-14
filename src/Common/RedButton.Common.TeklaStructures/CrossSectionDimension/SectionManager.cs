@@ -17,6 +17,7 @@ namespace RedButton
         private ViewBase _pickedview;
         private DrawingObject _drawingObject;
         private TSM.Part _pickedpart;
+        private TSD.View _view;
         // Интерфейс с правилами для получения точек 
         private IDrawingSectionRule _rule;
         public List<List<Point>> Points {get; private set;}
@@ -45,19 +46,32 @@ namespace RedButton
             _rule = rule;
             var picker = _drawinghandler.GetPicker();
             picker.PickObject("Укажите деталь на виде", out _drawingObject, out _pickedview);
+            _view = (TSD.View)_pickedview;
             TSD.Part drawingPickedPart = _drawingObject as TSD.Part;
             var modelPart = _model.SelectModelObject(drawingPickedPart.ModelIdentifier) as TSM.Part;
             if (modelPart !=null)
                 GetIntersection();
         }
     
+        private void SetViewCoordinateSystem ()
+        {
+            _model.GetWorkPlaneHandler().SetCurrentTransformationPlane(new TransformationPlane());
+            _model.GetWorkPlaneHandler().SetCurrentTransformationPlane(new TransformationPlane(_view.DisplayCoordinateSystem));
+        }
+
+        private void SetModelCoordinateSystem ()
+        {
+            _model.GetWorkPlaneHandler().SetCurrentTransformationPlane(new TransformationPlane());
+            _model.CommitChanges();
+        }
 
         //TODO Разбить на методы и реализовать через LINQ
         private void GetIntersection()
         {
             // add rules
-            var solid = _pickedpart.GetSolid(Solid.SolidCreationTypeEnum.NORMAL);
-            var viewOriginPoint = _pickedview.Origin;
+            var solid = _pickedpart.GetSolid(Solid.SolidCreationTypeEnum.HIGH_ACCURACY);
+            SetViewCoordinateSystem();
+            var viewOriginPoint = _view.DisplayCoordinateSystem.Origin;
             List<List<Point>> sectionCotoursList = new List<List<Point>>();
             var enumerator = solid.IntersectAllFaces(
                 viewOriginPoint,
@@ -74,7 +88,8 @@ namespace RedButton
                 }
             }
 
-            Points = sectionCotoursList;     
+            Points = sectionCotoursList;
+            SetModelCoordinateSystem();
         }
         #endregion Methods
     }

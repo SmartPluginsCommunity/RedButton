@@ -19,8 +19,8 @@ namespace RedButton.Common.TeklaStructures.CrossSectionDimension
         #region Properties
         private TSM.Model _model;
         private DrawingHandler _drawinghandler;
-        private ViewBase _pickedview;
-        private View _view;
+        private ViewBase _drawingview;
+
         public List<Point> RebarNormalPoints { get; private set; }
  
         
@@ -28,11 +28,11 @@ namespace RedButton.Common.TeklaStructures.CrossSectionDimension
 
         #region Constructors
 
-        public ReinforcementShapeManager()
+        public ReinforcementShapeManager(ViewBase view)
         {
             _model = new Model();
             _drawinghandler = new DrawingHandler();
-            _view = (TSD.View)_pickedview;
+            _drawingview = view;
         }
 
         #endregion Constructors
@@ -46,8 +46,9 @@ namespace RedButton.Common.TeklaStructures.CrossSectionDimension
         {
             List<TSG.PolyLine> rebarShapePolylineList = new List<TSG.PolyLine>();
             TSM.Part modelPart = _model.SelectModelObject(drawingPart.ModelIdentifier) as TSM.Part;
+            var view = (TSD.View)_drawingview;
             bool flag = (modelPart != null);
-            var reinforcementEnumerator = _view.GetAllObjects(typeof(ReinforcementBase));
+            var reinforcementEnumerator = view.GetAllObjects(typeof(ReinforcementBase));
             if (flag)
             {
                 while (reinforcementEnumerator.MoveNext())
