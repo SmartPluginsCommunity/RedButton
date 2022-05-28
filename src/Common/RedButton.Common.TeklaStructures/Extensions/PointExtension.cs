@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Tekla.Structures.Geometry3d;
+using Tekla.Structures.Model;
 using Tekla.Structures.Solid;
 using tsm = Tekla.Structures.Model;
 
@@ -114,6 +115,18 @@ namespace RedButton.Common.TeklaStructures.Extensions
         public static Point NewPoint(this Point p1, Vector v1)
         {
             return new Point(p1.X + v1.X, p1.Y + v1.Y, p1.Z + v1.Z);
+        }
+
+        /// <summary>
+        /// Point transformation from a first transformation plane to a second transformation plane
+        /// </summary>
+        /// <param name="point">Point</param>
+        /// <param name="from">A first transformation plane</param>
+        /// <param name="to">A second transformation plane</param>
+        /// <returns></returns>
+        public static Point Transformation(this Point point, TransformationPlane from, TransformationPlane to)
+        {
+            return to.TransformationMatrixToLocal.Transform(from.TransformationMatrixToGlobal.Transform(point));
         }
     }
 }
