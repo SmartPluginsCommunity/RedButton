@@ -1,16 +1,45 @@
 using System;
+using System.Collections.Generic;
+using RedButton.Common.Core.Geometry.Enums;
 using RedButton.Common.Core.Geometry.Extensions;
 using RedButton.Common.Core.Geometry.Interfaces;
 
 namespace RedButton.Common.Core.Geometry
 {
     // Sphere 3d class
-    public class Sphere
+    public class Sphere : IGeometryObject
     {
-        #region Properties
 
-        public Point Center { get; set; }
+        #region Properties
+        /// <summary>
+        /// Accuracy for 'ListPoints'
+        /// </summary>
+        public SphereAccuracy Accuracy = SphereAccuracy.degree90;
+        
+        private Point _center;
+        public Point Center { 
+            get => _center;
+            private set => _center = value;
+        }
         public double Radius { get; set; }
+        public IPoint CenterOfGravity { get => _center; }
+        public List<IPoint> ListPoints {
+            get
+            {
+                var result = new List<IPoint>();
+                result.Add(Center);
+                if (Accuracy == SphereAccuracy.degree90)
+                {
+                    result.Add(_center.AddX(Radius));
+                    result.Add(_center.AddX(-Radius));
+                    result.Add(_center.AddY(Radius));
+                    result.Add(_center.AddY(-Radius));
+                    result.Add(_center.AddZ(Radius));
+                    result.Add(_center.AddZ(-Radius));
+                }
+                return result;
+            }
+         }
 
         #endregion Properties
 
@@ -36,6 +65,12 @@ namespace RedButton.Common.Core.Geometry
         #endregion Constructors
         
         #region Methods
+
+        public IGeometryObject Clone()
+        {
+            return new Sphere(Center.NewVector(), (int)Radius) {Accuracy = this.Accuracy};
+        }
+
 
         public bool IsInsidePoint(Point input)
         {

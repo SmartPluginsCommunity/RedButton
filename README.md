@@ -15,3 +15,9 @@ Community site: (https://smartpluginscommunity.github.io)
 [Issues](https://github.com/SmartPluginsCommunity/RedButton/issues)
 
 Сайт сообщества: (https://smartpluginscommunity.github.io)
+
+# License
+
+Этот проект находится под лицензией [MIT license](https://github.com/SmartPluginsCommunity/RedButton/blob/main/LICENSE).
+
+This project is licensed under the [MIT license](https://github.com/SmartPluginsCommunity/RedButton/blob/main/LICENSE).

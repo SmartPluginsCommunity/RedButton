@@ -83,8 +83,8 @@ namespace RedButton.Common.Core.Geometry
         #endregion Constructors
         
         #region Methods
-
-        public double Length => Math.Sqrt(X * X + Y * Y + Z * Z);
+        
+        public double Length => Math.Sqrt(ScalarProduct(this));
 
         #region Operators
 
@@ -100,15 +100,13 @@ namespace RedButton.Common.Core.Geometry
         {
             return new Vector(current.X * input.X, current.Y * input.Y, current.Z * input.Z);
         }
-
         public static bool operator ==(Vector current, Vector input)
         {
-            return current.Length - input.Length == 0;
+            return (current - input).Length <= Maths.Common.DistanceEplision;
         }
-        
         public static bool operator !=(Vector current, Vector input)
         {
-            return current.Length - input.Length != 0;
+            return (current - input).Length > Maths.Common.DistanceEplision;
         }
         #endregion
 
@@ -116,7 +114,6 @@ namespace RedButton.Common.Core.Geometry
         {
             return X * input.X + Y * input.Y + Z * input.Z;
         }
-        
         public Vector VectorProduct(Vector input)
         {
             var x = Y * input.Z - Z * input.Y;
@@ -124,19 +121,18 @@ namespace RedButton.Common.Core.Geometry
             var z = X * input.Y - Y * input.X;
             return new Vector(x, y, z);
         }
-
         public bool IsParallel(Vector input)
         {
-            var result = GetAngleIdRadian(input);
-            return result == 0.0 || result == 180.0;
+            var result = GetAngleInDegree(input);
+            return Math.Abs(result) < Maths.Common.DistanceEplision 
+                   || Math.Abs(result - 180.0) < Maths.Common.DistanceEplision;
         }
-        
         public bool IsOrthogonal(Vector input)
         {
-            var result = GetAngleIdRadian(input);
-            return result == 90.0 || result == 270.0;
+            var result = GetAngleInDegree(input);
+            return Math.Abs(result - 90.0) < Maths.Common.DistanceEplision 
+                   || Math.Abs(result - 270.0) < Maths.Common.DistanceEplision;
         }
-
         public double GetAngleIdRadian(Vector input)
         {
             var scalarProduct = ScalarProduct(input);
@@ -144,7 +140,6 @@ namespace RedButton.Common.Core.Geometry
             var result = Math.Acos(scalarProduct / lengthProduct);
             return result;
         }
-
         public double GetAngleInDegree(Vector input)
         {
             var radian = GetAngleIdRadian(input);
