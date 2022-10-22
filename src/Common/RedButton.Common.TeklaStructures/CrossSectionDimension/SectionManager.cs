@@ -7,7 +7,7 @@ using TSD = Tekla.Structures.Drawing;
 using TSM = Tekla.Structures.Model;
 using System.Linq;
 
-namespace RedButton
+namespace RedButton.Common.TeklaStructures.CrossSectionDimension
 {
     class DrawingSectionManager
     {
