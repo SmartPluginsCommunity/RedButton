@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Tekla.Structures.Drawing;
+using Tekla.Structures.Model;
+using TSD = Tekla.Structures.Drawing;
+using TSM = Tekla.Structures.Model;
+using Tekla.Structures.Geometry3d;
+using System.Collections;
 
 namespace RedButton.Common.TeklaStructures.CrossSectionDimension
 {
@@ -66,14 +70,14 @@ namespace RedButton.Common.TeklaStructures.CrossSectionDimension
         }
 
         //TODO Разбить на методы и реализовать через LINQ
-        private void GetIntersection()
+        private void GetIntersection() 
         {
             // add rules
             var solid = _pickedpart.GetSolid(Solid.SolidCreationTypeEnum.HIGH_ACCURACY);
             SetViewCoordinateSystem();
             var viewOriginPoint = _view.DisplayCoordinateSystem.Origin;
             List<List<Point>> sectionCotoursList = new List<List<Point>>();
-            var (IEnumerabe)enumerator = solid.IntersectAllFaces(
+            var enumerator = solid.IntersectAllFaces(
                 viewOriginPoint,
                 new Point(viewOriginPoint.X + 10, viewOriginPoint.Y, viewOriginPoint.Z),
                 new Point(viewOriginPoint.X, viewOriginPoint.Y + 10, viewOriginPoint.Z)

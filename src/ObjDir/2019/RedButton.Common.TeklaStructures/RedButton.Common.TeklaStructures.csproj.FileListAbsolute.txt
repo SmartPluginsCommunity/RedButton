@@ -10,3 +10,8 @@ G:\Program\RedButton\src\ObjDir\2019\RedButton.Common.TeklaStructures\RedButton.
 G:\Program\RedButton\src\ObjDir\2019\RedButton.Common.TeklaStructures\RedButton.Common.TeklaStructures.csproj.CoreCompileInputs.cache
 G:\Program\RedButton\src\ObjDir\2019\RedButton.Common.TeklaStructures\RedButton.Common.TeklaStructures.dll
 G:\Program\RedButton\src\ObjDir\2019\RedButton.Common.TeklaStructures\RedButton.Common.TeklaStructures.pdb
+C:\Users\avito\Source\Repos\RedButton\src\ObjDir\2019\RedButton.Common.TeklaStructures\RedButton.Common.TeklaStructures.csproj.AssemblyReference.cache
+C:\Users\avito\Source\Repos\RedButton\src\ObjDir\2019\RedButton.Common.TeklaStructures\RedButton.Common.TeklaStructures.Properties.Resources.resources
+C:\Users\avito\Source\Repos\RedButton\src\ObjDir\2019\RedButton.Common.TeklaStructures\RedButton.Common.TeklaStructures.csproj.GenerateResource.cache
+C:\Users\avito\Source\Repos\RedButton\src\ObjDir\2019\RedButton.Common.TeklaStructures\RedButton.Common.TeklaStructures.csproj.CoreCompileInputs.cache
+C:\Users\avito\Source\Repos\RedButton\src\ObjDir\2019\RedButton.Common.TeklaStructures\RedButton.Common.TeklaStructures.dll
