@@ -1,15 +1,12 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using Tekla.Structures.Drawing;
-using Tekla.Structures.Geometry3d;
-using Tekla.Structures.Model;
-using TSD = Tekla.Structures.Drawing;
-using TSM = Tekla.Structures.Model;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace RedButton.Common.TeklaStructures.CrossSectionDimension
 {
-    class DrawingSectionManager
+    internal class DrawingSectionManager
     {
         #region Properties
         private TSM.Model _model;
@@ -20,19 +17,22 @@ namespace RedButton.Common.TeklaStructures.CrossSectionDimension
         private TSD.View _view;
         // Интерфейс с правилами для получения точек 
         private IDrawingSectionRule _rule;
-        public List<List<Point>> Points {get; private set;}
+        public List<List<Point>> Points
+        {
+            get; private set;
+        }
         #endregion Properties
 
         #region Constructors
 
-        public DrawingSectionManager ()
+        public DrawingSectionManager()
         {
             _model = new Model();
             _drawinghandler = new DrawingHandler();
         }
 
         #endregion Constructors
-        
+
         #region Inteface
         public interface IDrawingSectionRule
         {
@@ -49,17 +49,17 @@ namespace RedButton.Common.TeklaStructures.CrossSectionDimension
             _view = (TSD.View)_pickedview;
             TSD.Part drawingPickedPart = _drawingObject as TSD.Part;
             var modelPart = _model.SelectModelObject(drawingPickedPart.ModelIdentifier) as TSM.Part;
-            if (modelPart !=null)
+            if (modelPart != null)
                 GetIntersection();
         }
-    
-        private void SetViewCoordinateSystem ()
+
+        private void SetViewCoordinateSystem()
         {
             _model.GetWorkPlaneHandler().SetCurrentTransformationPlane(new TransformationPlane());
             _model.GetWorkPlaneHandler().SetCurrentTransformationPlane(new TransformationPlane(_view.DisplayCoordinateSystem));
         }
 
-        private void SetModelCoordinateSystem ()
+        private void SetModelCoordinateSystem()
         {
             _model.GetWorkPlaneHandler().SetCurrentTransformationPlane(new TransformationPlane());
             _model.CommitChanges();
@@ -73,11 +73,12 @@ namespace RedButton.Common.TeklaStructures.CrossSectionDimension
             SetViewCoordinateSystem();
             var viewOriginPoint = _view.DisplayCoordinateSystem.Origin;
             List<List<Point>> sectionCotoursList = new List<List<Point>>();
-            var enumerator = solid.IntersectAllFaces(
+            var (IEnumerabe)enumerator = solid.IntersectAllFaces(
                 viewOriginPoint,
                 new Point(viewOriginPoint.X + 10, viewOriginPoint.Y, viewOriginPoint.Z),
                 new Point(viewOriginPoint.X, viewOriginPoint.Y + 10, viewOriginPoint.Z)
                 );
+            
             while (enumerator.MoveNext())
             {
                 var arrayList = enumerator.Current as ArrayList;
